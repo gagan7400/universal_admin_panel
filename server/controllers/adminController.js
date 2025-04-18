@@ -1,4 +1,4 @@
-let Admin = require("../models/Admin.js");
+let Admin = require("../models/admin.js");
 let bcrypt = require("bcryptjs");
 let nodemailer = require("nodemailer");
 let jwt = require("jsonwebtoken");
