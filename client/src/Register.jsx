@@ -69,38 +69,80 @@ const Register = () => {
     };
 
     return (
-        <div style={{ padding: '2rem', maxWidth: '500px', margin: 'auto' }}>
-            {step === 'register' ? (
-                <form onSubmit={handleRegister}>
-                    <h2>Register</h2>
-                    <input name="firstName" placeholder="First Name" onChange={handleChange} required />
-                    <input name="lastName" placeholder="Last Name" onChange={handleChange} required />
-                    <input type="email" name="email" placeholder="Email" onChange={handleChange} required />
-                    <input name="phone" placeholder="Phone" onChange={handleChange} />
-                    <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-                    <input name="applicationId" placeholder="Application ID" onChange={handleChange} required />
-                    <input name="deviceType" placeholder="Device Type" onChange={handleChange} required />
-                    <button type="submit">Register</button>
-                </form>
+        <>
+            {!step === 'register' ? (<>
+                <div class="container">
+                    <div class="title">
+                        <p>Registration</p>
+                    </div>
+
+                    <form onSubmit={handleRegister}>
+                        <div class="user_details">
+                            <div class="input_box">
+                                <label for="firstName">FirstName</label>
+                                <input name="firstName" onChange={handleChange} type="text" id="firstName" placeholder="Enter your FirstName" required />
+                            </div>
+                            <div class="input_box">
+                                <label for="lastName">LastName</label>
+                                <input name="lastName" onChange={handleChange} type="text" id="LastName" placeholder="Enter your LastName" required />
+                            </div>
+
+                            <div class="input_box">
+                                <label for="email">Email</label>
+                                <input name="email" onChange={handleChange} type="email" id="email" placeholder="Enter your email" required />
+                            </div>
+                            <div class="input_box">
+                                <label for="phone">Phone Number</label>
+                                <input name="phone" onChange={handleChange} type="number" id="phone" placeholder="Enter your number" required />
+                            </div>
+                            <div class="input_box">
+                                <label for="password">Password</label>
+                                <input name="password" onChange={handleChange} type="password" id="password" placeholder="Enter your password" required />
+                            </div>
+                            <div class="input_box">
+                                <label for="applicationId">ApplicationId</label>
+                                <input name="applicationId" onChange={handleChange} type="text" id="applicationId" placeholder="Please Enter Your ApplicationId" required />
+                            </div>
+                            <div class="input_box">
+                                <label for="deviceType">DeviceType</label>
+                                <input name="deviceType" onChange={handleChange} type="text" id="DeviceType" placeholder="Please Enter Your DeviceType" required />
+                            </div>
+
+                        </div>
+
+                        <div class="reg_btn">
+                            <input type="submit" value="Register" />
+                        </div>
+                    </form>
+                </div>
+
+            </>
             ) : (
-                <form onSubmit={handleVerifyOtp}>
-                    <h2>Verify OTP</h2>
-                    <input
-                        type="text"
-                        placeholder="Enter OTP"
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                        required
-                    />
-                    <button type="submit">Verify</button>
-                    <button type="button" onClick={handleResendOtp}>
-                        Resend OTP
-                    </button>
-                </form>
+                <div class="container">
+                    <div class="title">
+                        <p>Verify Otp</p>
+                    </div>
+                    <form onSubmit={handleVerifyOtp}>
+                        <div class="verify_otp_box">
+                            <div class="verify_input_box" style={{ display: "flex", justifyContent: "space-evenly", alignItems: "center", }}>
+                                <input
+                                    type="text"
+                                    placeholder="Enter OTP"
+                                    value={otp}
+                                    name="VerifyOTP"
+                                    onChange={(e) => setOtp(e.target.value)}
+                                    required
+                                />
+                                <button type="submit" >Verify</button>
+                                <button type="button" onClick={handleResendOtp}> Resend OTP </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             )}
             {message && <p style={{ color: 'green' }}>{message}</p>}
             {error && <p style={{ color: 'red' }}>{error}</p>}
-        </div>
+        </>
     );
 };
 

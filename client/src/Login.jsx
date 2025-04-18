@@ -46,44 +46,30 @@ const Login = () => {
     };
 
     return (
-        <div style={{ maxWidth: "400px", margin: "50px auto" }}>
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: "10px" }}>
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        name="email"
-                        required
-                        value={formData.email}
-                        onChange={handleChange}
-                        style={{ width: "100%", padding: "8px" }}
-                    />
+        <>
+            <div class="container">
+                <div class="title">
+                    <p>Login</p>
                 </div>
-
-                <div style={{ marginBottom: "10px" }}>
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        name="password"
-                        required
-                        value={formData.password}
-                        onChange={handleChange}
-                        style={{ width: "100%", padding: "8px" }}
-                    />
-                </div>
-
-                <button type="submit" disabled={loading} style={{ width: "100%", padding: "10px" }}>
-                    {loading ? "Logging in..." : "Login"}
-                </button>
-            </form>
-
-            {message && (
-                <p style={{ marginTop: "15px", color: message.includes("success") ? "green" : "red" }}>
-                    {message}
-                </p>
-            )}
-        </div>
+                <form onSubmit={handleSubmit}>
+                    <div class="user_details_login">
+                        <div class="input_box">
+                            <label for="email">Email</label>
+                            <input name="email" value={formData.email}
+                                onChange={handleChange} type="email" id="email" placeholder="Enter your email" required />
+                        </div>
+                        <div class="input_box">
+                            <label for="password">Password</label>
+                            <input name="password" value={formData.password}
+                                onChange={handleChange} type="password" id="password" placeholder="Enter your password" required />
+                        </div>
+                    </div>
+                    <div class="reg_btn">
+                        <input type="submit" disabled={loading} style={{ width: "100%", padding: "10px" }} value={loading ? "Logging in..." : "Login"} />
+                    </div>
+                </form>
+            </div>
+        </>
     );
 };
 
