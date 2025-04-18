@@ -189,7 +189,7 @@ const login = async (req, res) => {
             email: req.body.email.toLowerCase(),
             isActive: true,
         });
-
+        
         if (!user) {
             return res.status(400).json({
                 code: 400,
@@ -197,6 +197,15 @@ const login = async (req, res) => {
                 message: "User not found.",
             });
         }
+        
+        if (!user.isVerified) {
+            return res.status(400).json({
+                code: 400,
+                status: false,
+                message: "User is not verified. Please verify your email/OTP.",
+            });
+        }
+        
 
         // Verify password
         const isPasswordMatching = await bcrypt.compare(req.body.password, user.password);

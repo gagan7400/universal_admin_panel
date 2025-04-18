@@ -16,8 +16,6 @@ const Register = () => {
 
     const [otp, setOtp] = useState('');
     const [step, setStep] = useState('register'); // 'register' | 'verify'
-    const [message, setMessage] = useState('');
-    const [error, setError] = useState('');
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,13 +23,8 @@ const Register = () => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        setError('');
-        setMessage('');
-        console.log(formData)
         try {
-            const res = await axios.post('http://localhost:4000/api/user/registration', formData);
-            console.log(res)
-            setMessage(res.data.message);
+            const res = await axios.post('https://universal-admin-panel.onrender.com/api/user/registration', formData);
             toast.success(res.data.message, {
                 position: "top-right",
                 autoClose: 2000,
@@ -61,14 +54,11 @@ const Register = () => {
 
     const handleVerifyOtp = async (e) => {
         e.preventDefault();
-        setError('');
-        setMessage('');
         try {
-            const res = await axios.post('http://localhost:4000/api/user/verify-otp', {
+            const res = await axios.post('https://universal-admin-panel.onrender.com/api/user/verify-otp', {
                 email: formData.email,
                 otp,
             });
-            setMessage(res.data.message);
             toast.success(res.data.message, {
                 position: "top-right",
                 autoClose: 2000,
@@ -81,7 +71,6 @@ const Register = () => {
                 transition: Bounce,
             });
         } catch (err) {
-            console.log(err)
             toast.error(err.response?.data?.message || 'OTP verification failed', {
                 position: "top-right",
                 autoClose: 2000,
@@ -98,13 +87,10 @@ const Register = () => {
     };
 
     const handleResendOtp = async () => {
-        setError('');
-        setMessage('');
         try {
-            const res = await axios.post('http://localhost:4000/api/user/resend-otp', {
+            const res = await axios.post('https://universal-admin-panel.onrender.com/api/user/resend-otp', {
                 email: formData.email,
             });
-            setMessage(res.data.message);
             toast.success(res.data.message, {
                 position: "top-right",
                 autoClose: 2000,
@@ -134,46 +120,46 @@ const Register = () => {
     return (
         <>
             {step === 'register' ? (<>
-                <div class="container">
-                    <div class="title">
+                <div className="container">
+                    <div className="title">
                         <p>Registration</p>
                     </div>
 
                     <form onSubmit={handleRegister}>
-                        <div class="user_details">
-                            <div class="input_box">
-                                <label for="firstName">FirstName</label>
+                        <div className="user_details">
+                            <div className="input_box">
+                                <label htmlFor="firstName">FirstName</label>
                                 <input name="firstName" onChange={handleChange} type="text" id="firstName" placeholder="Enter your FirstName" required />
                             </div>
-                            <div class="input_box">
-                                <label for="lastName">LastName</label>
+                            <div className="input_box">
+                                <label htmlFor="lastName">LastName</label>
                                 <input name="lastName" onChange={handleChange} type="text" id="LastName" placeholder="Enter your LastName" required />
                             </div>
 
-                            <div class="input_box">
-                                <label for="email">Email</label>
+                            <div className="input_box">
+                                <label htmlFor="email">Email</label>
                                 <input name="email" onChange={handleChange} type="email" id="email" placeholder="Enter your email" required />
                             </div>
-                            <div class="input_box">
-                                <label for="phone">Phone Number</label>
+                            <div className="input_box">
+                                <label htmlFor="phone">Phone Number</label>
                                 <input name="phone" onChange={handleChange} type="number" id="phone" placeholder="Enter your number" required />
                             </div>
-                            <div class="input_box">
-                                <label for="password">Password</label>
+                            <div className="input_box">
+                                <label htmlFor="password">Password</label>
                                 <input name="password" onChange={handleChange} type="password" id="password" placeholder="Enter your password" required />
                             </div>
-                            <div class="input_box">
-                                <label for="applicationId">ApplicationId</label>
+                            <div className="input_box">
+                                <label htmlFor="applicationId">ApplicationId</label>
                                 <input name="applicationId" onChange={handleChange} type="text" id="applicationId" placeholder="Please Enter Your ApplicationId" required />
                             </div>
-                            <div class="input_box">
-                                <label for="deviceType">DeviceType</label>
+                            <div className="input_box">
+                                <label htmlFor="deviceType">DeviceType</label>
                                 <input name="deviceType" onChange={handleChange} type="text" id="DeviceType" placeholder="Please Enter Your DeviceType" required />
                             </div>
 
                         </div>
 
-                        <div class="reg_btn">
+                        <div className="reg_btn">
                             <input type="submit" value="Register" />
                         </div>
                     </form>
@@ -181,13 +167,13 @@ const Register = () => {
 
             </>
             ) : (
-                <div class="container">
-                    <div class="title">
+                <div className="container">
+                    <div className="title">
                         <p>Verify Otp</p>
                     </div>
                     <form onSubmit={handleVerifyOtp}>
-                        <div class="verify_otp_box">
-                            <div class="verify_input_box" style={{ display: "flex", justifyContent: "space-evenly", alignItems: "center", }}>
+                        <div className="verify_otp_box">
+                            <div className="verify_input_box" style={{ display: "flex", justifyContent: "space-evenly", alignItems: "center", }}>
                                 <input
                                     type="text"
                                     placeholder="Enter OTP"
@@ -203,8 +189,6 @@ const Register = () => {
                     </form>
                 </div>
             )}
-            {message && <p style={{ color: 'green' }}>{message}</p>}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
         </>
     );
 };

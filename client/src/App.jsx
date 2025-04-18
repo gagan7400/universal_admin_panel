@@ -1,7 +1,7 @@
 import './App.css'
 import Login from './Login'
 import Register from './Register'
-import { Bounce, ToastContainer   } from 'react-toastify';
+import { Bounce, ToastContainer } from 'react-toastify';
 function App() {
   return (
     <>
@@ -18,7 +18,7 @@ function App() {
         theme="light"
         transition={Bounce}
       />
-      <Register />
+      {/* <Register /> */}
       <Login />
     </>
   )

@@ -43,8 +43,8 @@ const AdminLogin = () => {
         <div>
             {step === 'login' ? (
                 <>
-                    <input name="email" placeholder="Email" onChange={handleChange} />
-                    <input name="password" placeholder="Password" type="password" onChange={handleChange} />
+                    <input name="email" placeholder="Email" id='email' onChange={handleChange} />
+                    <input name="password" id="password" placeholder="Password" type="password" onChange={handleChange} />
                     <label>
                         <input type="checkbox" name="rememberMe" onChange={handleChange} /> Remember Me
                     </label>
