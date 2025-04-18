@@ -1,6 +1,7 @@
 // Required Libraries
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Bounce, toast } from 'react-toastify';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -31,10 +32,30 @@ const Register = () => {
             const res = await axios.post('http://localhost:4000/api/user/registration', formData);
             console.log(res)
             setMessage(res.data.message);
+            toast.success(res.data.message, {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
             setStep('verify');
         } catch (err) {
-            console.log(err)
-            setError(err.response?.data?.message || 'Registration failed');
+            toast.error(err.message, {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
         }
     };
 
@@ -48,9 +69,31 @@ const Register = () => {
                 otp,
             });
             setMessage(res.data.message);
+            toast.success(res.data.message, {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
         } catch (err) {
             console.log(err)
-            setError(err.response?.data?.message || 'OTP verification failed');
+            toast.error(err.response?.data?.message || 'OTP verification failed', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
+
         }
     };
 
@@ -62,15 +105,35 @@ const Register = () => {
                 email: formData.email,
             });
             setMessage(res.data.message);
+            toast.success(res.data.message, {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
         } catch (err) {
-            console.log(err)
-            setError(err.response?.data?.message || 'Failed to resend OTP');
+            toast.error(err.response?.data?.message || 'Failed to resend OTP', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
         }
     };
 
     return (
         <>
-            {!step === 'register' ? (<>
+            {step === 'register' ? (<>
                 <div class="container">
                     <div class="title">
                         <p>Registration</p>

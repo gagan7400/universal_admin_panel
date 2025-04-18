@@ -8,10 +8,7 @@ const UserSession = require("../models/UserSession.js"); // Session model
 const { generateToken } = require("../utils/token.js"); // Your custom token function
 
 
-
-
 const registration = async (req, res) => {
-    console.log("called")
     try {
         // 1. Validation schema
         const schema = Joi.object().keys({
@@ -66,7 +63,6 @@ const registration = async (req, res) => {
         return res.status(400).json({ code: 400, status: false, message: "An error occurred while processing your request." });
     }
 };
-
 
 
 const verifyOTP = async (req, res) => {

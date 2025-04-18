@@ -6,11 +6,11 @@ const cors = require("cors");
 const connectDb = require("./db/connectDb");
 let path = require("path");
 const dotenv = require("dotenv").config({ path: path.join(__dirname, "/config/.env") });
-
+ 
 let port = process.env.PORT || 4000;
 
 connectDb(process.env.MONGOURI); // ✅ Correct
-
+ 
 app.use(cors());
 app.use(express.json()); // ✅ For JSON payloads
 
