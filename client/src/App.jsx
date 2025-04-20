@@ -1,7 +1,10 @@
 import './App.css'
-import Login from './Login'
-import Register from './Register'
 import { Bounce, ToastContainer } from 'react-toastify';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './Admin/Login';
+import ForgotPassword from './Admin/ForgotPassword';
+import ResetPassword from './Admin/Resetpassword';
+import Dashboard from './Dashboard/Dashboard';
 function App() {
   return (
     <>
@@ -18,10 +21,18 @@ function App() {
         theme="light"
         transition={Bounce}
       />
-      {/* <Register /> */}
-      <Login />
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </Router>
     </>
   )
 }
 
 export default App
+
+
