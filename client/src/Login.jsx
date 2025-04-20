@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 
 const Login = () => {
+    let dispatch = useDispatch();
+    let { token, error } = useSelector(state => state.auth)
     const [formData, setFormData] = useState({
         email: "",
         password: "",

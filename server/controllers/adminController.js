@@ -2,7 +2,7 @@ let Admin = require("../models/admin.js");
 let bcrypt = require("bcryptjs");
 let nodemailer = require("nodemailer");
 let jwt = require("jsonwebtoken");
-
+let Joi = require("joi")
 const generateToken = (adminId) => {
     return jwt.sign({ id: adminId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
@@ -29,31 +29,61 @@ const register = async (req, res) => {
     try {
         const { email, password } = req.body;
         const existing = await Admin.findOne({ email });
-        if (existing) return res.status(400).json({ msg: "Admin already exists" });
+        if (existing) return res.status(400).json({ message: "Admin already exists" });
 
         const hashed = await bcrypt.hash(password, 12);
         const admin = await Admin.create({ email, password: hashed });
 
-        const token = generateToken(admin._id);
-        res.status(201).json({ token });
-    } catch (err) {
-        res.status(500).json({ msg: "Server error" });
+        res.status(200).json({ message: "Admin Registered Successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error", error });
     }
 };
 
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
+        const schema = Joi.object().keys({
+            email: Joi.string().email().required(),
+            password: Joi.string().required(),
+        });
+
+        const { error } = schema.validate(req.body);
+        if (error) {
+            return res.status(400).json({
+                code: 400,
+                status: false,
+                message: error.details[0].message,
+            });
+        }
+
         const admin = await Admin.findOne({ email });
-        if (!admin) return res.status(400).json({ msg: "Invalid credentials" });
+        if (!admin) return res.status(400).json({
+            code: 400,
+            status: false,
+            message: "User not found."
+        });
 
         const match = await bcrypt.compare(password, admin.password);
-        if (!match) return res.status(400).json({ msg: "Invalid credentials" });
+        if (!match) return res.status(400).json({
+            code: 400,
+            status: false,
+            message: "Password is incorrect."
+        });
 
         const token = generateToken(admin._id);
-        res.json({ token });
+        return res.status(200).json({
+            code: 200,
+            status: true,
+            message: "Admin logged in successfully.",
+            token,
+        });
     } catch (err) {
-        res.status(500).json({ msg: "Server error" });
+        return res.status(400).json({
+            code: 400,
+            status: false,
+            message: "An error occurred while processing your request.",
+        });
     }
 };
 
@@ -61,7 +91,7 @@ const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
         const admin = await Admin.findOne({ email });
-        if (!admin) return res.status(404).json({ msg: "Admin not found" });
+        if (!admin) return res.status(404).json({ message: "Admin not found" });
 
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         admin.otp = otp;
@@ -74,9 +104,9 @@ const forgotPassword = async (req, res) => {
             `<h1>Your OTP: ${otp}</h1><p>Valid for 10 minutes</p>`
         );
 
-        res.json({ msg: "OTP sent to email" });
+        res.json({ message: "OTP sent to email" });
     } catch (err) {
-        res.status(500).json({ msg: "Server error" });
+        res.status(500).json({ message: "Server error" });
     }
 };
 
@@ -87,7 +117,7 @@ const resetPassword = async (req, res) => {
         const admin = await Admin.findOne({ email, otp });
 
         if (!admin || admin.otpExpiry < Date.now()) {
-            return res.status(400).json({ msg: "Invalid or expired OTP" });
+            return res.status(400).json({ message: "Invalid or expired OTP" });
         }
 
         admin.password = await bcrypt.hash(newPassword, 12);
@@ -95,10 +125,10 @@ const resetPassword = async (req, res) => {
         admin.otpExpiry = undefined;
         await admin.save();
 
-        res.json({ msg: "Password reset successful" });
+        res.json({ message: "Password reset successful" });
     } catch (err) {
         console.log(err)
-        res.status(500).json({ err, msg: "Server error" });
+        res.status(500).json({ err, message: "Server error" });
     }
 };
 module.exports = { register, login, forgotPassword, resetPassword }
