@@ -7,7 +7,6 @@ const { generateToken } = require("../utils/token.js"); // Your custom token fun
 
 const registration = async (req, res) => {
     try {
-        // 1. Validation schema
         const schema = Joi.object().keys({
             firstName: Joi.string().required(),
             lastName: Joi.string().required(),
