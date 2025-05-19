@@ -1,6 +1,6 @@
 const Product = require("../models/product");
 let catchAsyncErrors = require("../middlewares/catchAsyncErrors");
-const ErrorHandler = require("../utils/errorhandler");
+const ErrorHandler = require("../utils/errorHandler");
 
 let createProductController = catchAsyncErrors(async (req, res, next) => {
     let product = await new Product({ ...req.body });
