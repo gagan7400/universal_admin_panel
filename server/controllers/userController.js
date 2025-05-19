@@ -1,6 +1,6 @@
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
-const User = require("../models/user.js");
+const User = require("../models/usermodel.js");
 const common_functions = require("../utils/common_functions.js"); // adjust path if needed
 const UserSession = require("../models/userSession.js"); // Session model
 const { generateToken } = require("../utils/token.js"); // Your custom token function
