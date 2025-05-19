@@ -1,8 +1,8 @@
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
-const User = require("../models/User.js");
+const User = require("../models/user.js");
 const common_functions = require("../utils/common_functions.js"); // adjust path if needed
-const UserSession = require("../models/UserSession.js"); // Session model
+const UserSession = require("../models/userSession.js"); // Session model
 const { generateToken } = require("../utils/token.js"); // Your custom token function
 
 const registration = async (req, res) => {
@@ -151,34 +151,6 @@ const login = async (req, res) => {
     }
 };
 
-// const verifyOTP = async (req, res) => {
-//     try {
-//         const schema = Joi.object({
-//             email: Joi.string().email().required(),
-//             otp: Joi.number().required(),
-//         });
-
-//         const { error } = schema.validate(req.body);
-
-//         if (error) return res.status(400).json({ code: 400, status: false, message: error.details[0].message });
-
-//         const user = await User.findOne({ email: req.body.email, isActive: true });
-
-//         if (!user) return res.status(400).json({ code: 400, status: false, message: "User not found." });
-//         if (Number(user.otp) !== Number(req.body.otp)) {
-//             return res.status(400).json({ code: 400, status: false, message: "Incorrect OTP." });
-//         }
-
-//         user.isVerified = true;
-//         await user.save();
-
-//         return res.status(200).json({ code: 200, status: true, message: "OTP verified successfully." });
-//     } catch (error) {
-//         console.error("Error verifying OTP:", error);
-//         return res.status(400).json({ code: 400, status: false, message: "An error occurred while verifying OTP." });
-//     }
-// }; 
-
 const verifyOTP = async (req, res) => {
     try {
         const schema = Joi.object().keys({
@@ -271,36 +243,6 @@ const verifyOTP = async (req, res) => {
         });
     }
 };
-
-// const resendOTP = async (req, res) => {
-//     try {
-//         const schema = Joi.object({
-//             email: Joi.string().email().required(),
-//         });
-
-//         const { error } = schema.validate(req.body);
-//         console.log(error)
-//         if (error) return res.status(400).json({ code: 400, status: false, message: error.details[0].message });
-
-//         const user = await User.findOne({ email: req.body.email, isActive: true });
-
-//         if (!user) return res.status(400).json({ code: 400, status: false, message: "User not found." });
-
-//         const emailOTP = Math.floor(1000 + Math.random() * 9000);
-//         user.otp = emailOTP;
-//         await user.save();
-
-//         const subject = "Verify your email";
-//         const content = `<h1>${emailOTP}</h1>`;
-//         common_functions.sendEmail(user.email, subject, content);
-
-//         return res.status(200).json({ code: 200, status: true, message: "OTP sent successfully." });
-//     } catch (error) {
-//         console.error("Error resending OTP:", error);
-//         return res.status(400).json({ code: 400, status: false, message: "An error occurred while resending OTP." });
-//     }
-// };
-
 
 const resendOTP = async (req, res) => {
     try {
@@ -531,7 +473,6 @@ const deleteUserAccount = async (req, res) => {
         });
     }
 };
-
 
 
 module.exports = { registration, verifyOTP, resendOTP, forgotPassword, login, setNewPassword, deleteUserAccount };
