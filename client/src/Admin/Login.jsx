@@ -22,22 +22,27 @@ const Login = () => {
     }, [token]);
 
     return (
-        <div>
-            <h2>Admin Login</h2>
-            <form onSubmit={handleSubmit} className='form'>
-                <div className='from_control'>
-                    <label htmlFor="Email" className='form_label'>Email</label>
-                    <input value={email} className='from_input' onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email" required />
-                </div>
-                <div className='from_control'>
-                    <label htmlFor="password" className='form_label'>Password</label>
-                    <input value={password} className='from_input' onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" required />
-                </div>
 
-                <button type="submit" className='submit_btn'>Login</button>
-                {error && <p className='error_handler'>{error}</p>}
-            </form>
-        </div>
+        <form onSubmit={handleSubmit} className='form'>
+            <p className='form_text'>Welcome Back!!!</p>
+            <h2 className='form_heading'>Login</h2>
+            <span class="form-label">
+                <input type="text" name="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <label for="Email">Email</label>
+            </span>
+
+            <span class="form-label">
+                <input type="text" name="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <label for="password">Password</label>
+            </span>
+
+            <button type="submit" className='submit_btn'>Login</button>
+            {error && <p className='error_handler'>{error}</p>}
+            <p className="suggest">
+                Don't have an account ? <a href="">Register</a>
+            </p>
+        </form>
+
     );
 };
 
