@@ -4,9 +4,7 @@ const ErrorHandler = require("../utils/errorHandler");
 
 let createProductController = catchAsyncErrors(async (req, res, next) => {
     let product = await new Product({ ...req.body });
-
     await product.save();
-
     res.status(201).json({
         success: true,
         message: "Product Created Successfully",
@@ -60,7 +58,5 @@ let updateProduct = catchAsyncErrors(async (req, res, next) => {
         data: newproduct,
     });
 })
-
-
 
 module.exports = { createProductController, getAllProducts, getProductDetails, deleteProduct, updateProduct }

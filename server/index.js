@@ -10,7 +10,7 @@ let productRoute = require("./routes/productRoute");
 let errorMiddleware = require("./middlewares/error");
 let dotenv = require("dotenv").config({ path: path.join(__dirname, "/config/.env") });
 
-
+ 
 // Handling Uncaught Exception
 process.on("uncaughtException", (err) => {
     console.log(`Error: ${err.message}`);

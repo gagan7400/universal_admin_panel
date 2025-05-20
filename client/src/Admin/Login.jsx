@@ -27,7 +27,7 @@ const Login = () => {
             <p className='form_text'>Welcome Back!!!</p>
             <h2 className='form_heading'>Login</h2>
             <span class="form-label">
-                <input type="text" name="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <input type="email" name="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 <label for="Email">Email</label>
             </span>
 

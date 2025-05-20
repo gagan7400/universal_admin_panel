@@ -1,15 +1,22 @@
 import axios from 'axios';
 
 const API = import.meta.env.VITE_API || "http://localhost:4000";
+export const setAuthLoading = () => ({
+  type: "AUTH_LOADING"
+});
 
+export const loginSuccess = (admin) => ({
+  type: "LOGINLOGIN_SUCCESS",
+  payload: admin
+});
 // LOGIN ACTION
 export const loginAdmin = (data) => async (dispatch) => {
-  dispatch({ type: 'LOGIN_ADMIN_REQUEST' });
+  dispatch({ type: 'LOGIN_REQUEST' });
   try {
     const res = await axios.post(`${API}/api/admin/login`, data);
     const token = res.data.token;
     localStorage.setItem("adminToken", token);
-    dispatch({ type: 'LOGIN_ADMIN_SUCCESS', payload: token });
+    dispatch({ type: 'LOGIN_ADMIN_SUCCESS', payload: res.data });
   } catch (err) {
     dispatch({
       type: 'LOGIN_ADMIN_FAIL',
@@ -46,8 +53,11 @@ export const resetPassword = (data) => async (dispatch) => {
   }
 };
 
-// LOGOUT
-export const logoutAdmin = () => (dispatch) => {
-  localStorage.removeItem("adminToken");
-  dispatch({ type: 'ADMIN_LOGOUT' });
+export const logout = () => async (dispatch) => {
+  try {
+    const { data } = await axios.get(`${API}/api/admin/logout`, { withCredentials: true });
+    dispatch({ type: "ADMIN_LOGOUT" });
+  } catch (err) {
+    console.log(err)
+  }
 };

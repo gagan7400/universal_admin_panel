@@ -1,5 +1,5 @@
 let express = require("express");
-let { createProductController, getAllProducts, getProductDetails, deleteProduct ,updateProduct } = require("../controllers/productController.js")
+let { createProductController, getAllProducts, getProductDetails, deleteProduct, updateProduct } = require("../controllers/productController.js")
 let router = express.Router();
 const { isAuthenticatedUser, authorizeRoles } = require("../middlewares/auth");
 

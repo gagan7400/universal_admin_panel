@@ -71,12 +71,18 @@ const login = async (req, res) => {
             message: "Password is incorrect."
         });
 
-        const token = generateToken(admin._id);
-        return res.status(200).json({
+        const token = await generateToken(admin._id);
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 24 * 60 * 60 * 1000 // 1 day
+        }).status(200).json({
             code: 200,
             status: true,
-            message: "Admin logged in successfully.",
+            message: "Admin logged in successfully...",
             token,
+            data: admin
         });
     } catch (err) {
         return res.status(400).json({
@@ -87,6 +93,14 @@ const login = async (req, res) => {
     }
 };
 
+let logoutAdmin = async (req, res) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production"
+    });
+    res.json({ success: true, message: "Logged out" });
+}
 const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -131,4 +145,20 @@ const resetPassword = async (req, res) => {
         res.status(500).json({ err, message: "Server error" });
     }
 };
-module.exports = { register, login, forgotPassword, resetPassword }
+
+let getprofile = async (req, res) => {
+    try {
+        const admin = await Admin.findById(req.user._id).select("-password"); // exclude password
+        if (!admin) {
+            return res.status(404).json({ success: false, message: "Admin not found" });
+        }
+
+        res.status(200).json({
+            success: true,
+            admin
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+}
+module.exports = { getprofile, register, login, forgotPassword, resetPassword, logoutAdmin }
