@@ -1,29 +1,55 @@
 import axios from 'axios';
 
 const API = import.meta.env.VITE_API || "http://localhost:4000";
+
 export const setAuthLoading = () => ({
-  type: "AUTH_LOADING"
+  type: "LOGIN_ADMIN_REQUEST"
 });
 
 export const loginSuccess = (admin) => ({
-  type: "LOGINLOGIN_SUCCESS",
+  type: "LOGIN_ADMIN_SUCCESS",
   payload: admin
 });
 // LOGIN ACTION
-export const loginAdmin = (data) => async (dispatch) => {
-  dispatch({ type: 'LOGIN_REQUEST' });
+export const loginAdmin = (email, password, navigate) => async (dispatch) => {
+  dispatch({ type: "LOGIN_ADMIN_REQUEST" });
   try {
-    const res = await axios.post(`${API}/api/admin/login`, data);
-    const token = res.data.token;
-    localStorage.setItem("adminToken", token);
-    dispatch({ type: 'LOGIN_ADMIN_SUCCESS', payload: res.data });
-  } catch (err) {
-    dispatch({
-      type: 'LOGIN_ADMIN_FAIL',
-      payload: err.response?.data?.message || err.message,
+    const res = await axios.post(
+      "http://localhost:4000/api/admin/login",
+      { email, password },
+      { withCredentials: true }
+    );
+
+    const profileRes = await axios.get("http://localhost:4000/api/admin/profile", {
+      withCredentials: true, credentials: 'include'
     });
+
+    if (profileRes.data.success) {
+      dispatch({ type: "LOGIN_ADMIN_SUCCESS", payload: profileRes.data.admin });
+      navigate("/dashboard");
+    } else {
+      dispatch({ type: "LOGIN_FAIL", payload: "Unable to fetch profile" });
+    }
+  } catch (err) {
+    console.log(err)
+    dispatch({ type: "LOGIN_ADMIN_FAIL", payload: "Invalid credentials" });
   }
 };
+
+// export const loginAdmin = (data) => async (dispatch) => {
+//   dispatch({ type: 'LOGIN_REQUEST' });
+//   try {
+//     const res = await axios.post(`${API}/api/admin/login`, data);
+//     const token = res.data.token;
+//     localStorage.setItem("adminToken", token);
+//     dispatch({ type: 'LOGIN_ADMIN_SUCCESS', payload: res.data });
+//   } catch (err) {
+//     dispatch({
+//       type: 'LOGIN_ADMIN_FAIL',
+//       payload: err.response?.data?.message || err.message,
+//     });
+//   }
+// };
 
 // FORGOT PASSWORD
 export const forgotPassword = (email) => async (dispatch) => {

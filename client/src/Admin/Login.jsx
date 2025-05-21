@@ -12,17 +12,9 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(loginAdmin({ email, password }));
+        dispatch(loginAdmin(email, password, navigate));
     };
-
-    useEffect(() => {
-        if (token) {
-            navigate("/dashboard");
-        }
-    }, [token]);
-
     return (
-
         <form onSubmit={handleSubmit} className='form'>
             <p className='form_text'>Welcome Back!!!</p>
             <h2 className='form_heading'>Login</h2>

@@ -2,15 +2,15 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
-import { logout, loginSuccess, setAuthLoading } from '../redux/actions/adminloginaction';
+import { logout, loginSuccess, setAuthLoading } from '../redux/authActions.js';
 import axios from 'axios';
 import Loader from '../layout/Loader';
 
 const ProtectedRoute = ({ children }) => {
     const dispatch = useDispatch();
     const location = useLocation();
-    const { isAuthenticated, loading } = useSelector((state) => state.user);
-
+    const { isAuthenticated, loading } = useSelector((state) => state.auth);
+    console.log(isAuthenticated, loading)
     useEffect(() => {
         const checkAuth = async () => {
             dispatch(setAuthLoading());
@@ -20,7 +20,7 @@ const ProtectedRoute = ({ children }) => {
                 });
 
                 if (data.success) {
-                    dispatch(loginSuccess(data.admin));
+                    dispatch(loginSuccess(data.data));
                 } else {
                     dispatch(logout());
                 }
@@ -28,7 +28,6 @@ const ProtectedRoute = ({ children }) => {
                 dispatch(logout());
             }
         };
-
         checkAuth();
     }, [dispatch]);
 

@@ -1,7 +1,13 @@
 let express = require("express");
+let app = express();
 let path = require("path");
 let cors = require("cors");
-let app = express();
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+app.use(cors({
+    origin: ['http://localhost:3000', 'http://localhost:80', 'http://localhost:5173'], // Whitelist domains
+    credentials: true, // Allow cookies and credentials
+}));
 let connectDb = require("./db/connectDb");
 let port = process.env.PORT || 4000;
 let authRoute = require("./routes/authRoute");
@@ -10,7 +16,6 @@ let productRoute = require("./routes/productRoute");
 let errorMiddleware = require("./middlewares/error");
 let dotenv = require("dotenv").config({ path: path.join(__dirname, "/config/.env") });
 
- 
 // Handling Uncaught Exception
 process.on("uncaughtException", (err) => {
     console.log(`Error: ${err.message}`);
@@ -20,7 +25,7 @@ process.on("uncaughtException", (err) => {
 
 connectDb(process.env.MONGOURI); // ✅ Correct
 
-app.use(cors());
+
 app.use(express.json()); // ✅ For JSON payloads
 
 
