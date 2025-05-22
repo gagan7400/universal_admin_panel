@@ -38,7 +38,7 @@ app.use(errorMiddleware);
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
-
+    
 
 // Unhandled Promise Rejection
 process.on("unhandledRejection", (err) => {

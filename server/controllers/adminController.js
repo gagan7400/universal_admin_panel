@@ -127,7 +127,7 @@ const forgotPassword = async (req, res) => {
 const resetPassword = async (req, res) => {
     try {
         const { email, otp, newPassword } = req.body;
-        console.log(email, otp, newPassword)
+  
         const admin = await Admin.findOne({ email, otp });
 
         if (!admin || admin.otpExpiry < Date.now()) {
@@ -141,7 +141,6 @@ const resetPassword = async (req, res) => {
 
         res.json({ message: "Password reset successful" });
     } catch (err) {
-        console.log(err)
         res.status(500).json({ err, message: "Server error" });
     }
 };
@@ -160,4 +159,4 @@ let getprofile = async (req, res) => {
         res.status(500).json({ success: false, message: err.message });
     }
 }
-module.exports = { getprofile, register, login, forgotPassword, resetPassword, logoutAdmin }
+module.exports = { getprofile, register, login, forgotPassword, resetPassword, logoutAdmin  }

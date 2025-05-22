@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginAdmin } from '../redux/authActions';
-
+import { Bounce, toast } from 'react-toastify';
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -14,18 +14,31 @@ const Login = () => {
         e.preventDefault();
         dispatch(loginAdmin(email, password, navigate));
     };
+    useEffect(() => {
+        toast.error(error, {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+        });
+    }, [error])
     return (
         <form onSubmit={handleSubmit} className='form'>
             <p className='form_text'>Welcome Back!!!</p>
             <h2 className='form_heading'>Login</h2>
-            <span class="form-label">
+            <span className="form-label">
                 <input type="email" name="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                <label for="Email">Email</label>
+                <label htmlFor="Email">Email</label>
             </span>
 
-            <span class="form-label">
+            <span className="form-label">
                 <input type="text" name="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                <label for="password">Password</label>
+                <label htmlFor="password">Password</label>
             </span>
 
             <button type="submit" className='submit_btn'>Login</button>

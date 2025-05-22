@@ -25,31 +25,18 @@ export const loginAdmin = (email, password, navigate) => async (dispatch) => {
     });
 
     if (profileRes.data.success) {
-      dispatch({ type: "LOGIN_ADMIN_SUCCESS", payload: profileRes.data.admin });
+      console.log(profileRes.data.data)
+      dispatch({ type: "LOGIN_ADMIN_SUCCESS", payload: profileRes.data.data });
       navigate("/dashboard");
     } else {
       dispatch({ type: "LOGIN_FAIL", payload: "Unable to fetch profile" });
     }
   } catch (err) {
     console.log(err)
-    dispatch({ type: "LOGIN_ADMIN_FAIL", payload: "Invalid credentials" });
+    dispatch({ type: "LOGIN_ADMIN_FAIL", payload: err.message });
   }
 };
 
-// export const loginAdmin = (data) => async (dispatch) => {
-//   dispatch({ type: 'LOGIN_REQUEST' });
-//   try {
-//     const res = await axios.post(`${API}/api/admin/login`, data);
-//     const token = res.data.token;
-//     localStorage.setItem("adminToken", token);
-//     dispatch({ type: 'LOGIN_ADMIN_SUCCESS', payload: res.data });
-//   } catch (err) {
-//     dispatch({
-//       type: 'LOGIN_ADMIN_FAIL',
-//       payload: err.response?.data?.message || err.message,
-//     });
-//   }
-// };
 
 // FORGOT PASSWORD
 export const forgotPassword = (email) => async (dispatch) => {
@@ -85,5 +72,21 @@ export const logout = () => async (dispatch) => {
     dispatch({ type: "ADMIN_LOGOUT" });
   } catch (err) {
     console.log(err)
+  }
+};
+
+export const loadAdmin = () => async (dispatch) => {
+
+
+  dispatch({ type: "LOGIN_ADMIN_REQUEST" }); // ✅ Start loading
+  try {
+    const { data } = await axios.get("http://localhost:4000/api/admin/profile", { withCredentials: true });
+    if (data.success) {
+      dispatch(loginSuccess(data.admin));
+    } else {
+      dispatch(logout());
+    }
+  } catch (err) {
+    dispatch(logout());
   }
 };

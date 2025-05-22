@@ -20,7 +20,6 @@ const generateToken = function (userId, email, applicationId) {
 const refreshToken = (refToken) => {
   try {
     const decoded = jwt.verify(refToken, process.env.JWT_SECRET);
-    console.log("decoded", decoded);
     return generateToken(decoded.id, decoded.email, decoded.applicationId);
   } catch (error) {
     throw error;
@@ -29,14 +28,11 @@ const refreshToken = (refToken) => {
 
 const authenticate = async (req, res, next) => {
   let bearerHeader = req.header("authorization");
-  console.log("bearerHeader", bearerHeader);
 
   if (bearerHeader !== undefined) {
     let token = bearerHeader.split(" ")[1];
-    console.log("token", token);
 
     jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
-      console.log("token val", err, decoded);
 
       if (err) {
         return res.status(401).json({

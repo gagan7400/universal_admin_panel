@@ -16,7 +16,6 @@ const registration = async (req, res) => {
             applicationId: Joi.string().required(),
             deviceType: Joi.string().required(),
         });
-        console.log(req.body)
         // 2. Validate incoming data
         const { error } = schema.validate(req.body);
         if (error) return res.status(400).json({ code: 400, status: false, message: error.details[0].message });
@@ -48,7 +47,6 @@ const registration = async (req, res) => {
         // 6. Send Email
         const subject = "Verify your email";
         const content = `<h1>${emailOTP}</h1>`;
-        console.log("email sent")
         common_functions.sendEmail(req.body.email, subject, content);
 
         // 7. Success response
@@ -307,7 +305,6 @@ const resendOTP = async (req, res) => {
             });
         }
     } catch (err) {
-        console.log("Error while resending OTP:", err);
         return res.status(400).json({
             code: 400,
             status: false,
@@ -353,7 +350,6 @@ const forgotPassword = async (req, res) => {
 
         return res.status(200).json({ code: 200, status: true, message: "An OTP has been sent to your email address." });
     } catch (err) {
-        console.log("Error while forgot password:", err);
         return res.status(400).json({ code: 400, status: false, message: "An error occurred", error: err.message });
     }
 };
@@ -463,7 +459,6 @@ const deleteUserAccount = async (req, res) => {
             message: "User account has been deleted successfully.",
         });
     } catch (err) {
-        console.log("Error while deleting user account:", err);
         return res.status(400).json({
             code: 400,
             status: false,

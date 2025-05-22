@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
 
 * {
   margin: 0;
@@ -13,8 +13,8 @@
 body {
 
   width: 100%;
-  /* min-height: 100vh;
-  height: 100; */
+   min-height: 100vh;
+  height: 100; 
   background: var(--bg);
   font-family: 'Poppins', sans-serif;
 }
@@ -43,7 +43,7 @@ body {
   position: relative;
 }
 
-/* .container .title p::before {
+ .container .title p::before {
   content: "";
   position: absolute;
   bottom: 0;
@@ -51,7 +51,7 @@ body {
   width: 30px;
   height: 3px;
   background: linear-gradient(to right, #F37A65, #D64141);
-} */
+} 
 
 .user_details {
   display: flex;
@@ -316,7 +316,7 @@ form .gender {
   color: #ff9800;
 }
 
-/* Dashboard css start */
+ Dashboard css start 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
 
 :root {
@@ -638,12 +638,12 @@ body {
   }
 }
 
-/* Dashboard css end */
+ Dashboard css end 
 :root {
   --formbg: #f5ad0d
 }
 
-/* from css login */
+ from css login 
 .form {
   max-width: 375px;
   margin: 100px auto 0px;
@@ -682,7 +682,7 @@ body {
   position: relative;
   display: block;
   clear: both;
-  /* width:400px; */
+   width:400px; 
   max-width: 500px;
   margin: 40px auto;
 }
@@ -754,7 +754,7 @@ input.hascontent~label {
   height: 50px;
   flex-shrink: 0;
   border-radius: 15px;
-  /* background: #050522; */
+   background: #050522; 
   transition: all 0.5s ease;
 }
 
@@ -782,7 +782,7 @@ input.hascontent~label {
   }
 }
 
-/* loader css start */
+ loader css start 
 .loader {
   width: 50px;
   aspect-ratio: 1;
@@ -798,4 +798,4 @@ input.hascontent~label {
   }
 }
 
-/* loader css end */
+ loader css end  */

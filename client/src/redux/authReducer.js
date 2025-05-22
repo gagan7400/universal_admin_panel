@@ -1,6 +1,6 @@
 const initialState = {
     token: localStorage.getItem("adminToken") || null,
-    loading: false,
+    loading: true,
     error: null,
     message: null,
     isAuthenticated: false,
@@ -12,18 +12,18 @@ export const authReducer = (state = initialState, action) => {
         case 'LOGIN_ADMIN_REQUEST':
         case 'FORGOT_PASSWORD_REQUEST':
         case 'RESET_PASSWORD_REQUEST':
-            return { ...state, loading: true, error: null, message: null, isAuthenticated: false, };
+            return { ...state, loading: true, };
         case 'LOGIN_ADMIN_SUCCESS':
-            return { ...state, loading: false, token: action.payload, isAuthenticated: true, user: action.payload };
+            return { ...state, loading: false, isAuthenticated: true, user: action.payload };
         case 'FORGOT_PASSWORD_SUCCESS':
         case 'RESET_PASSWORD_SUCCESS':
             return { ...state, loading: false, message: action.payload.mesage };
         case 'LOGIN_ADMIN_FAIL':
         case 'FORGOT_PASSWORD_FAIL':
         case 'RESET_PASSWORD_FAIL':
-            return { ...state, isAuthenticated: false, loading: false, error: action.payload };
+            return { ...state, user: null, isAuthenticated: false, loading: false, error: action.payload };
         case 'ADMIN_LOGOUT':
-            return { ...state, token: null, isAuthenticated: false, }
+            return { ...state, isAuthenticated: false, }
         default:
             return state;
     }
