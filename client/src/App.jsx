@@ -10,6 +10,7 @@ import Loader from './layout/Loader';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadAdmin } from './redux/authActions.js';
+import Home from './Home.jsx';
 
 function App() {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ function App() {
       <ToastContainer position="top-right" autoClose={2000} hideProgressBar={false} newestOnTop={false} closeOnClick={false} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" transition={Bounce} />
 
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />

@@ -5,7 +5,7 @@ let cors = require("cors");
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:80', 'http://localhost:5173'], // Whitelist domains
+    origin: ['http://localhost:5174', 'http://localhost:80', 'http://localhost:5173'], // Whitelist domains
     credentials: true, // Allow cookies and credentials
 }));
 let connectDb = require("./db/connectDb");
@@ -38,7 +38,7 @@ app.use(errorMiddleware);
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
-    
+
 
 // Unhandled Promise Rejection
 process.on("unhandledRejection", (err) => {
