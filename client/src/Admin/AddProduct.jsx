@@ -22,47 +22,47 @@ export default function AddProduct() {
             <p>Add Product Form</p>
             <form className='product_form' onClick={submithandler}>
                 <div className="form_labels">
-                    <label htmlhtmlFor="name">Product Name</label>
+                    <label htmlFor="name">Product Name</label>
                     <input type="text" id='name' value={name} onChange={(e) => { setName(e.target.value) }} />
                 </div>
                 <div className="form_labels">
-                    <label htmlhtmlFor="description">Product Description</label>
+                    <label htmlFor="description">Product Description</label>
                     <input type="text" id='description' value={description} onChange={(e) => { setDescription(e.target.value) }} />
                 </div>
                 <div className="form_labels">
-                    <label htmlhtmlFor="price">Product Price</label>
+                    <label htmlFor="price">Product Price</label>
                     <input type="number" id='price' value={price} onChange={(e) => { setPrice(e.target.value) }} />
                 </div>
                 <div className="form_labels">
-                    <label htmlhtmlFor="images">Product Images</label>
+                    <label htmlFor="images">Product Images</label>
                     <input type="file" id='images' value={images} onChange={(e) => { setImages(e.target.value) }} />
                 </div>
                 <div className="form_labels">
-                    <label htmlhtmlFor="category">Product Category</label>
+                    <label htmlFor="category">Product Category</label>
                     <input type="text" id='category' value={category} onChange={(e) => { setCategory(e.target.value) }} />
                 </div>
                 <div className="form_labels">
-                    <label htmlhtmlFor="stock">Product Stock</label>
+                    <label htmlFor="stock">Product Stock</label>
                     <input type="number" id='stock' value={stock} onChange={(e) => { setStock(e.target.value) }} />
                 </div>
                 <div className="form_labels">
-                    <label htmlhtmlFor="dimensions">Product Dimensions</label>
+                    <label htmlFor="dimensions">Product Dimensions</label>
                     <input type="text" id='dimensions' value={dimensions} onChange={(e) => { setDimensions(e.target.value) }} />
                 </div>
                 <div className="form_labels">
-                    <label htmlhtmlFor="weight">Product weight</label>
+                    <label htmlFor="weight">Product weight</label>
                     <input type="text" id='weight' value={weight} onChange={(e) => { setWeight(e.target.value) }} />
                 </div>
                 <div className="form_labels">
-                    <label htmlhtmlFor="size">Product Size</label>
+                    <label htmlFor="size">Product Size</label>
                     <input type="text" id='size' value={size} onChange={(e) => { setSize(e.target.value) }} />
                 </div>
                 <div className="form_labels">
-                    <label htmlhtmlFor="discountPercentage">Product DiscountPercentage</label>
+                    <label htmlFor="discountPercentage">Product DiscountPercentage</label>
                     <input type="text" id='discountPercentage' value={discountPercentage} onChange={(e) => { setDiscountPercentage(e.target.value) }} />
                 </div>
                 <div className="form_labels">
-                    <label htmlhtmlFor="material">Product Material</label>
+                    <label htmlFor="material">Product Material</label>
                     <input type="text" id='material' value={material} onChange={(e) => { setMaterial(e.target.value) }} />
                 </div>
                 <div className="submition">

@@ -29,7 +29,7 @@ export const loginAdmin = (email, password, navigate) => async (dispatch) => {
       dispatch({ type: "LOGIN_ADMIN_SUCCESS", payload: profileRes.data.data });
       navigate("/dashboard");
     } else {
-      dispatch({ type: "LOGIN_FAIL", payload: "Unable to fetch profile" });
+      dispatch({ type: "LOGIN_ADMIN_FAIL", payload: "Unable to fetch profile" });
     }
   } catch (err) {
     console.log(err)
@@ -72,6 +72,7 @@ export const logout = () => async (dispatch) => {
     dispatch({ type: "ADMIN_LOGOUT" });
   } catch (err) {
     console.log(err)
+    dispatch({ type: "LOGIN_ADMIN_FAIL", payload: err.message });
   }
 };
 

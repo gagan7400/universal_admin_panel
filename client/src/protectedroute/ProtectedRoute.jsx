@@ -18,11 +18,9 @@ const ProtectedRoute = ({ children }) => {
                 const { data } = await axios.get("http://localhost:4000/api/admin/profile", {
                     withCredentials: true,
                 });
-
                 if (data.success) {
                     dispatch(loginSuccess(data.data));
                 } else {
-                    console.log(data)
                     dispatch(logout());
                 }
             } catch (error) {
@@ -32,7 +30,7 @@ const ProtectedRoute = ({ children }) => {
         };
         checkAuth();
     }, [dispatch]);
-
+console.log(loading,isAuthenticated)
     if (loading) { return <Loader /> };
 
 

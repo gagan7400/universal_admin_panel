@@ -128,32 +128,32 @@ const Register = () => {
                     <form onSubmit={handleRegister}>
                         <div className="user_details">
                             <div className="input_box">
-                                <label htmlhtmlFor="firstName">FirstName</label>
+                                <label htmlFor="firstName">FirstName</label>
                                 <input name="firstName" onChange={handleChange} type="text" id="firstName" placeholder="Enter your FirstName" required />
                             </div>
                             <div className="input_box">
-                                <label htmlhtmlFor="lastName">LastName</label>
+                                <label htmlFor="lastName">LastName</label>
                                 <input name="lastName" onChange={handleChange} type="text" id="LastName" placeholder="Enter your LastName" required />
                             </div>
 
                             <div className="input_box">
-                                <label htmlhtmlFor="email">Email</label>
+                                <label htmlFor="email">Email</label>
                                 <input name="email" onChange={handleChange} type="email" id="email" placeholder="Enter your email" required />
                             </div>
                             <div className="input_box">
-                                <label htmlhtmlFor="phone">Phone Number</label>
+                                <label htmlFor="phone">Phone Number</label>
                                 <input name="phone" onChange={handleChange} type="number" id="phone" placeholder="Enter your number" required />
                             </div>
                             <div className="input_box">
-                                <label htmlhtmlFor="password">Password</label>
+                                <label htmlFor="password">Password</label>
                                 <input name="password" onChange={handleChange} type="password" id="password" placeholder="Enter your password" required />
                             </div>
                             <div className="input_box">
-                                <label htmlhtmlFor="applicationId">ApplicationId</label>
+                                <label htmlFor="applicationId">ApplicationId</label>
                                 <input name="applicationId" onChange={handleChange} type="text" id="applicationId" placeholder="Please Enter Your ApplicationId" required />
                             </div>
                             <div className="input_box">
-                                <label htmlhtmlFor="deviceType">DeviceType</label>
+                                <label htmlFor="deviceType">DeviceType</label>
                                 <input name="deviceType" onChange={handleChange} type="text" id="DeviceType" placeholder="Please Enter Your DeviceType" required />
                             </div>
 

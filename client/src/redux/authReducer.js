@@ -12,7 +12,7 @@ export const authReducer = (state = initialState, action) => {
         case 'LOGIN_ADMIN_REQUEST':
         case 'FORGOT_PASSWORD_REQUEST':
         case 'RESET_PASSWORD_REQUEST':
-            return { ...state, loading: true, };
+            return { ...state, loading: true, error: null};
         case 'LOGIN_ADMIN_SUCCESS':
             return { ...state, loading: false, isAuthenticated: true, user: action.payload };
         case 'FORGOT_PASSWORD_SUCCESS':
@@ -23,7 +23,7 @@ export const authReducer = (state = initialState, action) => {
         case 'RESET_PASSWORD_FAIL':
             return { ...state, user: null, isAuthenticated: false, loading: false, error: action.payload };
         case 'ADMIN_LOGOUT':
-            return { ...state, isAuthenticated: false, }
+            return { ...state, isAuthenticated: false, loading: false, }
         default:
             return state;
     }
