@@ -11,7 +11,62 @@ let createProductController = catchAsyncErrors(async (req, res, next) => {
         data: product
     })
 })
+// const createProductController = catchAsyncErrors(async (req, res, next) => {
+//     const files = req.files; // Array of image files
 
+//     // Optional: Log file names
+//     // console.log("Uploaded files:", files.map(f => f.originalname));
+
+//     // Convert files to { fileName, url } format
+//     // For now, we simulate the URL using local path or buffer preview
+//     const images = files.map((file) => ({
+//         fileName: file.originalname,
+//         url: `uploads/${file.originalname}`, // You can change this if you upload to S3/Cloudinary
+//     }));
+
+//     const {
+//         name,
+//         description,
+//         price,
+//         ratings = 0,
+//         category,
+//         Stock,
+//         numOfReviews = 0,
+//         weight,
+//         size,
+//         discountPercentage,
+//         material,
+//         "dimensions[width]": width,
+//         "dimensions[height]": height,
+//     } = req.body;
+
+//     const product = new Product({
+//         name,
+//         description,
+//         price,
+//         ratings,
+//         images,
+//         category,
+//         Stock,
+//         numOfReviews,
+//         weight,
+//         size,
+//         discountPercentage,
+//         material,
+//         dimensions: {
+//             width,
+//             height,
+//         },
+//     });
+
+//     await product.save();
+
+//     res.status(201).json({
+//         success: true,
+//         message: "Product Created Successfully",
+//         data: product,
+//     });
+// });
 
 let getAllProducts = catchAsyncErrors(async (req, res, next) => {
     let products = await Product.find();

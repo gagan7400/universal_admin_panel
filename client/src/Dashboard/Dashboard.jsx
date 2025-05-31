@@ -9,11 +9,8 @@ export default function Dashboard() {
     };
     return (
         <div className="flex h-screen overflow-hidden">
-            {/* Sidebar */}
-            <div
-                className={`bg-amber-500 transition-all duration-300 ease-in-out ${isCollapsed ? 'w-[72px]' : 'w-[212px]'
-                    }`}
-            >
+
+            <div className={`bg-violet-800  transition-all duration-300 ease-in-out ${isCollapsed ? 'w-[72px]' : 'w-[212px]'}`}  >
                 <div className="h-full p-4 flex flex-col justify-between">
                     <div>
                         <div className="flex items-center justify-between">
@@ -23,9 +20,9 @@ export default function Dashboard() {
                                 </video>
                             </div>}
                             {!isCollapsed && (
-                                <button onClick={toggleSidebar} className="text-black focus:outline-none size-13  mb-6" > ❌ </button>
+                                <button onClick={toggleSidebar} className="text-black focus:outline-none rounded-4xl size-13 transition-all duration-500  mb-6" > <img src="/img/close-icon.svg" alt="" /> </button>
                             )}
-                            {isCollapsed && (<button onClick={toggleSidebar} className="text-black mb-6 size-13 focus:outline-none mx-auto" >     ☰ </button>)}
+                            {isCollapsed && (<button onClick={toggleSidebar} className="text-white mb-6 size-13    mx-auto rounded-4xl transition-all duration-500 flex justify-center items-center    " > <img src="/img/menu-icon.svg" alt="" /> </button>)}
                         </div>
                         <div className="space-y-4 mt-10">
                             {[
@@ -36,20 +33,17 @@ export default function Dashboard() {
                             ].map((item, index) => (
                                 <NavLink to={item.path}
                                     key={index}
-                                    className="flex items-center gap-3 p-2 hover:bg-blue-50 hover:text-blue-950 rounded cursor-pointer"
+                                    className="flex items-center gap-3 p-2 text-amber-50 transition-all  duration-500   hover:bg-amber-500 hover:text-blue-950 rounded cursor-pointer"
                                 >
                                     <span className="text-xl">{item.icon}</span>
-                                    {!isCollapsed && <span className="text-lg text-amber-50 " >{item.text}</span>}
+                                    {!isCollapsed && <span className="text-lg " >{item.text}</span>}
                                 </NavLink>
                             ))}
                         </div>
                     </div>
                 </div>
             </div>
-
-            {/* Main Content */}
-            <div className="flex-1 flex flex-col bg-red-100">
-                {/* Navbar */}
+            <div className="flex-1 flex  flex-col bg-red-100">
                 <nav className="p-4 bg-amber-500 flex justify-between gap-4 items-center">
                     <div className=' flex justify-center items-center'>
                         {isCollapsed && <div className="flex justify-center items-center  ">
@@ -65,13 +59,10 @@ export default function Dashboard() {
                             Admin <img src="/img/dropdown.svg" alt="Dropdown" />
                         </button></div>
                 </nav>
-                <div className="main_content p-6">
+                <div className="main_content p-6 overflow-auto no-scrollbar">
                     <Outlet />
                 </div>
             </div>
         </div>
-
-
-
     )
 }
