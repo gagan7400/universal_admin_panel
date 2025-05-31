@@ -36,10 +36,10 @@ export default function Dashboard() {
                             ].map((item, index) => (
                                 <NavLink to={item.path}
                                     key={index}
-                                    className="flex items-center gap-3 p-2 hover:bg-amber-400 rounded cursor-pointer"
+                                    className="flex items-center gap-3 p-2 hover:bg-blue-50 hover:text-blue-950 rounded cursor-pointer"
                                 >
-                                    <span className="text-lg">{item.icon}</span>
-                                    {!isCollapsed && <span className="text-sm">{item.text}</span>}
+                                    <span className="text-xl">{item.icon}</span>
+                                    {!isCollapsed && <span className="text-lg text-amber-50 " >{item.text}</span>}
                                 </NavLink>
                             ))}
                         </div>
