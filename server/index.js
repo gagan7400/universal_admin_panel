@@ -3,11 +3,13 @@ let app = express();
 let path = require("path");
 let cors = require("cors");
 const cookieParser = require('cookie-parser');
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
     origin: ['http://localhost:5174', 'http://localhost:80', 'http://localhost:5173'], // Whitelist domains
     credentials: true, // Allow cookies and credentials
 }));
+app.use(express.json()); // ✅ For JSON payloads
 let connectDb = require("./db/connectDb");
 let port = process.env.PORT || 4000;
 let authRoute = require("./routes/authRoute");
@@ -26,7 +28,6 @@ process.on("uncaughtException", (err) => {
 connectDb(process.env.MONGOURI); // ✅ Correct
 
 
-app.use(express.json()); // ✅ For JSON payloads
 
 
 app.use("/api/admin", authRoute);
