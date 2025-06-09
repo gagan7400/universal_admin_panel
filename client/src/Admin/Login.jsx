@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { loginAdmin } from '../redux/authActions';
+import { loginAdmin } from '../redux/actions/authActions';
 import { Bounce, toast } from 'react-toastify';
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -16,6 +16,7 @@ const Login = () => {
     };
 
     useEffect(() => {
+        console.log("error",error)
         toast.error(error, {
             position: "top-right",
             autoClose: 2000,

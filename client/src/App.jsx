@@ -13,8 +13,9 @@ import ProtectedRoute from './protectedroute/ProtectedRoute.jsx';
 import Loader from './layout/Loader';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadAdmin } from './redux/authActions.js';
+import { loadAdmin } from './redux/actions/authActions.js';
 import Home from './Home.jsx';
+import NewProduct from './Dashboard/NewProduct.jsx';
 
 function App() {
   const dispatch = useDispatch();
@@ -38,7 +39,6 @@ function App() {
   return (
     <>
       <ToastContainer position="top-right" autoClose={2000} hideProgressBar={false} newestOnTop={false} closeOnClick={false} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" transition={Bounce} />
-
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace={true} />} />
         <Route path="/login" element={<Login />} />
@@ -48,6 +48,7 @@ function App() {
           <Route path="/dashboard/" element={<DashboardComp />} > </Route>
           <Route path="/dashboard/users" element={<Users />} > </Route>
           <Route path="/dashboard/products" element={<Products />} > </Route>
+          <Route path="/dashboard/product" element={<NewProduct />} > </Route>
           <Route path="/dashboard/orders" element={<Orders />} > </Route>
         </Route>
       </Routes>

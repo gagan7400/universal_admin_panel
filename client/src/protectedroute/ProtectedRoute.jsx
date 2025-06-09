@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
-import { logout, loginSuccess, setAuthLoading } from '../redux/authActions.js';
+import { logout, loginSuccess, setAuthLoading } from '../redux/actions/authActions.js';
 import axios from 'axios';
 import Loader from '../layout/Loader.jsx';
 
@@ -24,15 +24,12 @@ const ProtectedRoute = ({ children }) => {
                     dispatch(logout());
                 }
             } catch (error) {
-                console.log(error)
                 dispatch(logout());
             }
         };
         checkAuth();
     }, [dispatch]);
-console.log(loading,isAuthenticated)
     if (loading) { return <Loader /> };
-
 
     if (!isAuthenticated) return <Navigate to="/login" state={{ from: location }} replace />;
 

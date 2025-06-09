@@ -20,20 +20,18 @@ export const loginAdmin = (email, password, navigate) => async (dispatch) => {
       { withCredentials: true }
     );
 
-    const profileRes = await axios.get("http://localhost:4000/api/admin/profile", {
+    const { data } = await axios.get("http://localhost:4000/api/admin/profile", {
       withCredentials: true, credentials: 'include'
     });
 
-    if (profileRes.data.success) {
-      console.log(profileRes.data.data)
-      dispatch({ type: "LOGIN_ADMIN_SUCCESS", payload: profileRes.data.data });
+    if (data.success) {
+      dispatch({ type: "LOGIN_ADMIN_SUCCESS", payload: data.data });
       navigate("/dashboard");
     } else {
-      dispatch({ type: "LOGIN_ADMIN_FAIL", payload: "Unable to fetch profile" });
+      dispatch({ type: "LOGIN_ADMIN_FAIL", payload: data.message });
     }
   } catch (err) {
-    console.log(err)
-    dispatch({ type: "LOGIN_ADMIN_FAIL", payload: err.message });
+    dispatch({ type: "LOGIN_ADMIN_FAIL", payload: err?.response?.data?.message });
   }
 };
 
@@ -91,3 +89,22 @@ export const loadAdmin = () => async (dispatch) => {
     dispatch(logout());
   }
 };
+
+
+export const getAllUsers = () => async (dispatch) => {
+  dispatch({ type: "GET_USER_REQUEST" });
+  try {
+    const { data } = await axios.get(
+      "http://localhost:4000/api/user/getallusers",
+      { withCredentials: true }
+    );
+    if (data.success) {
+      dispatch({ type: "GET_USER_SUCCESS", payload: data.data });
+    } else {
+      dispatch({ type: "GET_USER_FAIL", payload: data.message });
+    }
+  } catch (err) {
+    dispatch({ type: "GET_USER_FAIL", payload: err?.response?.data?.message });
+  }
+};
+

@@ -468,5 +468,18 @@ const deleteUserAccount = async (req, res) => {
     }
 };
 
+const getAllUsers = async (req, res) => {
+    try {
+        let users = await User.find();
+        res.status(200).send({ success: true, message: "Users Get Successfully", data: users })
+    } catch (error) {
+        return res.status(400).json({
+            code: 400,
+            status: false,
+            message: error.message,
+            error: error.message,
+        });
+    }
+}
 
-module.exports = { registration, verifyOTP, resendOTP, forgotPassword, login, setNewPassword, deleteUserAccount };
+module.exports = { registration, verifyOTP, resendOTP, forgotPassword, login, setNewPassword, deleteUserAccount, getAllUsers };

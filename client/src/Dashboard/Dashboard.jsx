@@ -8,46 +8,47 @@ export default function Dashboard() {
         setIsCollapsed(!isCollapsed);
     };
     return (
-        <div className="flex h-screen overflow-hidden">
-
-            <div className={` bg-amber-500  transition-all duration-300 ease-in-out ${isCollapsed ? 'w-[72px]' : 'w-[212px]'}`}  >
-                <div className="h-full p-4 flex flex-col justify-between">
+        <div className="flex h-screen overflow-hidden min-h-[500px]">
+            <div style={{ background: 'var(--blue)' }} className={`   transition-all duration-300 ease-in-out ${isCollapsed ? 'w-[72px]' : 'w-[212px]'}`}  >
+                <div className={`h-full p-4 flex flex-col justify-between transition-all duration-300 ${isCollapsed ? 'w-[80px]' : 'w-[240px]'}`}>
                     <div>
                         <div className="flex items-center justify-center">
-                            <div className="w-50 flex flex-nowrap justify-start items-center gap-3" onClick={() => { setIsCollapsed(!isCollapsed) }}>
+                            <div className="w-full flex items-center gap-3 cursor-pointer" onClick={() => setIsCollapsed(!isCollapsed)}>
                                 <img className='w-10' src="/img/universal-logo-unscreen.gif" alt="" />
-                                {!isCollapsed && <span className='text-lg text-amber-50'>URAC</span>}
+                                <span className={`text-lg text-amber-50 transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
+                                    URAC
+                                </span>
                             </div>
-
                         </div>
                         <div className="space-y-4 mt-10">
                             {[
-                                { path: "/dashboard", icon: '🏠', text: 'Dashboard' },
-                                { path: "/dashboard/users", icon: '👥', text: 'Users' },
-                                { path: "/dashboard/products", icon: '📝', text: 'Products' },
-                                { path: "/dashboard/orders", icon: '⚙️', text: 'Orders' },
+                                { path: "/dashboard", icon: '/img/dashboard.svg', text: 'Dashboard', exact: true },
+                                { path: "/dashboard/users", icon: '/img/users.svg', text: 'Users' },
+                                { path: "/dashboard/product", icon: '/img/product.svg', text: 'NewProduct' },
+                                { path: "/dashboard/products", icon: '/img/product.svg', text: 'Products' },
+                                { path: "/dashboard/orders", icon: '/img/order.svg', text: 'Orders' },
                             ].map((item, index) => (
-                                <NavLink to={item.path}
+                                <NavLink
+                                    to={item.path}
                                     key={index}
-                                    className="flex items-center gap-3 p-2 text-amber-50 transition-all  duration-500   hover:bg-amber-500 hover:text-blue-950 rounded cursor-pointer"
+                                    end={item.exact}
+                                    className={({ isActive }) =>
+                                        `flex items-center gap-3 p-2 rounded cursor-pointer transition-all duration-300
+     ${isActive ? 'bg-amber-400 text-blue-950' : 'text-amber-50 hover:bg-amber-400 hover:text-blue-950'}`
+                                    }
                                 >
-                                    <span className="text-xl">{item.icon}</span>
-                                    {!isCollapsed && <span className="text-lg " >{item.text}</span>}
+                                    <img src={item.icon} alt="" className="w-6 h-6" loading="lazy" />
+                                    <span className={`text-lg transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
+                                        {item.text}
+                                    </span>
                                 </NavLink>
                             ))}
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="flex-1 flex  flex-col bg-red-100">
-                <nav className="p-4 bg-amber-500 flex justify-end gap-4 items-center">
-                    {/*<div className=' flex justify-center items-center'>
-                     {isCollapsed && <div className="flex justify-center items-center  ">
-                            <video className="size-10" autoPlay loop muted playsInline alt="Logo" >
-                                <source src="/img/universal_logo.mp4" />
-                            </video>
-                        </div>} 
-                    </div>*/}
+            <div className="flex-1 flex  flex-col bg-red-100 ">
+                <nav className="p-4   flex justify-end gap-4 items-center">
                     <div className=' flex justify-between gap-4 items-center'>
                         <img src="/img/notification.svg" alt="Notification" />
                         <img src="/img/search.svg" alt="Search" />
@@ -55,7 +56,7 @@ export default function Dashboard() {
                             Admin <img src="/img/dropdown.svg" alt="Dropdown" />
                         </button></div>
                 </nav>
-                <div className="main_content p-6 overflow-auto no-scrollbar">
+                <div className="main_content  p-6 overflow-auto no-scrollbar ">
                     <Outlet />
                 </div>
             </div>
