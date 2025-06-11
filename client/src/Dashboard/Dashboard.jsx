@@ -9,8 +9,8 @@ export default function Dashboard() {
     };
     return (
         <div className="flex h-screen overflow-hidden min-h-[500px]">
-            <div style={{ background: 'var(--blue)' }} className={`   transition-all duration-300 ease-in-out ${isCollapsed ? 'w-[72px]' : 'w-[212px]'}`}  >
-                <div className={`h-full p-4 flex flex-col justify-between transition-all duration-300 ${isCollapsed ? 'w-[80px]' : 'w-[240px]'}`}>
+            <div style={{ background: 'var(--blue)' }} className={`    transition-all duration-300 ease-in-out ${isCollapsed ? 'w-[72px]' : 'w-[212px]'}`}  >
+                <div className={`h-full p-4 flex flex-col  justify-between transition-all duration-300 ${isCollapsed ? 'w-[80px]' : 'w-[240px]'}`}>
                     <div>
                         <div className="flex items-center justify-center">
                             <div className="w-full flex items-center gap-3 cursor-pointer" onClick={() => setIsCollapsed(!isCollapsed)}>
@@ -44,6 +44,15 @@ export default function Dashboard() {
                                 </NavLink>
                             ))}
                         </div>
+                    </div>
+                    <div className="space-y-4 mt-10">
+                        <div className={({ isActive }) =>
+                            `flex items-center gap-3 p-2 rounded cursor-pointer transition-all duration-300
+     ${isActive ? 'bg-amber-400 text-blue-950' : 'text-amber-50 hover:bg-amber-400 hover:text-blue-950'}`
+                        } ><img src="/img/logout.svg" alt="" className="w-6 h-6" loading="lazy" />
+                            <span className={`text-lg transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
+                                Logout
+                            </span></div>
                     </div>
                 </div>
             </div>
