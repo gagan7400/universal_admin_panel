@@ -33,12 +33,12 @@ export default function Dashboard() {
                                     key={index}
                                     end={item.exact}
                                     className={({ isActive }) =>
-                                        `flex items-center gap-3 p-2 rounded cursor-pointer transition-all duration-300
+                                        `flex items-center  gap-3 p-2 rounded cursor-pointer    transition-all duration-300
      ${isActive ? 'bg-amber-400 text-blue-950' : 'text-amber-50 hover:bg-amber-400 hover:text-blue-950'}`
                                     }
                                 >
                                     <img src={item.icon} alt="" className="w-6 h-6" loading="lazy" />
-                                    <span className={`text-lg transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
+                                    <span className={`text-lg transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'opacity-0 w-0 ' : 'opacity-100 w-auto'}`}>
                                         {item.text}
                                     </span>
                                 </NavLink>
