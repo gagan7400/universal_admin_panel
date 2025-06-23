@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { loginAdmin } from '../redux/actions/authActions';
 import { Bounce, toast } from 'react-toastify';
 const Login = () => {
@@ -16,7 +16,7 @@ const Login = () => {
     };
 
     useEffect(() => {
-        console.log("error",error)
+        console.log("error", error)
         toast.error(error, {
             position: "top-right",
             autoClose: 2000,
@@ -46,29 +46,10 @@ const Login = () => {
                             </div>
                             <button type='submit' className="bg-green-500 hover:bg-green-700 text-white uppercase text-sm font-semibold px-4 py-2 rounded">Login</button>
                         </form>
-                        <a className="text-blue-700 text-center text-sm" href="/login">Forgot password?</a>
+                        <NavLink to="/forgot-password" className="text-blue-700 text-center text-sm" href="/login">Forgot password?</NavLink>
                     </div>
                 </div>
             </div>
-            {/* <form onSubmit={handleSubmit} className='w-1/3 m-auto border mt-5 p-6 flex flex-col h-1/2 bg-amber-400'>
-                <p className='form_text'>Welcome Back!!!</p>
-                <h2 className='form_heading'>Login</h2>
-                <span className="form-label">
-                    <input type="email" name="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    <label htmlFor="Email">Email</label>
-                </span>
-
-                <span className="form-label">
-                    <input type="text" name="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                    <label htmlFor="password">Password</label>
-                </span>
-
-                <button type="submit" className='submit_btn'>Login</button>
-                {error && <p className='error_handler'>{error}</p>}
-                <p className="suggest">
-                    Don't have an account ? <a href="">Register</a>
-                </p>
-            </form> */}
         </>
     );
 };
