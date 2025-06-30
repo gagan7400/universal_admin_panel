@@ -1,8 +1,9 @@
-const Product = require("../models/product");
+const Product = require("../models/productModel");
 let catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../utils/errorHandler");
 const path = require("path")
-const fs = require("fs")
+const fs = require("fs");
+ 
 // let createProductController = catchAsyncErrors(async (req, res, next) => {
 //     let product = await new Product({ ...req.body });
 //     await product.save();

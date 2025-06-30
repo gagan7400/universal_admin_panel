@@ -37,10 +37,14 @@ export const loginAdmin = (email, password, navigate) => async (dispatch) => {
 
 
 // FORGOT PASSWORD
-export const forgotPassword = (email) => async (dispatch) => {
+export const forgotPassword = (email, navigate) => async (dispatch) => {
   dispatch({ type: 'FORGOT_PASSWORD_REQUEST' });
   try {
+    console.log(email)
     const res = await axios.post(`${API}/api/admin/forgot-password`, { email });
+    if (res.data.success) {
+      navigate("/reset-password")
+    }
     dispatch({ type: 'FORGOT_PASSWORD_SUCCESS', payload: res.data.message });
   } catch (err) {
     dispatch({
@@ -51,10 +55,13 @@ export const forgotPassword = (email) => async (dispatch) => {
 };
 
 // RESET PASSWORD
-export const resetPassword = (data) => async (dispatch) => {
+export const resetPassword = (data, navigate) => async (dispatch) => {
   dispatch({ type: 'RESET_PASSWORD_REQUEST' });
   try {
     const res = await axios.post(`${API}/api/admin/reset-password`, data);
+    if (res.data.success) {
+      navigate("/login")
+    }
     dispatch({ type: 'RESET_PASSWORD_SUCCESS', payload: res.data.message });
   } catch (err) {
     dispatch({

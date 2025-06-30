@@ -13,6 +13,18 @@ const userSchema = new mongoose.Schema({
     isActive: { type: Boolean, default: true },
     forgotPasswordOtp: Number,
     forgotPasswordOtpDateTime: String,
+    role: { type: String, default: 'user' },
+    image: { filename: String, url: String },
+    address: [{
+        fullName: { type: String, required: true },
+        mobileNumber: { type: String, required: true },
+        addressLine: { type: String, required: true },
+        city: { type: String, required: true },
+        state: { type: String, required: true },
+        postalCode: { type: String, required: true },
+        country: { type: String, default: "India" },
+        isDefault: { type: Boolean, default: false },
+    }]
 });
 
 module.exports = mongoose.model('User', userSchema);

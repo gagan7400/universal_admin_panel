@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { forgotPassword } from '../redux/actions/authActions';
+import { useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const dispatch = useDispatch();
+  let navigate  = useNavigate()
   const { message, error } = useSelector((state) => state.auth);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(forgotPassword(email));
+    dispatch(forgotPassword(email, navigate));
   };
+  console.log(message, error)
 
   return (
     <div className="antialiased bg-gray-200 text-gray-900 font-sans">

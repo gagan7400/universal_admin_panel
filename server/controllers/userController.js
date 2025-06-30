@@ -16,13 +16,19 @@ const registration = async (req, res) => {
             applicationId: Joi.string().required(),
             deviceType: Joi.string().required(),
         });
+        let file = req.file;
+        console.log(file)
+        let image = { filename: file.filename, url: "http://localhost:4000/uploads/" + file.filename }
         // 2. Validate incoming data
         const { error } = schema.validate(req.body);
         if (error) return res.status(400).json({ code: 400, status: false, message: error.details[0].message });
 
         // 3. Check if user already exists
-        const existingUser = await User.findOne({ email: req.body.email, isActive: true });
+        const existingUser = await User.findOne({ email: req.body.email });
         if (existingUser) {
+            if (!existingUser.isActive) {
+                return res.status(400).json({ code: 400, status: true, message: "User already registered with given email. but not Verified!" });
+            }
             return res.status(400).json({ code: 400, status: true, message: "User already registered with given email." });
         }
 
@@ -40,8 +46,9 @@ const registration = async (req, res) => {
             applicationId: req.body.applicationId,
             deviceType: req.body.deviceType,
             otp: emailOTP,
+            image: image
         });
-
+        console.log(newUser, image, file)
         await newUser.save();
 
         // 6. Send Email
@@ -139,15 +146,37 @@ const login = async (req, res) => {
             },
         });
     } catch (error) {
-        console.error("Error while login:", error);
         return res.status(400).json({
             code: 400,
             status: false,
-            message: "An error occurred while processing your request.",
+            message: error.message,
         });
     }
 };
+const verifyAccount = async (req, res) => {
+    try {
+        let { email } = req.body;
+        let user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ code: 400, status: true, message: "User already registered with given email." });
+        }
+        const emailOTP = Math.floor(1000 + Math.random() * 9000);
+        user.otp = emailOTP;
+        user.save();
+        // 6. Send Email
+        const subject = "Verify your email";
+        const content = `<h1>${emailOTP}</h1>`;
+        await common_functions.sendEmail(email, subject, content);
+        res.send({ success: true, message: "Otp Sent on your Email Id" })
 
+    } catch (error) {
+        return res.status(400).json({
+            code: 400,
+            status: false,
+            message: error.message,
+        });
+    }
+}
 const verifyOTP = async (req, res) => {
     try {
         const schema = Joi.object().keys({
@@ -448,11 +477,8 @@ const deleteUserAccount = async (req, res) => {
         }
 
         // Soft delete user by setting isActive to false
-        // await User.updateOne({ _id: userId, isActive: true }, { $set: { isActive: false } });
-
-        // Permanently delete the user 
+        // await User.findByIdAndUpdate(userId, { isActive: false })
         await User.findByIdAndDelete(userId)
-
         return res.status(200).json({
             code: 200,
             status: true,
@@ -482,4 +508,17 @@ const getAllUsers = async (req, res) => {
     }
 }
 
-module.exports = { registration, verifyOTP, resendOTP, forgotPassword, login, setNewPassword, deleteUserAccount, getAllUsers };
+const updateUser = async (req, res) => {
+    try {
+        { }
+    } catch (error) {
+        return res.status(400).json({
+            code: 400,
+            status: false,
+            message: "An error occurred",
+            error: error.message,
+        });
+    }
+}
+
+module.exports = { registration, verifyOTP, verifyAccount, resendOTP, forgotPassword, login, setNewPassword, deleteUserAccount, getAllUsers, updateUser };

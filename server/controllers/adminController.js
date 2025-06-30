@@ -2,7 +2,8 @@ let Admin = require("../models/admin.js");
 let bcrypt = require("bcryptjs");
 let nodemailer = require("nodemailer");
 let jwt = require("jsonwebtoken");
-let Joi = require("joi")
+let Joi = require("joi");
+const common_functions = require("../utils/common_functions.js");
 const generateToken = (adminId) => {
     return jwt.sign({ id: adminId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
@@ -103,6 +104,7 @@ let logoutAdmin = async (req, res) => {
 }
 const forgotPassword = async (req, res) => {
     try {
+        console.log(req.body)
         const { email } = req.body;
         const admin = await Admin.findOne({ email });
         if (!admin) return res.status(404).json({ message: "Admin not found" });
@@ -112,22 +114,23 @@ const forgotPassword = async (req, res) => {
         admin.otpExpiry = Date.now() + 10 * 60 * 1000;
         await admin.save();
 
-        await sendMail(
+        await common_functions.sendEmail(
             email,
             "Admin Panel Password Reset",
             `<h1>Your OTP: ${otp}</h1><p>Valid for 10 minutes</p>`
         );
 
-        res.json({ message: "OTP sent to email" });
+        res.status(200).json({ success: true, message: "OTP sent to email" });
     } catch (err) {
-        res.status(500).json({ message: "Server error" });
+        console.log(err)
+        res.status(500).json({ success: false, message: err.message });
     }
 };
 
 const resetPassword = async (req, res) => {
     try {
         const { email, otp, newPassword } = req.body;
-
+        console.log(email, otp)
         const admin = await Admin.findOne({ email, otp });
 
         if (!admin || admin.otpExpiry < Date.now()) {
@@ -138,10 +141,10 @@ const resetPassword = async (req, res) => {
         admin.otp = undefined;
         admin.otpExpiry = undefined;
         await admin.save();
-
-        res.json({ message: "Password reset successful" });
+        res.json({ success: true, message: "Password reset successful" });
     } catch (err) {
-        res.status(500).json({ err, message: "Server error" });
+        console.log(err)
+        res.status(500).json({ success: false, message: err.message });
     }
 };
 

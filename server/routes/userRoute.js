@@ -1,17 +1,20 @@
 // src/routes/example.js
 const express = require("express");
-const { registration, verifyOTP, resendOTP, forgotPassword, login, setNewPassword, deleteUserAccount, getAllUsers } = require("../controllers/userController");
-const { isAuthenticatedUser, authorizeRoles } = require("../middlewares/auth");
+const { registration, verifyOTP, resendOTP, forgotPassword, login, verifyAccount, setNewPassword, deleteUserAccount, getAllUsers, updateUser } = require("../controllers/userController");
+const { isAuthenticatedAdmin, authorizeRoles, isAuthenticatedUser } = require("../middlewares/auth");
+const upload = require("../middlewares/upload");
 const router = express.Router();
 
-router.post("/registration", registration);
+router.post("/registration", upload.single("image"), registration);
 router.post("/login", login);
+router.post("/verify-account", verifyAccount)
 router.post("/verify-otp", verifyOTP);
 router.post("/resend-otp", resendOTP);
 router.post("/forgot-password", forgotPassword);
 router.post("/set-new-password", setNewPassword);
 router.post("/delete-user-account/:id", deleteUserAccount);
-router.get("/getallusers", isAuthenticatedUser, authorizeRoles("admin"), getAllUsers);
+router.get("/getallusers", isAuthenticatedAdmin, authorizeRoles("admin"), getAllUsers);
+router.put("/update", isAuthenticatedUser, authorizeRoles("user"), updateUser);
 
 
 module.exports = router;

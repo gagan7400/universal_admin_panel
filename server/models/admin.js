@@ -5,7 +5,7 @@ const adminSchema = new mongoose.Schema({
   password: { type: String, required: true },
   otp: { type: String },
   otpExpiry: { type: Date },
-  role: { type: String, default: "admin" }
+  role: { type: String, default: "admin" },
 });
 
 module.exports = mongoose.model("Admin", adminSchema);

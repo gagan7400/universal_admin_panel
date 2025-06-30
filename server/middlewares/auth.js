@@ -2,8 +2,9 @@ const ErrorHander = require("../utils/errorHandler");
 const catchAsyncErrors = require("./catchAsyncErrors");
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/admin");
+const User = require("../models/usermodel");
 
-exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
+exports.isAuthenticatedAdmin = catchAsyncErrors(async (req, res, next) => {
     const { token } = req.cookies;
     if (!token) {
         return next(new ErrorHander("Please Login to access this resource", 401));
@@ -13,6 +14,44 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
     req.user = await Admin.findById(decodedData.id);
     next();
 });
+exports.isAuthenticatedUser = async (req, res, next) => {
+    let bearerHeader = req.header("authorization");
+
+    if (bearerHeader !== undefined) {
+        let token = bearerHeader.split(" ")[1];
+
+        jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+
+            if (err) {
+                return res.status(401).json({
+                    code: 401,
+                    status: false,
+                    message: "Invalid Token",
+                    err: err,
+                });
+            }
+
+            if (decoded) {
+                console.log(decoded)
+                req.user = decoded;
+                req.body.userId = decoded.id;
+                next();
+            } else {
+                return res.status(401).json({
+                    code: 401,
+                    status: false,
+                    message: "Invalid Token",
+                });
+            }
+        });
+    } else {
+        return res.status(400).json({
+            code: 400,
+            status: false,
+            message: "Token is required",
+        });
+    }
+};
 
 exports.authorizeRoles = (...roles) => {
     return (req, res, next) => {

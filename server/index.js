@@ -14,10 +14,15 @@ let connectDb = require("./db/connectDb");
 let port = process.env.PORT || 4000;
 let authRoute = require("./routes/authRoute");
 let userRoute = require("./routes/userRoute");
+let orderRoute = require("./routes/orderRoute");
 let productRoute = require("./routes/productRoute");
 let errorMiddleware = require("./middlewares/error");
 let dotenv = require("dotenv").config({ path: path.join(__dirname, "/config/.env") });
+1
 
+let uploadpath = path.join(__dirname, "/uploads");
+console.log(uploadpath)
+app.use("/uploads/", express.static(uploadpath))
 // Handling Uncaught Exception
 process.on("uncaughtException", (err) => {
     console.log(`Error: ${err.message}`);
@@ -27,11 +32,10 @@ process.on("uncaughtException", (err) => {
 
 connectDb(process.env.MONGOURI); // ✅ Correct
 
-
-
-
+// Routes define
 app.use("/api/admin", authRoute);
 app.use("/api/user", userRoute);
+app.use("/api/order", orderRoute);
 app.use("/api/product", productRoute);
 
 app.use(errorMiddleware);
