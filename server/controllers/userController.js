@@ -477,8 +477,8 @@ const deleteUserAccount = async (req, res) => {
         }
 
         // Soft delete user by setting isActive to false
-        // await User.findByIdAndUpdate(userId, { isActive: false })
-        await User.findByIdAndDelete(userId)
+        await User.findByIdAndUpdate(userId, { isActive: false })
+        // await User.findByIdAndDelete(userId)
         return res.status(200).json({
             code: 200,
             status: true,
@@ -511,6 +511,12 @@ const getAllUsers = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         { }
+        image = user.image.filename;
+        if (req.file) {
+            path.join(__dirname, '../uploads' + image);
+
+            fs.unlinkSync()
+        }
     } catch (error) {
         return res.status(400).json({
             code: 400,

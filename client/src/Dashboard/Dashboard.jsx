@@ -59,29 +59,32 @@ export default function Dashboard() {
                     </div>
                 </div>
             </div>
-            {/* iconify */}
-            <div className="flex-1 flex flex-col bg-red-100" style={{ width: "70%" }}>
+
+            <div className="flex-1 flex flex-col bg-red-100" style={{
+                width: "70%", minWidth: "1000px",
+                overflow: "auto"
+            }}>
                 <nav className="p-4 flex justify-between gap-4 items-center bg-amber-50">
-                    <div className="border border-gray-300 rounded-lg px-3 py-3 flex justify-center items-center" onClick={(e) => {
+                    <div className=" group rounded-lg px-3 py-3 pb-2 flex justify-center items-center bg-amber-300  transition-all duration-700  hover:bg-amber-200 hover:text-blue-400" onClick={(e) => {
                         e.stopPropagation();
                         setIsCollapsed(!isCollapsed)
                     }}>
-                        <i className="fa-solid fa-bars text-2xl" ></i>
+                        <i className="fa-solid fa-bars transition-all duration-700 text-2xl text-gray-50 group-hover:text-blue-400" ></i>
                     </div>
+
                     <div className='flex justify-between gap-4 items-center'>
                         <div className="flex items-center gap-2 2xsm:gap-3">
                             <div className="relative me-4">
                                 <div onClick={(e) => {
                                     e.stopPropagation()
                                     setIsOpen(!isOpen)
-
-                                }} className="relative flex items-center justify-center text-gray-500 transition-colors bg-white border   border-gray-300 rounded-full dropdown-toggle hover:text-gray-700 h-11 w-11 hover:bg-gray-100 ">
+                                }} className="group relative transition-all duration-700 flex items-center justify-center text-gray-500    bg-amber-300 hover:bg-amber-200  hover:text-blue-400 rounded-full dropdown-toggle  h-11 w-11  ">
                                     <span className="absolute right-0 top-0.5 z-10 h-2 w-2 rounded-full bg-orange-400 hidden">
                                         <span className="absolute inline-flex w-full h-full bg-orange-400 rounded-full opacity-75 animate-ping">
                                         </span>
                                     </span>
-                                    <div className="relative inline-block text-left">
-                                        <img className="w-5" src="/img/user (1).svg" alt="" />
+                                    <div className="relative   inline-block  text-left">
+                                        <i class="fa-regular transition-all duration-700 fa-user text-2xl text-gray-50 group-hover:text-blue-400"></i>
                                         {isOpen && (
                                             <div className="absolute right-[-20px] z-20 mt-6 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
                                                 <div className="py-1">
@@ -91,14 +94,13 @@ export default function Dashboard() {
                                                 </div>
                                             </div>
                                         )}
-
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </nav>
-                <div className="main_content p-6 overflow-auto no-scrollbar ">
+                <div className="main_content p-6 overflow-auto w-full" style={{ width: "100%", minWidth: "1000px", overflow: "auto" }}>
                     <Outlet />
                 </div>
             </div>

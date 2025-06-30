@@ -106,9 +106,7 @@ export default function MonthlySalesChart() {
         <h3 className="text-lg font-semibold text-gray-800 ">
           Monthly Sales
         </h3>
-
       </div>
-
       <div className="max-w-full overflow-x-auto custom-scrollbar">
         <div className="-ml-5 min-w-[650px] xl:min-w-full pl-2">
           <Chart options={options} series={series} type="bar" height={180} />
