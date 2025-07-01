@@ -32,9 +32,8 @@ exports.isAuthenticatedUser = async (req, res, next) => {
             }
 
             if (decoded) {
-                console.log(decoded)
-                req.user = decoded;
-                req.body.userId = decoded.id;
+                let user = await User.findById(decoded.id);
+                req.user = user;
                 next();
             } else {
                 return res.status(401).json({

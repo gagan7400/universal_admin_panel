@@ -11,7 +11,7 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
 
     res.status(201).json({
         success: true,
-        order,
+        data: order,
     });
 });
 
@@ -28,7 +28,7 @@ exports.getSingleOrder = catchAsyncErrors(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        order,
+        data: order,
     });
 });
 
@@ -38,7 +38,7 @@ exports.myOrders = catchAsyncErrors(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        orders,
+        data: orders,
     });
 });
 
@@ -55,7 +55,7 @@ exports.getAllOrders = catchAsyncErrors(async (req, res, next) => {
     res.status(200).json({
         success: true,
         totalAmount,
-        orders,
+        data: orders,
     });
 });
 
@@ -85,6 +85,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
     await order.save({ validateBeforeSave: false });
     res.status(200).json({
         success: true,
+        message: "Order Updated Successfully"
     });
 });
 
@@ -108,6 +109,7 @@ exports.deleteOrder = catchAsyncErrors(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
+        message: "order Deleted Successully"
     });
 });
 
