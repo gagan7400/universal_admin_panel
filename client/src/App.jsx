@@ -8,6 +8,7 @@ import Dashboard from './Dashboard/Dashboard';
 import DashboardComp from './Dashboard/DashboardComp.jsx';
 import Products from './Dashboard/Products.jsx';
 import Users from './Dashboard/Users.jsx';
+import SubAdmins from './Dashboard/SubAdmins.jsx';
 import Orders from './Dashboard/Orders.jsx';
 import ProtectedRoute from './protectedroute/ProtectedRoute.jsx';
 import NewProduct from './Dashboard/NewProduct.jsx';
@@ -27,6 +28,7 @@ function App() {
           <Route path="/dashboard/products" element={<Products />} > </Route>
           <Route path="/dashboard/product" element={<NewProduct />} > </Route>
           <Route path="/dashboard/orders" element={<Orders />} > </Route>
+          <Route path="/dashboard/sub-admins" element={<SubAdmins />} > </Route>
         </Route>
       </Routes>
     </>

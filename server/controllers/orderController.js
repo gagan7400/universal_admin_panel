@@ -110,3 +110,17 @@ exports.deleteOrder = catchAsyncErrors(async (req, res, next) => {
         success: true,
     });
 });
+
+
+// delete Order -- Admin
+exports.totalOrders = catchAsyncErrors(async (req, res, next) => {
+    const count = await Order.countDocuments();
+
+    res.status(200).json({
+        success: true,
+        message: "count fetch successfully",
+        data: count
+    });
+});
+
+

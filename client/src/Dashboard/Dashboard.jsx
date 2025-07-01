@@ -2,89 +2,36 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { NavLink, Outlet } from 'react-router-dom';
 import { logout } from '../redux/actions/authActions';
+import Sidebar from './Sidebar';
 
 export default function Dashboard() {
-    const [isCollapsed, setIsCollapsed] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     let dispatch = useDispatch();
     let offset = (e) => {
         setIsOpen(false)
     }
+
     return (
         <div className="flex h-screen overflow-hidden min-h-[500px] font-[Poppins]" onClick={offset}>
-            <div style={{ background: 'var(--blue)' }} className={`transition-all duration-300 ease-in-out ${isCollapsed ? 'w-[74px]' : 'w-[260px]'}`}  >
-                <div className={`h-full p-4 py-6 flex flex-col justify-between transition-all duration-300 ${isCollapsed ? 'w-[74px] ' : 'w-[260px] '}`}>
-                    <div>
-                        <div className="flex items-center justify-center">
-                            <div className="w-full flex items-center gap-3 cursor-pointer" >
-                                <img className='w-10' src="/img/universal-logo-unscreen.gif" alt="" />
-                                <span className={`text-lg text-amber-50 transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
-                                    URAC
-                                </span>
-                            </div>
-                        </div>
-                        <div className="space-y-4 mt-10">
-                            {[
-                                { path: "/dashboard", icon: '/img/dashboard.svg', text: 'Dashboard', exact: true },
-                                { path: "/dashboard/users", icon: '/img/users.svg', text: 'Users' },
-                                { path: "/dashboard/product", icon: '/img/product.svg', text: 'NewProduct' },
-                                { path: "/dashboard/products", icon: '/img/product.svg', text: 'Products' },
-                                { path: "/dashboard/orders", icon: '/img/order.svg', text: 'Orders' },
-                            ].map((item, index) => (
-                                <NavLink
-                                    to={item.path}
-                                    key={index}
-                                    end={item.exact}
-                                    style={{ background: "f5f5f5" }}
-                                    className={({ isActive }) =>
-                                        `flex items-center  ${isCollapsed ? ' gap-0' : " gap-3"} p-2 text-amber-50 rounded hover:bg-amber-900    cursor-pointer transition-all duration-300
-                                         ${isActive ? 'bg-amber-900 ' : 'text-amber-50  '}`
-                                    }
-                                >
-                                    <img src={item.icon} alt="" className="w-6 h-6" loading="lazy" />
-                                    <span className={`text-lg transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'opacity-0 w-0 ' : 'opacity-100 w-auto'}`}>
-                                        {item.text}
-                                    </span>
-                                </NavLink>
-                            ))}
-                        </div>
-                    </div>
-                    <div className="space-y-4 mt-10">
-                        <div onClick={() => { dispatch(logout()) }} className={`flex items-center  gap-3 p-2 rounded cursor-pointer transition-all duration-300 text-amber-50  `} >
-                            <img src="/img/logout.svg" alt="" className="w-6 h-6" loading="lazy" />
-                            <span className={`text-lg transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'opacity-0 w-0 ' : 'opacity-100 w-auto'}`}>
-                                Logout
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            <Sidebar />
             <div className="flex-1 flex flex-col bg-red-100" style={{
                 width: "70%", minWidth: "1000px",
                 overflow: "auto"
             }}>
-                <nav className="p-4 flex justify-between gap-4 items-center bg-amber-50">
-                    <div className=" group rounded-lg px-3 py-3 pb-2 flex justify-center items-center bg-amber-300  transition-all duration-700  hover:bg-amber-200 hover:text-blue-400" onClick={(e) => {
-                        e.stopPropagation();
-                        setIsCollapsed(!isCollapsed)
-                    }}>
-                        <i className="fa-solid fa-bars transition-all duration-700 text-2xl text-gray-50 group-hover:text-blue-400" ></i>
-                    </div>
-
+                <nav className="p-4 flex justify-end gap-4 items-center bg-amber-50">
                     <div className='flex justify-between gap-4 items-center'>
                         <div className="flex items-center gap-2 2xsm:gap-3">
                             <div className="relative me-4">
                                 <div onClick={(e) => {
                                     e.stopPropagation()
                                     setIsOpen(!isOpen)
-                                }} className="group relative transition-all duration-700 flex items-center justify-center text-gray-500    bg-amber-300 hover:bg-amber-200  hover:text-blue-400 rounded-full dropdown-toggle  h-11 w-11  ">
+                                }} className="group relative transition-all duration-700 flex items-center justify-center text-gray-500 bg-amber-300 hover:bg-amber-200  hover:text-blue-400 rounded-full dropdown-toggle  h-11 w-11  ">
                                     <span className="absolute right-0 top-0.5 z-10 h-2 w-2 rounded-full bg-orange-400 hidden">
                                         <span className="absolute inline-flex w-full h-full bg-orange-400 rounded-full opacity-75 animate-ping">
                                         </span>
                                     </span>
-                                    <div className="relative   inline-block  text-left">
-                                        <i class="fa-regular transition-all duration-700 fa-user text-2xl text-gray-50 group-hover:text-blue-400"></i>
+                                    <div className="relative inline-block  text-left">
+                                        <i class="fa-regular transition-all duration-700 fa-user text-xl text-gray-50 group-hover:text-blue-400"></i>
                                         {isOpen && (
                                             <div className="absolute right-[-20px] z-20 mt-6 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
                                                 <div className="py-1">
