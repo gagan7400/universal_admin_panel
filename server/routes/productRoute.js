@@ -1,5 +1,5 @@
 let express = require("express");
-let { createProductController, getAllProducts, getProductDetails, deleteProduct, updateProduct, } = require("../controllers/productController.js");
+let { createProductController, getAllProducts, getProductDetails, deleteProduct, updateProduct, countProduct } = require("../controllers/productController.js");
 
 let router = express.Router();
 
@@ -9,6 +9,7 @@ let upload = require("../middlewares/upload.js")
 // ✅ Route for creating new product with images (multipart/form-data)
 router.post("/new", isAuthenticatedAdmin, authorizeRoles("admin"), upload.array("images"), createProductController);
 
+router.get("/count-products", isAuthenticatedAdmin, authorizeRoles("admin"), countProduct);
 // ✔️ Get all products
 router.get("/all", getAllProducts);
 

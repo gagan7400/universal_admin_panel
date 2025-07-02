@@ -1,91 +1,199 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { getAllUsers } from '../redux/actions/authActions';
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function Users() {
-    let dispatch = useDispatch();
-    let { usererror, userloading, users } = useSelector(state => state.auth)
+    const [users, setusers] = useState([]);
+    const [filteredusers, setFilteredusers] = useState([]);
+    const [search, setSearch] = useState("");
+    const [sortField, setSortField] = useState("");
+    const [sortOrder, setSortOrder] = useState("asc");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [selectedCategory, setSelectedCategory] = useState("All");
+
+    const itemsPerPage = 5;
+
+    const getusers = async () => {
+        try {
+            let { data } = await axios.get("http://localhost:4000/api/user/getallusers", {
+                withCredentials: true
+            });
+            console.log(data)
+            if (data.success) {
+                setusers(data.data);
+                setFilteredusers(data.data);
+            } else {
+                setusers([]);
+                console.log("error", data.message);
+            }
+        } catch (error) {
+            console.log("Error Fetching Data", error);
+        }
+    };
+
     useEffect(() => {
-        dispatch(getAllUsers())
+        getusers();
     }, []);
+
+    useEffect(() => {
+        let temp = [...users];
+
+        // 🌟 Search filter: checks firstName, lastName, email, phone
+        if (search) {
+            const keyword = search.toLowerCase();
+            temp = temp.filter((item) =>
+                `${item.firstName} ${item.lastName} ${item.email} ${item.phone}`
+                    .toLowerCase()
+                    .includes(keyword)
+            );
+        }
+
+        // 🏷️ Optional category filter
+        if (selectedCategory && selectedCategory !== "All") {
+            temp = temp.filter((item) => item.isActive.toString() === selectedCategory);
+        }
+
+        // 🔃 Sorting logic
+        if (sortField) {
+            temp.sort((a, b) => {
+                const valA = a[sortField] ?? "";
+                const valB = b[sortField] ?? "";
+                return sortOrder === "asc"
+                    ? valA.localeCompare?.(valB) ?? valA - valB
+                    : valB.localeCompare?.(valA) ?? valB - valA;
+            });
+        }
+
+        setFilteredusers(temp);
+        setCurrentPage(1);
+    }, [search, sortField, sortOrder, selectedCategory, users]);
+
+
+
+
+    const handleSort = (field) => {
+        if (sortField === field) {
+            setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+        } else {
+            setSortField(field);
+            setSortOrder("asc");
+        }
+    };
+
+    const categories = ["All", "true", "false"];
+    const totalPages = Math.ceil(filteredusers.length / itemsPerPage);
+    const paginatedData = filteredusers.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
     return (
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-[100%]">
-            {userloading ?
-                <h2> laoding...</h2>
-                :
-                <>
-                    <div className="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
-                        <div>
-                            <button id="dropdownRadioButton" data-dropdown-toggle="dropdownRadio" className="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5" type="button">
-                                <svg className="w-3 h-3 text-gray-500   me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
-                                </svg>
-                                Last 30 days
-                                <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
-                                </svg>
-                            </button>
-                            <div id="dropdownRadio" className="z-10 hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow-sm  " data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top" style={{ position: "absolute", inset: "auto auto 0px 0px", margin: "0px", transform: "translate3d(522.5px, 3847.5px, 0px)" }}>
-                                <ul className="p-3 space-y-1 text-sm text-gray-700  " aria-labelledby="dropdownRadioButton">
-                                    <li>
-                                        <div className="flex items-center p-2 rounded-sm hover:bg-gray-100  ">
-                                            <input id="filter-radio-example-1" type="radio" value="" name="filter-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500   focus:ring-2  " />
-                                            <label for="filter-radio-example-1" className="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm ">Last day</label>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <label for="table-search" className="sr-only">Search</label>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 rtl:inset-r-0 rtl:right-0 flex items-center ps-3 pointer-events-none">
-                                <svg className="w-5 h-5 text-gray-500  " aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
-                            </div>
-                            <input type="text" id="table-search" className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500   " placeholder="Search for items" />
-                        </div>
-                    </div>
-                    <table className="w-full text-sm text-left rtl:text-right text-gray-500  ">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50   ">
-                            <tr>
-                                <th scope="col" className="px-6 py-3">
-                                    S.No
+        <div className="  mx-auto bg-white rounded-xl shadow-xl p-6">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Users Dashboard</h2>
+
+            {/* Top controls */}
+            <div className="flex flex-wrap gap-4 justify-between items-center mb-6">
+                <input
+                    type="text"
+                    placeholder="Search users..."
+                    className="w-64 p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 outline-none"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
+                <select
+                    className="p-2 w-1/12 border rounded-lg shadow-sm bg-gray-100 text-gray-700"
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                    {categories.map((cat, idx) => (
+                        <option key={idx} value={cat}>
+                            {cat}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            {/* Table */}
+            <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left border rounded-lg overflow-hidden">
+                    <thead className="bg-blue-100 text-gray-700 text-xs uppercase">
+                        <tr>
+                            {["Sno", "Image", "Name", "Email", "Phone Number", "Active"].map((col) => (
+                                <th
+                                    key={col}
+                                    className="px-6 py-3 cursor-pointer select-none"
+                                    onClick={() => handleSort(col)}
+                                >
+                                    {col !== "Image" ? <div className="flex items-center gap-1">
+                                        <span className="text-sm  capitalize">{col}</span>
+                                        {sortField === col ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'}
+                                    </div> : <div className="flex items-center gap-1">
+                                        <span className="text-sm capitalize">{col}</span>
+
+                                    </div>}
                                 </th>
-                                <th scope="col" className="px-6 py-3">
-                                    FirstName
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    LastName
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Email
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    PhoneNumber
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {!usererror && users?.map((user, index) => (
-                                <tr className="bg-white border-b   border-gray-200">
-                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
-                                        {index + 1}
-                                    </th>
-                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
-                                        {user.firstName}
-                                    </th>
-                                    <td className="px-6 py-4">
-                                        {user.lastName}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {user.email}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {user.phone}
-                                    </td>
-                                </tr>
                             ))}
-                        </tbody>
-                    </table></>}
+                        </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                        {paginatedData.map((v, i) => (
+                            <tr key={v._id} className="hover:bg-blue-50">
+
+                                <td className="px-6 py-3">{i + 1}</td>
+                                <td className="px-6 py-3   "> {v.image && v.image?.filename ? <img className="size-8 rounded-2xl" src={v.image.url} alt="d" /> : <img src="/img/user.svg" />}</td>
+                                <td className="px-6 py-3  text-blue-900 font-medium">{v.firstName} {v.lastName}</td>
+                                <td className="px-6 py-3">{v.email}</td>
+                                <td className="px-6 py-3">{v.phone}</td>
+                                <td className="px-6 py-3">{v.isActive.toString()}</td>
+                            </tr>
+                        ))}
+                        {paginatedData.length === 0 && (
+                            <tr>
+                                <td colSpan="8" className="text-center py-6 text-gray-500">
+                                    No users found.
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Pagination */}
+            <div className="flex justify-between items-center mt-6 text-sm text-gray-600">
+                <p>
+                    Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                    {Math.min(currentPage * itemsPerPage, filteredusers.length)} of{" "}
+                    {filteredusers.length} entries
+                </p>
+                <div className="flex space-x-1">
+                    <button
+                        onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                        disabled={currentPage === 1}
+                        className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                    >
+                        Prev
+                    </button>
+                    {[...Array(totalPages)].map((_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => setCurrentPage(i + 1)}
+                            className={`px-3 py-1 rounded ${currentPage === i + 1
+                                ? "bg-blue-600 text-white"
+                                : "bg-gray-200 hover:bg-gray-300"
+                                }`}
+                        >
+                            {i + 1}
+                        </button>
+                    ))}
+                    <button
+                        onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                        className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                    >
+                        Next
+                    </button>
+                </div>
+            </div>
         </div>
-    )
+    );
 }
+

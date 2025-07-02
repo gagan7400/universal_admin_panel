@@ -507,6 +507,19 @@ const getAllUsers = async (req, res) => {
         });
     }
 }
+const countUsers = async (req, res) => {
+    try {
+        let users = await User.countDocuments();
+        res.status(200).send({ success: true, message: "Users Get Successfully", data: users })
+    } catch (error) {
+        return res.status(400).json({
+            code: 400,
+            status: false,
+            message: error.message,
+            error: error.message,
+        });
+    }
+}
 
 const updateUser = async (req, res) => {
     try {
@@ -527,4 +540,4 @@ const updateUser = async (req, res) => {
     }
 }
 
-module.exports = { registration, verifyOTP, verifyAccount, resendOTP, forgotPassword, login, setNewPassword, deleteUserAccount, getAllUsers, updateUser };
+module.exports = { registration, verifyOTP, verifyAccount, resendOTP, forgotPassword, login, setNewPassword, deleteUserAccount, getAllUsers, updateUser, countUsers };

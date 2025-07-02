@@ -1,10 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import MonthlySalesChart from './MonthlySalesChart'
 import Badge from "../ui/badge/Badge";
 import { ArrowDownIcon, ArrowUpIcon, BoxIconLine, GroupIcon, } from "../icons/index.js";
 import RecentOrders from './RecentOrders.jsx';
 import { NavLink } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { countOrders } from '../redux/actions/orderAction.js';
+import { countUsers } from '../redux/actions/userAction.js';
+import { countProducts } from '../redux/actions/productAction.js';
 export default function DashboardComp() {
+    let { ordercount } = useSelector(state => state.order);
+    let { usercount } = useSelector(state => state.user);
+    let { productcount } = useSelector(state => state.product);
+    let dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(countOrders())
+        dispatch(countUsers())
+        dispatch(countProducts())
+    }, [])
     return (
         <>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-6">
@@ -18,7 +31,7 @@ export default function DashboardComp() {
                                 Customers
                             </span>
                             <h4 className="mt-2 font-bold text-gray-800 text-title-sm  ">
-                                3,782
+                                {usercount && usercount}
                             </h4>
                         </div>
                         <Badge color="success">
@@ -38,7 +51,7 @@ export default function DashboardComp() {
                                 Orders
                             </span>
                             <h4 className="mt-2 font-bold text-gray-800 text-title-sm  ">
-                                5,359
+                                {ordercount && ordercount}
                             </h4>
                         </div>
 
@@ -58,7 +71,7 @@ export default function DashboardComp() {
                                 Total Products
                             </span>
                             <h4 className="mt-2 font-bold text-gray-800 text-title-sm  ">
-                                1,000
+                                {productcount && productcount}
                             </h4>
                         </div>
 

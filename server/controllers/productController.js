@@ -3,23 +3,19 @@ let catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../utils/errorHandler");
 const path = require("path")
 const fs = require("fs");
- 
-// let createProductController = catchAsyncErrors(async (req, res, next) => {
-//     let product = await new Product({ ...req.body });
-//     await product.save();
-//     res.status(201).json({
-//         success: true,
-//         message: "Product Created Successfully",
-//         data: product
-//     })
-// })
+
+
 const createProductController = catchAsyncErrors(async (req, res, next) => {
     const files = req.files; // Array of image files
+    console.log(files)
+    const images = files.map((file) => ({ fileName: file.filename, url: `uploads/${file.filename}` }));
+    let { name, description, price, ratings = 0, category, Stock, numOfReviews = 0, weight, size, discountPercentage, material, dimensions } = req.body;
 
-    const images = files.map((file) => ({ fileName: file.originalname, url: `uploads/${file.originalname}` }));
-    const { name, description, price, ratings = 0, category, Stock, numOfReviews = 0, weight, size, discountPercentage, material, dimensions } = req.body;
-
-    const product = new Product({ name, description, price, ratings, images, category, Stock, numOfReviews, weight, size, discountPercentage, material, dimensions: JSON.parse(dimensions) });
+    if (typeof (dimensions) == "string") {
+        dimensions = JSON.parse(dimensions)
+    }
+    let newProduct = { name, description, price, ratings, images, category, Stock, numOfReviews, weight, size, discountPercentage, material, dimensions }
+    const product = new Product(newProduct);
 
     await product.save();
 
@@ -32,6 +28,14 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
 
 let getAllProducts = catchAsyncErrors(async (req, res, next) => {
     let products = await Product.find();
+    res.status(200).json({
+        success: true,
+        data: products,
+        message: "Products Find Successfully"
+    })
+})
+let countProduct = catchAsyncErrors(async (req, res, next) => {
+    let products = await Product.countDocuments();
     res.status(200).json({
         success: true,
         data: products,
@@ -149,4 +153,6 @@ const updateProduct = catchAsyncErrors(async (req, res, next) => {
         data: updatedProduct,
     });
 });
-module.exports = { createProductController, getAllProducts, getProductDetails, deleteProduct, updateProduct }
+
+
+module.exports = { createProductController, getAllProducts, getProductDetails, deleteProduct, updateProduct, countProduct }

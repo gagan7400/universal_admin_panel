@@ -1,101 +1,208 @@
-import React from 'react'
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux'
-import { countorders, getAllOrders } from '../redux/actions/orderAction';
-import Table from './Table';
+import React, { useState, useMemo } from 'react';
+
+const initialData = [
+    { _id: '1', name: 'Noel', email: 'noel@example.com', position: 'Customer Data Director', company: 'Howell - Rippin', country: 'Germany' },
+    { _id: '2', name: 'Jonathan', email: 'jonathan@example.com', position: 'Senior Implementation Architect', company: 'Hauck Inc', country: 'Holy See' },
+    { _id: '3', name: 'Harold', email: 'harold@example.com', position: 'Forward Creative Coordinator', company: 'Metz Inc', country: 'Iran' },
+    { _id: '4', name: 'Cathy', email: 'cathy@example.com', position: 'Customer Data Director', company: 'Ebert, Schamberger and Johnston', country: 'Mexico' },
+    { _id: '5', name: 'Kerry', email: 'kerry@example.com', position: 'Lead Applications Associate', company: 'Feeney, Langworth and Tremblay', country: 'Niger' },
+    { _id: '6', name: 'Alice', email: 'alice@example.com', position: 'Software Engineer', company: 'Alpha Corp', country: 'India' },
+    { _id: '7', name: 'Bob', email: 'bob@example.com', position: 'Product Manager', company: 'Beta LLC', country: 'USA' },
+    { _id: '8', name: 'Charlie', email: 'charlie@example.com', position: 'UI Designer', company: 'Gamma Ltd', country: 'France' },
+    { _id: '9', name: 'David', email: 'david@example.com', position: 'CTO', company: 'Delta Group', country: 'UK' },
+    { _id: '10', name: 'Eva', email: 'eva@example.com', position: 'Data Analyst', company: 'Epsilon Pvt', country: 'Canada' },
+];
+
+const columns = ['name', 'email', 'position', 'company', 'country'];
+
+const updatePositionAPI = async (_id, newPosition) => {
+    try {
+        const response = await fetch(`/api/employees/${_id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ position: newPosition }),
+        });
+        return await response.json();
+    } catch (err) {
+        console.error('Update failed', err);
+    }
+};
+
 export default function Orders() {
-    let { error, loading, allorders } = useSelector(state => state.order);
-    let dispatch = useDispatch();
+        const [data, setData] = useState(initialData);
+    const [search, setSearch] = useState('');
+    const [sortField, setSortField] = useState('');
+    const [sortOrder, setSortOrder] = useState('asc');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [visibleColumns, setVisibleColumns] = useState(columns);
+    const [editingRowIndex, setEditingRowIndex] = useState(null);
+    const [editingValue, setEditingValue] = useState('');
 
-    useEffect(() => {
-        dispatch(getAllOrders())
-    }, [])
+    const rowsPerPage = 5;
+
+    const filteredData = useMemo(() => {
+        return data.filter(row =>
+            visibleColumns.some(column =>
+                row[column].toLowerCase().includes(search.toLowerCase())
+            )
+        );
+    }, [search, data, visibleColumns]);
+
+    const sortedData = useMemo(() => {
+        if (!sortField) return filteredData;
+        return [...filteredData].sort((a, b) => {
+            const valA = a[sortField].toLowerCase();
+            const valB = b[sortField].toLowerCase();
+            return sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+        });
+    }, [filteredData, sortField, sortOrder]);
+
+    const totalPages = Math.ceil(sortedData.length / rowsPerPage);
+    const paginatedData = sortedData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+    const handleSort = (field) => {
+        if (sortField === field) {
+            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortField(field);
+            setSortOrder('asc');
+        }
+    };
+
+    const toggleColumn = (col) => {
+        setVisibleColumns((prev) =>
+            prev.includes(col) ? prev.filter(c => c !== col) : [...prev, col]
+        );
+    };
+
+    const handleDoubleClick = (index) => {
+        setEditingRowIndex(index);
+        setEditingValue(data[index].position);
+    };
+
+    const handleSave = async (index) => {
+        const updated = [...data];
+        const row = updated[index];
+        row.position = editingValue;
+        setData(updated);
+        setEditingRowIndex(null);
+        await updatePositionAPI(row._id, editingValue);
+    };
     return (
-        <Table/>
-        // <div className="relative overflow-x-auto shadow-md sm:rounded-lg p-3">
-        //     <div className="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
-        //         <div>
-        //             <button id="dropdownRadioButton" data-dropdown-toggle="dropdownRadio" className="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5  " type="button">
-        //                 <svg className="w-3 h-3 text-gray-500  me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-        //                     <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
-        //                 </svg>
-        //                 Last 30 days
-        //                 <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-        //                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
-        //                 </svg>
-        //             </button>
-        //             <div id="dropdownRadio" className="z-10 hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow-sm " data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top" style={{ position: "absolute", inset: "auto auto 0px 0px", margin: "0px", transform: "translate3d(522.5px, 3847.5px, 0px)" }}>
-        //                 <ul className="p-3 space-y-1 text-sm text-gray-700 " aria-labelledby="dropdownRadioButton">
-        //                     <li>
-        //                         <div className="flex items-center p-2 rounded-sm hover:bg-gray-100  ">
-        //                             <input id="filter-radio-example-1" type="radio" value="" name="filter-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 " />
-        //                             <label for="filter-radio-example-1" className="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm ">Last day</label>
-        //                         </div>
-        //                     </li>
-        //                 </ul>
-        //             </div>
-        //         </div>
-        //         <label for="table-search" className="sr-only">Search</label>
-        //         <div className="relative">
-        //             <div className="absolute inset-y-0 left-0 rtl:inset-r-0 rtl:right-0 flex items-center ps-3 pointer-events-none">
-        //                 <svg className="w-5 h-5 text-gray-500 " aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
-        //             </div>
-        //             <input type="text" id="table-search" className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500" placeholder="Search for items" />
-        //         </div>
-        //     </div>
-        //     <table className="w-full text-sm text-left rtl:text-right text-gray-900  ">
-        //         <thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
-        //             <tr>
-        //                 <th scope="col" className="px-6 py-3">
-        //                     Product name
-        //                 </th>
-        //                 <th scope="col" className="px-6 py-3">
-        //                     Price
-        //                 </th>
-        //                 <th scope="col" className="px-6 py-3">
-        //                     Payment Info
-        //                 </th>
-        //                 <th scope="col" className="px-6 py-3">
-        //                     Status
-        //                 </th>
-        //                 <th scope="col" className="px-6 py-3">
-        //                     Time
-        //                 </th>
-        //                 <th scope="col" className="px-6 py-3">
-        //                     Action
-        //                 </th>
-        //             </tr>
-        //         </thead>
-        //         <tbody>
-        //             {
-        //                 !loading && !error && allorders && allorders?.map((order, index) => (
-        //                     <tr className="bg-white border-b  border-gray-200">
-        //                         <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
-        //                             {order.orderItems.map((v, index) => {
-        //                                 return <p>{v.name}</p>
-        //                             })}
-        //                         </th>
-        //                         <td className="px-6 py-4">
-        //                             {order.totalPrice.toLocaleString('en-us')}
-        //                         </td>
-        //                         <td className="px-6 py-4">
-        //                             {order.paymentInfo.status}
-        //                         </td>
-        //                         <td className="px-6 py-4">
-        //                             {order.orderStatus}
-        //                         </td>
-        //                         <td className="px-6 py-4">
-        //                             {new Date(order.createdAt).toLocaleString()}
-        //                         </td>
-        //                         <td className="px-6 py-4">
-        //                             <a href="#" className="font-medium text-blue-600  hover:underline">Edit</a>
-        //                         </td>
-        //                     </tr>
-        //                 ))
-        //             }
-        //         </tbody>
-        //     </table>
-        // </div>
+            <div className=" mx-auto bg-white rounded-2xl shadow-xl p-8 space-y-6">
+            <h2 className="text-2xl font-bold text-gray-800">Employee Table</h2>
+            <div className="flex flex-wrap gap-4">
+                {columns.map((col) => (
+                    <label key={col} className="text-sm text-gray-700 flex items-center space-x-1">
+                        <input
+                            type="checkbox"
+                            checked={visibleColumns.includes(col)}
+                            onChange={() => toggleColumn(col)}
+                            className="accent-blue-600 rounded focus:ring-2"
+                        />
+                        <span>{col}</span>
+                    </label>
+                ))}
+            </div>
 
+            <input
+                type="text"
+                placeholder="Search..."
+                className="w-1/4 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 outline-none"
+                value={search}
+                onChange={(e) => {
+                    setSearch(e.target.value);
+                    setCurrentPage(1);
+                }}
+            />
+
+            <div className="overflow-x-auto rounded-lg shadow-sm">
+                <table className="min-w-full border border-gray-200 text-sm text-left bg-white rounded-lg">
+                    <thead className="bg-blue-100 text-gray-700 uppercase text-xs">
+                        <tr>
+                            {visibleColumns.map((col) => (
+                                <th
+                                    key={col}
+                                    onClick={() => handleSort(col)}
+                                    className="px-4 py-3 cursor-pointer"
+                                >
+                                    <div className="flex justify-between items-center">
+                                        <span className="capitalize">{col}</span>
+                                        <span>{sortField === col ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'}</span>
+                                    </div>
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                        {paginatedData.map((row, rowIndex) => (
+                            <tr
+                                key={row._id}
+                                className="hover:bg-blue-50 transition-all duration-150"
+                            >
+                                {visibleColumns.map((col) => {
+                                    const globalIndex = (currentPage - 1) * rowsPerPage + rowIndex;
+                                    return (
+                                        <td
+                                            key={col}
+                                            onDoubleClick={() => col === 'position' && handleDoubleClick(globalIndex)}
+                                            className={`px-4 py-3 ${col === 'position' && editingRowIndex === globalIndex ? 'bg-yellow-100' : ''
+                                                }`}
+                                        >
+                                            {col === 'position' && editingRowIndex === globalIndex ? (
+                                                <input
+                                                    type="text"
+                                                    value={editingValue}
+                                                    onChange={(e) => setEditingValue(e.target.value)}
+                                                    onBlur={() => handleSave(globalIndex)}
+                                                    onKeyDown={(e) => e.key === 'Enter' && handleSave(globalIndex)}
+                                                    className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400"
+                                                    autoFocus
+                                                />
+                                            ) : (
+                                                row[col]
+                                            )}
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
+                <p>
+                    Showing {Math.min((currentPage - 1) * rowsPerPage + 1, sortedData.length)} to{' '}
+                    {Math.min(currentPage * rowsPerPage, sortedData.length)} of {sortedData.length} results
+                </p>
+                <div className="space-x-1">
+                    <button
+                        onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+                        disabled={currentPage === 1}
+                        className="px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+                    >
+                        Prev
+                    </button>
+                    {[...Array(totalPages)].map((_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => setCurrentPage(i + 1)}
+                            className={`px-3 py-1 rounded-lg ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'
+                                }`}
+                        >
+                            {i + 1}
+                        </button>
+                    ))}
+                    <button
+                        onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                        className="px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+                    >
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
     )
 }

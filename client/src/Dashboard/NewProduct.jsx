@@ -1,176 +1,148 @@
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
-import ProductImageUploader from "./ProductImageUploader ";
+import ProductImageUploader from "./ProductImageUploader";
 
 export default function NewProduct() {
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [price, setPrice] = useState("");
-    const [ratings, setRatings] = useState("");
-    const [category, setCategory] = useState("");
-    const [stock, setStock] = useState("");
-    const [dimensions, setDimensions] = useState({ width: "", height: "" });
-    const [weight, setWeight] = useState("");
-    const [size, setSize] = useState("");
-    const [discountPercentage, setDiscountPercentage] = useState("");
-    const [material, setMaterial] = useState("");
-    const [images, setImages] = useState("");
-    const [section, setSection] = useState(true);
-    const [isupdate, setIsupdate] = useState({ update: false, updateid: null })
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [ratings, setRatings] = useState("");
+  const [category, setCategory] = useState("");
+  const [stock, setStock] = useState("");
+  const [dimensions, setDimensions] = useState({ width: "", height: "" });
+  const [weight, setWeight] = useState("");
+  const [size, setSize] = useState("");
+  const [discountPercentage, setDiscountPercentage] = useState("");
+  const [material, setMaterial] = useState("");
+  const [images, setImages] = useState([]);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    images.forEach((img) => formData.append("images", img.file));
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("ratings", ratings);
+    formData.append("category", category);
+    formData.append("stock", stock);
+    formData.append("weight", weight);
+    formData.append("size", size);
+    formData.append("discountPercentage", discountPercentage);
+    formData.append("material", material);
+    formData.append("dimensions", JSON.stringify(dimensions));
 
-        const formData = new FormData();
-
-        // Append images
-        images.forEach((img) => {
-            formData.append("images", img.file); // Use the File object
-        });
-
-        // Append other fields
-        formData.append("name", name);
-        formData.append("description", description);
-        formData.append("price", price);
-        formData.append("ratings", ratings);
-        formData.append("category", category);
-        formData.append("stock", stock);
-        formData.append("weight", weight);
-        formData.append("size", size);
-        formData.append("discountPercentage", discountPercentage);
-        formData.append("material", material);
-        formData.append("dimensions", JSON.stringify(dimensions));
-
-        if (isupdate.update && isupdate.updateid) {
-            try {
-                const { data } = await axios.put("http://localhost:4000/api/product/" + isupdate.updateid, formData, {
-                    withCredentials: true, // ✅ this should be inside the same config object
-                });
-
-                if (data.success) {
-                    alert("product Updated Successfully");
-                    getproducts();
-                    setIsupdate({ update: false, updateid: null })
-                    refresh()
-                    setSection(!section);
-                } else {
-                    console.log(data.message);
-                }
-            } catch (err) {
-                console.error("Error Updating Product:", err);
-            }
-        } else {
-            try {
-                const { data } = await axios.post("http://localhost:4000/api/product/new", formData, {
-                    withCredentials: true, // ✅ this should be inside the same config object
-                });
-
-                if (data.success) {
-                    alert("product Created Successfully");
-                    getproducts();
-                    refresh()
-                    setSection(!section);
-                } else {
-                    console.log(data.message);
-                }
-            } catch (err) {
-                console.error("Error uploading product:", err);
-            }
-        }
-    };
-
-    let refresh = () => {
-        setName("");
-        setDescription("");
-        setCategory("");
-        setPrice("");
-        setDimensions({ width: "", height: "" });
-        setSize("");
-        setMaterial("");
-        setRatings("");
-        setStock("");
-        setWeight("");
-        setMaterial("");
-        setDiscountPercentage("");
-        setImages("")
+    try {
+      const { data } = await axios.post("http://localhost:4000/api/product/new", formData, {
+        withCredentials: true,
+      });
+      if (data.success) {
+        alert("Product Created Successfully");
+        refresh();
+      } else {
+        console.log(data.message);
+      }
+    } catch (err) {
+      console.error("Error uploading product:", err);
     }
+  };
 
-    return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <div className=" mx-auto p-6 bg-white shadow-md rounded-md">
-                    <div className="mb-6">
-                        <h2 className="text-lg font-semibold">New Product</h2>
-                    </div>
+  const refresh = () => {
+    setName("");
+    setDescription("");
+    setCategory("");
+    setPrice("");
+    setDimensions({ width: "", height: "" });
+    setSize("");
+    setMaterial("");
+    setRatings("");
+    setStock("");
+    setWeight("");
+    setDiscountPercentage("");
+    setImages([]);
+  };
 
-                    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium mb-1 block">Product Name</label>
-                            <input type="text" placeholder="Enter Product Name" value={name} onChange={(e) => { setName(e.target.value) }} className="input border border-gray-300 rounded p-2  focus:outline-none focus:border-amber-500 focus:ring focus:ring-amber-500" />
-                        </div>
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium mb-1 block">Price</label>
-                            <input type="number" placeholder="Enter Product Price" value={price} onChange={(e) => { setPrice(e.target.value) }} className="input border border-gray-300 rounded p-2  focus:outline-none focus:border-amber-500 focus:ring focus:ring-amber-500" />
-                        </div>
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium mb-1 block">Ratings (in Number)</label>
-                            <input type="number" placeholder="Enter Product Rating (in number)" value={ratings} onChange={(e) => { setRatings(e.target.value) }} className="input border border-gray-300 rounded p-2  focus:outline-none focus:border-amber-500 focus:ring focus:ring-amber-500" />
-                        </div>
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium mb-1 block">Stock (in Number)</label>
-                            <input type="number" placeholder="Enter Product Stock (in Number)" value={stock} onChange={(e) => { setStock(e.target.value) }} className="input border border-gray-300 rounded p-2  focus:outline-none focus:border-amber-500 focus:ring focus:ring-amber-500" />
-                        </div>
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium mb-1 block">Category</label>
-                            <select value={category} onChange={(e) => { setCategory(e.target.value) }} className="input border border-gray-300 rounded p-2  focus:outline-none focus:border-amber-500 focus:ring focus:ring-amber-500">
-                                <option>Select category</option>
-                                <option>Item 1</option>
-                                <option>Item 2</option>
-                                <option>Item 3</option>
-                            </select>
-                        </div>
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium mb-1 block">Dimensions Width</label>
-                            <input type="text" placeholder="Enter Product Dimensions Width" value={dimensions.width} onChange={(e) => { setDimensions({ ...dimensions, width: e.target.value }) }} className="input border border-gray-300 rounded p-2  focus:outline-none focus:border-amber-500 focus:ring focus:ring-amber-500" />
-                        </div>
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium mb-1 block">Dimensions Height</label>
-                            <input type="text" placeholder="Enter Product Dimensions Height" value={dimensions.height} onChange={(e) => { setDimensions({ ...dimensions, height: e.target.value }) }} className="input border border-gray-300 rounded p-2  focus:outline-none focus:border-amber-500 focus:ring focus:ring-amber-500" />
-                        </div>
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium mb-1 block">Size</label>
-                            <input type="text" placeholder="Enter Product Size" value={size} onChange={(e) => { setSize(e.target.value) }} className="input border border-gray-300 rounded p-2  focus:outline-none focus:border-amber-500 focus:ring focus:ring-amber-500" />
-                        </div>
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium mb-1 block">Weight  (in kg)</label>
-                            <input type="text" placeholder="Enter Product Weight (in kg)" value={weight} onChange={(e) => { setWeight(e.target.value) }} className="input border border-gray-300 rounded p-2  focus:outline-none focus:border-amber-500 focus:ring focus:ring-amber-500 " />
-                        </div>
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium mb-1 block">Material</label>
-                            <input type="text" placeholder="Enter Product Material" value={material} onChange={(e) => { setMaterial(e.target.value) }} className="input border border-gray-300 rounded p-2  focus:outline-none focus:border-amber-500 focus:ring focus:ring-amber-500" />
-                        </div>
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium mb-1 block">Discount Percentage (in Number)</label>
-                            <input type="number" placeholder="Enter Product Discount Percentage (in Number)" value={discountPercentage} onChange={(e) => { setDiscountPercentage(e.target.value) }} className="input border border-gray-300 rounded p-2  focus:outline-none focus:border-amber-500 focus:ring focus:ring-amber-500" />
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1  lg:grid-cols-2 gap-4 mb-6">
-                        <div>
-                            <label className="text-sm font-medium mb-1 block">Description</label>
-                            <textarea
-                                placeholder="Write Product Description Here"
-                                rows={7} value={description} onChange={(e) => { setDescription(e.target.value) }}
-                                className="w-full border border-gray-300 rounded p-3  focus:outline-none focus:border-amber-500 focus:ring focus:ring-amber-500"
-                            ></textarea>
-                        </div>
-                        <ProductImageUploader images={images} setImages={setImages} />
-                    </div>
-
-                    <button type="submit" className="  bg-blue-600 text-white px-4 py-2 rounded-md">{isupdate.update ? "Update Product" : "Add product"}</button>
-                </div>
-            </form>
+  return (
+    <form onSubmit={handleSubmit} className="  mx-auto bg-white shadow-xl rounded-lg p-8">
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-emerald-800 mb-2">🛒 Add New Product</h2>
+          <p className="text-sm text-gray-500">Fill in the details to add a new product to your store.</p>
         </div>
-    )
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold text-gray-700 mb-1">Product Name</label>
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter product name" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold text-gray-700 mb-1">Price</label>
+            <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Enter price" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold text-gray-700 mb-1">Ratings</label>
+            <input type="number" value={ratings} onChange={(e) => setRatings(e.target.value)} placeholder="Rating out of 5" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold text-gray-700 mb-1">Stock</label>
+            <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} placeholder="Stock quantity" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold text-gray-700 mb-1">Category</label>
+            <select value={category} onChange={(e) => setCategory(e.target.value)} className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
+              <option>Select category</option>
+              <option>Item 1</option>
+              <option>Item 2</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold text-gray-700 mb-1">Dimensions (W × H)</label>
+            <div className="flex gap-2">
+              <input type="text" value={dimensions.width} onChange={(e) => setDimensions({ ...dimensions, width: e.target.value })} placeholder="Width" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+              <input type="text" value={dimensions.height} onChange={(e) => setDimensions({ ...dimensions, height: e.target.value })} placeholder="Height" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+            </div>
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold text-gray-700 mb-1">Size</label>
+            <input type="text" value={size} onChange={(e) => setSize(e.target.value)} placeholder="Enter size" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold text-gray-700 mb-1">Weight (kg)</label>
+            <input type="text" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Enter weight" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold text-gray-700 mb-1">Material</label>
+            <input type="text" value={material} onChange={(e) => setMaterial(e.target.value)} placeholder="Enter material" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold text-gray-700 mb-1">Discount (%)</label>
+            <input type="number" value={discountPercentage} onChange={(e) => setDiscountPercentage(e.target.value)} placeholder="Enter discount" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <label className="text-sm font-semibold text-gray-700 mb-1 block">Description</label>
+          <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Write product description..." rows={5} className="w-full border border-gray-300 p-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-300" />
+        </div>
+
+        <div className="mt-6">
+          <ProductImageUploader images={images} setImages={setImages} />
+        </div>
+
+        <div className="mt-6 text-right">
+          <button type="submit" className="bg-gradient-to-r from-emerald-500 via-emerald-600 to-emerald-700 hover:from-emerald-600 hover:to-emerald-800 text-white px-6 py-2.5 rounded-md shadow-lg transition-transform transform hover:scale-105">
+            Add Product
+          </button>
+        </div>
+      </form>
+  );
 }

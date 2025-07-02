@@ -20,12 +20,12 @@ export const getAllOrders = () => async (dispatch) => {
 };
 
 
-export const countorders = () => async (dispatch) => {
+export const countOrders = () => async (dispatch) => {
     console.log('order call')
     dispatch({ type: "COUNT_ORDERS_REQUEST" });
     try {
         const { data } = await axios.get(
-            "http://localhost:4000/api/order/admin/total-orders",
+            "http://localhost:4000/api/order/admin/count-orders",
             { withCredentials: true }
         );
         if (data.success) {
