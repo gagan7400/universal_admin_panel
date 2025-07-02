@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
-
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux'
+import { getAllOrders } from '../redux/actions/orderAction';
 const initialData = [
     { _id: '1', name: 'Noel', email: 'noel@example.com', position: 'Customer Data Director', company: 'Howell - Rippin', country: 'Germany' },
     { _id: '2', name: 'Jonathan', email: 'jonathan@example.com', position: 'Senior Implementation Architect', company: 'Hauck Inc', country: 'Holy See' },
@@ -29,7 +30,7 @@ const updatePositionAPI = async (_id, newPosition) => {
 };
 
 export default function Orders() {
-        const [data, setData] = useState(initialData);
+    const [data, setData] = useState(initialData);
     const [search, setSearch] = useState('');
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
@@ -37,7 +38,12 @@ export default function Orders() {
     const [visibleColumns, setVisibleColumns] = useState(columns);
     const [editingRowIndex, setEditingRowIndex] = useState(null);
     const [editingValue, setEditingValue] = useState('');
-
+    let { allorders, loading, error } = useSelector(state => state.order)
+    let dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getAllOrders())
+    }, [])
+console.log(allorders)
     const rowsPerPage = 5;
 
     const filteredData = useMemo(() => {
@@ -89,7 +95,7 @@ export default function Orders() {
         await updatePositionAPI(row._id, editingValue);
     };
     return (
-            <div className=" mx-auto bg-white rounded-2xl shadow-xl p-8 space-y-6">
+        <div className=" mx-auto bg-white rounded-2xl shadow-xl p-8 space-y-6">
             <h2 className="text-2xl font-bold text-gray-800">Employee Table</h2>
             <div className="flex flex-wrap gap-4">
                 {columns.map((col) => (
