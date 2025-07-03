@@ -17,7 +17,6 @@ const registration = async (req, res) => {
             deviceType: Joi.string().required(),
         });
         let file = req.file;
-        console.log(file)
         let image = { filename: file.filename, url: "http://localhost:4000/uploads/" + file.filename }
         // 2. Validate incoming data
         const { error } = schema.validate(req.body);
@@ -48,7 +47,6 @@ const registration = async (req, res) => {
             otp: emailOTP,
             image: image
         });
-        console.log(newUser, image, file)
         await newUser.save();
 
         // 6. Send Email

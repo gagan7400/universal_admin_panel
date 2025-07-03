@@ -7,7 +7,6 @@ const fs = require("fs");
 
 const createProductController = catchAsyncErrors(async (req, res, next) => {
     const files = req.files; // Array of image files
-    console.log(files)
     const images = files.map((file) => ({ fileName: file.filename, url: `uploads/${file.filename}` }));
     let { name, description, price, ratings = 0, category, Stock, numOfReviews = 0, weight, size, discountPercentage, material, dimensions } = req.body;
 

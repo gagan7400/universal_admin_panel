@@ -21,7 +21,6 @@ let dotenv = require("dotenv").config({ path: path.join(__dirname, "/config/.env
 1
 
 let uploadpath = path.join(__dirname, "/uploads");
-console.log(uploadpath)
 app.use("/uploads/", express.static(uploadpath))
 // Handling Uncaught Exception
 process.on("uncaughtException", (err) => {

@@ -23,7 +23,6 @@ export const loginAdmin = (email, password, navigate) => async (dispatch) => {
     const { data } = await axios.get("http://localhost:4000/api/admin/profile", {
       withCredentials: true, credentials: 'include'
     });
-
     if (data.success) {
       dispatch({ type: "LOGIN_ADMIN_SUCCESS", payload: data.data });
       navigate("/dashboard");
@@ -40,7 +39,7 @@ export const loginAdmin = (email, password, navigate) => async (dispatch) => {
 export const forgotPassword = (email, navigate) => async (dispatch) => {
   dispatch({ type: 'FORGOT_PASSWORD_REQUEST' });
   try {
-    console.log(email)
+
     const res = await axios.post(`${API}/api/admin/forgot-password`, { email });
     if (res.data.success) {
       navigate("/reset-password")
@@ -76,7 +75,6 @@ export const logout = () => async (dispatch) => {
     const { data } = await axios.get(`${API}/api/admin/logout`, { withCredentials: true });
     dispatch({ type: "ADMIN_LOGOUT" });
   } catch (err) {
-    console.log(err)
     dispatch({ type: "LOGIN_ADMIN_FAIL", payload: err.message });
   }
 };

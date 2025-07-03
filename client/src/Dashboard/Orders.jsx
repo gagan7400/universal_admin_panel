@@ -43,7 +43,6 @@ export default function Orders() {
     useEffect(() => {
         dispatch(getAllOrders())
     }, [])
-console.log(allorders)
     const rowsPerPage = 5;
 
     const filteredData = useMemo(() => {

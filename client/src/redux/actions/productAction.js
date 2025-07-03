@@ -28,7 +28,6 @@ export const countProducts = () => async (dispatch) => {
             { withCredentials: true }
         );
         if (data.success) {
-            console.log(data)
             dispatch({ type: "COUNT_PRODUCT_SUCCESS", payload: data.data });
         } else {
             dispatch({ type: "COUNT_PRODUCT_FAIL", payload: data.message });

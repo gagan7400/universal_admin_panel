@@ -21,7 +21,6 @@ export const getAllUsers = () => async (dispatch) => {
 
 
 export const countUsers = () => async (dispatch) => {
-    console.log('order call')
     dispatch({ type: "COUNT_USER_REQUEST" });
     try {
         const { data } = await axios.get(
@@ -29,7 +28,6 @@ export const countUsers = () => async (dispatch) => {
             { withCredentials: true }
         );
         if (data.success) {
-            console.log(data)
             dispatch({ type: "COUNT_USER_SUCCESS", payload: data.data });
         } else {
             dispatch({ type: "COUNT_USER_FAIL", payload: data.message });

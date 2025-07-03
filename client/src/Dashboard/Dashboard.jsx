@@ -82,7 +82,7 @@ export default function Dashboard() {
         //                                 </span>
         //                             </span>
         //                             <div className="relative inline-block  text-left">
-        //                                 <i class="fa-regular transition-all duration-700 fa-user text-xl text-gray-50 group-hover:text-blue-400"></i>
+        //                                 <i className="fa-regular transition-all duration-700 fa-user text-xl text-gray-50 group-hover:text-blue-400"></i>
         //                                 {isOpen && (
         //                                     <div className="absolute right-[-20px] z-20 mt-6 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
         //                                         <div className="py-1">

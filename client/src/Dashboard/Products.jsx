@@ -106,9 +106,9 @@ export default function Products() {
                     onChange={(e) => setSearch(e.target.value)}
                 />
                 <div className="w-1/5   min-w-fit flex  gap-4 justify-between items-center  ">
-                    <button className="w-fit whitespace-nowrap">Add New Product</button>
+                    <button className="w-fit whitespace-nowrap p-2 border border-gray-300  rounded-lg shadow-sm    bg-amber-300  text-blue-50 hover:bg-amber-400 hover:text-white">  Add New Product</button>
                     <select
-                        className="p-2 w-25  border rounded-lg shadow-sm bg-gray-100 text-gray-700"
+                        className="p-2 w-25 border border-gray-300  rounded-lg shadow-sm  bg-amber-300  text-blue-50 hover:bg-amber-400 hover:text-white"
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
                     >
@@ -154,15 +154,12 @@ export default function Products() {
                                 <td className="px-6 py-3">
                                     {v.dimensions.width} x {v.dimensions.height}
                                 </td>
-                                {console.log(v.images)}
                                 <td className="px-6 py-3 flex justify-center flex-wrap items-center gap-3">
                                     {v.images.map((v, i) => {
-                                        return (<img src={"http://localhost:4000/" + v.url} alt="d" className="w-5 h-5" />
+                                        return (<img key={i} src={"http://localhost:4000/" + v.url} alt="d" className="w-5 h-5" />
                                         )
                                     })}
-
                                 </td>
-
                                 <td className="px-6 py-3 ">
                                     <button
                                         onClick={() => updateHandler(v._id, v)}

@@ -11,7 +11,6 @@ exports.isAuthenticatedAdmin = catchAsyncErrors(async (req, res, next) => {
     }
     const decodedData = jwt.verify(token, process.env.JWT_SECRET);
     //we can access the user information from the req whenever the user logines;
-    console.log(decodedData)
     req.user = await Admin.findById(decodedData.id);
     next();
 });

@@ -104,7 +104,6 @@ let logoutAdmin = async (req, res) => {
 }
 const forgotPassword = async (req, res) => {
     try {
-        console.log(req.body)
         const { email } = req.body;
         const admin = await Admin.findOne({ email });
         if (!admin) return res.status(404).json({ message: "Admin not found" });
@@ -122,7 +121,7 @@ const forgotPassword = async (req, res) => {
 
         res.status(200).json({ success: true, message: "OTP sent to email" });
     } catch (err) {
-        console.log(err)
+         
         res.status(500).json({ success: false, message: err.message });
     }
 };
@@ -130,7 +129,7 @@ const forgotPassword = async (req, res) => {
 const resetPassword = async (req, res) => {
     try {
         const { email, otp, newPassword } = req.body;
-        console.log(email, otp)
+     
         const admin = await Admin.findOne({ email, otp });
 
         if (!admin || admin.otpExpiry < Date.now()) {
@@ -143,7 +142,7 @@ const resetPassword = async (req, res) => {
         await admin.save();
         res.json({ success: true, message: "Password reset successful" });
     } catch (err) {
-        console.log(err)
+     
         res.status(500).json({ success: false, message: err.message });
     }
 };

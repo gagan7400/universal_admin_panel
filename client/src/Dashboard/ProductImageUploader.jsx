@@ -40,33 +40,31 @@ const ProductImageUploader = ({ images, setImages }) => {
 
     return (
         <div>
-            <label className="text-sm font-medium mb-1 block">Product Images</label>
-
+            <label className="text-sm font-semibold text-gray-700 mb-1 block">Product Images</label>
             <div
-                className={`border-2 border-dashed rounded-md h-48 flex flex-col justify-center items-center cursor-pointer transition-colors duration-300 ${
-                    dragging
-                        ? "border-blue-400 bg-blue-50 text-blue-600"
-                        : "border-gray-300 text-gray-500 bg-white"
-                }`}
+                className={`border-2 border-dashed rounded-md h-48 flex flex-col justify-center items-center cursor-pointer transition-colors duration-300 hover:border-amber-400 ${dragging
+                    ? "border-blue-400 bg-blue-50 text-blue-600"
+                    : "border-gray-300 text-gray-500 bg-white"
+                    }`}
                 onClick={handleClick}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
             >
                 <svg
-  className="w-10 h-10 mb-2 text-gray-400"
-  fill="none"
-  stroke="currentColor"
-  viewBox="0 0 24 24"
-  xmlns="http://www.w3.org/2000/svg"
->
-  <path
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    strokeWidth={2}
-    d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5m0 0l5 5m-5-5v12"
-/>
-</svg>
+                    className="w-10 h-10 mb-2 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5m0 0l5 5m-5-5v12"
+                    />
+                </svg>
 
 
                 <p className="text-sm font-medium">Click or drag & drop images</p>

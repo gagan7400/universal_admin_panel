@@ -17,13 +17,11 @@ export default function Users() {
             let { data } = await axios.get("http://localhost:4000/api/user/getallusers", {
                 withCredentials: true
             });
-            console.log(data)
             if (data.success) {
                 setusers(data.data);
                 setFilteredusers(data.data);
             } else {
                 setusers([]);
-                console.log("error", data.message);
             }
         } catch (error) {
             console.log("Error Fetching Data", error);
