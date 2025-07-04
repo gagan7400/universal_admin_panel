@@ -5,12 +5,11 @@ const path = require("path")
 const fs = require("fs");
 var http = require('http');
 var url = require('url');
-    var hostname = req.headers.host; // hostname = 'localhost:8080'
-    var pathname = url.parse(req.url).pathname; // pathname = '/MyApp'
-    console.log('http://' + hostname );
 
-let base_url = process.env.BASE_URL;
 const createProductController = catchAsyncErrors(async (req, res, next) => {
+    var hostname = req.headers.host; // hostname = 'localhost:8080'
+    let base_url = 'http://' + hostname;
+
 
     const files = req.files; // Array of image files;
     const images = files.map((file) => ({ fileName: file.filename, url: `${base_url}/uploads/${file.filename}` }));
