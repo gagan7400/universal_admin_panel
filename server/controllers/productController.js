@@ -3,11 +3,17 @@ let catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../utils/errorHandler");
 const path = require("path")
 const fs = require("fs");
+var http = require('http');
+var url = require('url');
+    var hostname = req.headers.host; // hostname = 'localhost:8080'
+    var pathname = url.parse(req.url).pathname; // pathname = '/MyApp'
+    console.log('http://' + hostname );
 
-
+let base_url = process.env.BASE_URL;
 const createProductController = catchAsyncErrors(async (req, res, next) => {
-    const files = req.files; // Array of image files
-    const images = files.map((file) => ({ fileName: file.filename, url: `uploads/${file.filename}` }));
+
+    const files = req.files; // Array of image files;
+    const images = files.map((file) => ({ fileName: file.filename, url: `${base_url}/uploads/${file.filename}` }));
     let { name, description, price, ratings = 0, category, Stock, numOfReviews = 0, weight, size, discountPercentage, material, dimensions } = req.body;
 
     if (typeof (dimensions) == "string") {
@@ -26,6 +32,8 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
 });
 
 let getAllProducts = catchAsyncErrors(async (req, res, next) => {
+
+
     let products = await Product.find();
     res.status(200).json({
         success: true,
@@ -75,7 +83,7 @@ const deleteProduct = catchAsyncErrors(async (req, res, next) => {
     // 🧹 Delete associated images from disk
     if (product.images && product.images.length > 0) {
         product.images.forEach((img) => {
-            const filePath = path.join(__dirname, "../", img.url);
+            const filePath = path.join(__dirname, "../uploads/", img.fileName);
             if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath);
             }

@@ -1,6 +1,7 @@
 let express = require("express");
 let app = express();
 let path = require("path");
+let dotenv = require("dotenv").config({ path: path.join(__dirname, "/config/.env") });
 let cors = require("cors");
 const cookieParser = require('cookie-parser');
 app.use(express.urlencoded({ extended: true }));
@@ -17,7 +18,6 @@ let userRoute = require("./routes/userRoute");
 let orderRoute = require("./routes/orderRoute");
 let productRoute = require("./routes/productRoute");
 let errorMiddleware = require("./middlewares/error");
-let dotenv = require("dotenv").config({ path: path.join(__dirname, "/config/.env") });
 1
 
 let uploadpath = path.join(__dirname, "/uploads");

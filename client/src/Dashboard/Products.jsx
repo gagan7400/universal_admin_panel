@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import { NavLink } from 'react-router-dom';
 export default function Products() {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -106,7 +106,7 @@ export default function Products() {
                     onChange={(e) => setSearch(e.target.value)}
                 />
                 <div className="w-1/5   min-w-fit flex  gap-4 justify-between items-center  ">
-                    <button className="w-fit whitespace-nowrap p-2 border border-gray-300  rounded-lg shadow-sm    bg-amber-300  text-blue-50 hover:bg-amber-400 hover:text-white">  Add New Product</button>
+                    <NavLink to="/dashboard/product" className="w-fit whitespace-nowrap p-2 border border-gray-300  rounded-lg shadow-sm    bg-amber-300  text-blue-50 hover:bg-amber-400 hover:text-white">  Add New Product</NavLink>
                     <select
                         className="p-2 w-25 border border-gray-300  rounded-lg shadow-sm  bg-amber-300  text-blue-50 hover:bg-amber-400 hover:text-white"
                         value={selectedCategory}
@@ -154,9 +154,10 @@ export default function Products() {
                                 <td className="px-6 py-3">
                                     {v.dimensions.width} x {v.dimensions.height}
                                 </td>
+                                
                                 <td className="px-6 py-3 flex justify-center flex-wrap items-center gap-3">
-                                    {v.images.map((v, i) => {
-                                        return (<img key={i} src={"http://localhost:4000/" + v.url} alt="d" className="w-5 h-5" />
+                                    {v.images.map((img, ind) => {
+                                        return (<img key={ind} src={img.url} alt="d" className="w-5 h-5" />
                                         )
                                     })}
                                 </td>
