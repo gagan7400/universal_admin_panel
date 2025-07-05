@@ -14,7 +14,7 @@ router.post("/forgot-password", forgotPassword);
 router.post("/set-new-password", setNewPassword);
 router.post("/delete-user-account/:id", deleteUserAccount);
 router.get("/getallusers", isAuthenticatedAdmin, authorizeRoles("admin"), getAllUsers);
-router.put("/update", isAuthenticatedUser, authorizeRoles("user"), updateUser);
+router.put("/update/:id", isAuthenticatedUser, authorizeRoles("user"), upload.single("image"), updateUser);
 router.get("/count-users", isAuthenticatedAdmin, authorizeRoles("admin"), countUsers);
 
 

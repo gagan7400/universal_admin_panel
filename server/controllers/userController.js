@@ -1,11 +1,16 @@
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
+const path = require("path");
+const fs = require("fs");
 const User = require("../models/usermodel.js");
 const common_functions = require("../utils/common_functions.js"); // adjust path if needed
 const UserSession = require("../models/userSessionmodel.js"); // Session model
 const { generateToken } = require("../utils/token.js"); // Your custom token function
+var url = require('url');
 
 const registration = async (req, res) => {
+    var hostname = req.headers.host; // hostname = 'localhost:8080'
+    let base_url = 'http://' + hostname;
     try {
         const schema = Joi.object().keys({
             firstName: Joi.string().required(),
@@ -17,7 +22,7 @@ const registration = async (req, res) => {
             deviceType: Joi.string().required(),
         });
         let file = req.file;
-        let image = { filename: file.filename, url: "http://localhost:4000/uploads/" + file.filename }
+        let image = { filename: file.filename, url: `${base_url}/uploads/` + file.filename }
         // 2. Validate incoming data
         const { error } = schema.validate(req.body);
         if (error) return res.status(400).json({ code: 400, status: false, message: error.details[0].message });
@@ -96,7 +101,7 @@ const login = async (req, res) => {
             });
         }
 
-        if (!user.isVerified) {
+        if (!user.isVerified || !user.isActive) {
             return res.status(400).json({
                 code: 400,
                 status: false,
@@ -139,6 +144,8 @@ const login = async (req, res) => {
                 lastName: user.lastName,
                 email: user.email,
                 phone: user.phone,
+                image: user.image,
+                address: user.address,
                 token,
                 refreshToken,
             },
@@ -156,7 +163,7 @@ const verifyAccount = async (req, res) => {
         let { email } = req.body;
         let user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ code: 400, status: true, message: "User already registered with given email." });
+            return res.status(400).json({ code: 400, status: true, message: "User Not Found." });
         }
         const emailOTP = Math.floor(1000 + Math.random() * 9000);
         user.otp = emailOTP;
@@ -520,22 +527,58 @@ const countUsers = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
+    var hostname = req.headers.host; // hostname = 'localhost:8080'
+    let base_url = 'http://' + hostname;
     try {
-        { }
-        image = user.image.filename;
-        if (req.file) {
-            path.join(__dirname, '../uploads' + image);
-
-            fs.unlinkSync()
-        }
-    } catch (error) {
-        return res.status(400).json({
-            code: 400,
-            status: false,
-            message: "An error occurred",
-            error: error.message,
+        const schema = Joi.object().keys({
+            firstName: Joi.string().optional(),
+            lastName: Joi.string().optional(),
+            phone: Joi.string().optional(),
+            applicationId: Joi.string().optional(),
+            deviceType: Joi.string().optional(),
         });
+
+        const { error } = schema.validate(req.body);
+        if (error) return res.status(400).json({ code: 400, status: false, message: error.details[0].message });
+
+        const userId = req.params.id;
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ code: 404, status: false, message: "User not found" });
+
+        let updatedData = {
+            firstName: req.body.firstName || user.firstName,
+            lastName: req.body.lastName || user.lastName,
+            phone: req.body.phone || user.phone,
+            applicationId: req.body.applicationId || user.applicationId,
+            deviceType: req.body.deviceType || user.deviceType,
+        };
+
+        // Handle image replacement
+        if (req.file) {
+            // Delete old image
+            if (user.image && user.image.filename) {
+                const oldImagePath = path.join(__dirname, "../uploads/", user.image.filename);
+                console.log(oldImagePath)
+                if (fs.existsSync(oldImagePath)) {
+                    fs.unlinkSync(oldImagePath);
+                }
+            }
+            console.log(`${base_url}/uploads/` + req.file.filename)
+            // Set new image
+            updatedData.image = {
+                filename: req.file.filename,
+                url: `${base_url}/uploads/` + req.file.filename
+            };
+        }
+
+        await User.findByIdAndUpdate(userId, updatedData, { new: true });
+
+        return res.status(200).json({ code: 200, status: true, message: "User updated successfully." });
+
+    } catch (err) {
+        console.error("Error while updating user:", err);
+        return res.status(500).json({ code: 500, status: false, message: err.messsage });
     }
-}
+};
 
 module.exports = { registration, verifyOTP, verifyAccount, resendOTP, forgotPassword, login, setNewPassword, deleteUserAccount, getAllUsers, updateUser, countUsers };
