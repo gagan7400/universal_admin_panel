@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import { useSelector, useDispatch } from 'react-redux'
+import { getAllUsers } from "../redux/actions/userAction";
 export default function Users() {
-    const [users, setusers] = useState([]);
+    // const [users, setusers] = useState([]);
     const [filteredusers, setFilteredusers] = useState([]);
     const [search, setSearch] = useState("");
     const [sortField, setSortField] = useState("");
@@ -11,26 +12,31 @@ export default function Users() {
     const [selectedCategory, setSelectedCategory] = useState("All");
 
     const itemsPerPage = 5;
+    let dispatch = useDispatch();
+    let { loading, error, users } = useSelector(state => state.user);
 
-    const getusers = async () => {
-        try {
-            let { data } = await axios.get("http://localhost:4000/api/user/getallusers", {
-                withCredentials: true
-            });
-            if (data.success) {
-                setusers(data.data);
-                setFilteredusers(data.data);
-            } else {
-                setusers([]);
-            }
-        } catch (error) {
-            console.log("Error Fetching Data", error);
-        }
-    };
+    // const getusers = async () => {
+    //     try {
+    //         let { data } = await axios.get("http://localhost:4000/api/user/getallusers", {
+    //             withCredentials: true
+    //         });
+    //         if (data.success) {
+    //             setusers(data.data);
+    //             setFilteredusers(data.data);
+    //         } else {
+    //             setusers([]);
+    //         }
+    //     } catch (error) {
+    //         console.log("Error Fetching Data", error);
+    //     }
+    // };
 
     useEffect(() => {
-        getusers();
+        dispatch(getAllUsers())
     }, []);
+    useEffect(() => {
+        setFilteredusers(users);
+    }, [users])
 
     useEffect(() => {
         let temp = [...users];
@@ -47,7 +53,15 @@ export default function Users() {
 
         // 🏷️ Optional category filter
         if (selectedCategory && selectedCategory !== "All") {
-            temp = temp.filter((item) => item.isActive.toString() === selectedCategory);
+            if (selectedCategory == "Active Users") {
+                temp = temp.filter((item) => item.isActive.toString() === "true");
+            } else if (selectedCategory == "DeActivate Users") {
+                temp = temp.filter((item) => item.isActive.toString() === "false");
+            } else if (selectedCategory == "Verified Users") {
+                temp = temp.filter((item) => item.isVerified.toString() === "true");
+            } else if (selectedCategory == "UnVerified Users") {
+                temp = temp.filter((item) => item.isVerified.toString() === "false");
+            }
         }
 
         // 🔃 Sorting logic
@@ -65,19 +79,33 @@ export default function Users() {
         setCurrentPage(1);
     }, [search, sortField, sortOrder, selectedCategory, users]);
 
+    const columns = [
+        { label: "Sno", key: null },
+        { label: "Image", key: null },
+        { label: "Name", key: "firstName" },
+        { label: "Email", key: "email" },
+        { label: "Phone Number", key: "phone" },
+        { label: "Active", key: "isActive" },
+        { label: "Verified", key: "isVerified" },
+    ];
 
-
-
-    const handleSort = (field) => {
-        if (sortField === field) {
+    const handleSort = (key) => {
+        if (!key) return; // Skip sorting for Sno, Image
+        if (sortField === key) {
             setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
         } else {
-            setSortField(field);
+            setSortField(key);
             setSortOrder("asc");
         }
     };
 
-    const categories = ["All", "true", "false"];
+    const categories = [
+        { category: "All", value: "All" },
+        { category: "Active Users", value: "true" },
+        { category: "DeActivate Users", value: "false" },
+        { category: "Verified Users", value: "true" },
+        { category: "UnVerified Users", value: "false" },
+    ];
     const totalPages = Math.ceil(filteredusers.length / itemsPerPage);
     const paginatedData = filteredusers.slice(
         (currentPage - 1) * itemsPerPage,
@@ -98,13 +126,13 @@ export default function Users() {
                     onChange={(e) => setSearch(e.target.value)}
                 />
                 <select
-                    className="p-2 w-1/12 border rounded-lg shadow-sm bg-gray-100 text-gray-700"
+                    className="p-2 w-2/12  min-w-fit border rounded-lg shadow-sm bg-gray-100 text-gray-700"
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
                 >
                     {categories.map((cat, idx) => (
-                        <option key={idx} value={cat}>
-                            {cat}
+                        <option key={idx} value={cat.category}>
+                            {cat.category}
                         </option>
                     ))}
                 </select>
@@ -115,19 +143,18 @@ export default function Users() {
                 <table className="w-full text-sm text-left border rounded-lg overflow-hidden">
                     <thead className="bg-blue-100 text-gray-700 text-xs uppercase">
                         <tr>
-                            {["Sno", "Image", "Name", "Email", "Phone Number", "Active"].map((col) => (
+                            {columns.map((col, index) => (
                                 <th
-                                    key={col}
+                                    key={index}
                                     className="px-6 py-3 cursor-pointer select-none"
-                                    onClick={() => handleSort(col)}
+                                    onClick={() => handleSort(col.key)}
                                 >
-                                    {col !== "Image" ? <div className="flex items-center gap-1">
-                                        <span className="text-sm  capitalize">{col}</span>
-                                        {sortField === col ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'}
-                                    </div> : <div className="flex items-center gap-1">
-                                        <span className="text-sm capitalize">{col}</span>
-
-                                    </div>}
+                                    <div className="flex items-center gap-1">
+                                        <span className="text-sm capitalize">{col.label}</span>
+                                        {col.key && (
+                                            sortField === col.key ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'
+                                        )}
+                                    </div>
                                 </th>
                             ))}
                         </tr>
@@ -135,13 +162,13 @@ export default function Users() {
                     <tbody className="bg-white divide-y divide-gray-200">
                         {paginatedData.map((v, i) => (
                             <tr key={v._id} className="hover:bg-blue-50">
-
                                 <td className="px-6 py-3">{i + 1}</td>
-                                <td className="px-6 py-3   "> {v.image && v.image?.filename ? <img className="size-8 rounded-2xl" src={v.image.url} alt="d" /> : <img src="/img/user.svg" />}</td>
+                                <td className="px-6 py-3"> {v.image && v.image?.filename ? <img className="size-8 rounded-2xl" src={v.image.url} alt="d" /> : <img src="/img/user.svg" />}</td>
                                 <td className="px-6 py-3  text-blue-900 font-medium">{v.firstName} {v.lastName}</td>
                                 <td className="px-6 py-3">{v.email}</td>
                                 <td className="px-6 py-3">{v.phone}</td>
                                 <td className="px-6 py-3">{v.isActive.toString()}</td>
+                                <td className="px-6 py-3">{v.isVerified.toString()}</td>
                             </tr>
                         ))}
                         {paginatedData.length === 0 && (

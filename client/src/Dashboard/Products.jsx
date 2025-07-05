@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { NavLink } from 'react-router-dom';
+import { PlusIcon } from '../icons/index';
+
 export default function Products() {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -106,9 +108,9 @@ export default function Products() {
                     onChange={(e) => setSearch(e.target.value)}
                 />
                 <div className="w-1/5   min-w-fit flex  gap-4 justify-between items-center  ">
-                    <NavLink to="/dashboard/product" className="w-fit whitespace-nowrap p-2 border border-gray-300  rounded-lg shadow-sm    bg-amber-300  text-blue-50 hover:bg-amber-400 hover:text-white">  Add New Product</NavLink>
+                    <NavLink to="/dashboard/product" className="bg-amber-400 text-white  min-w-fit hover:bg-amber-600 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex "> <img src="/img/add.svg" /> Add New Product</NavLink>
                     <select
-                        className="p-2 w-25 border border-gray-300  rounded-lg shadow-sm  bg-amber-300  text-blue-50 hover:bg-amber-400 hover:text-white"
+                        className="p-2 w-25 bg-amber-400 text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-amber-600 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
                     >
@@ -154,7 +156,7 @@ export default function Products() {
                                 <td className="px-6 py-3">
                                     {v.dimensions.width} x {v.dimensions.height}
                                 </td>
-                                
+
                                 <td className="px-6 py-3 flex justify-center flex-wrap items-center gap-3">
                                     {v.images.map((img, ind) => {
                                         return (<img key={ind} src={img.url} alt="d" className="w-5 h-5" />

@@ -6,7 +6,7 @@ export const getAllUsers = () => async (dispatch) => {
     dispatch({ type: "GET_USER_REQUEST" });
     try {
         const { data } = await axios.get(
-            "http://localhost:4000/api/user/all",
+            "http://localhost:4000/api/user/getallusers",
             { withCredentials: true }
         );
         if (data.success) {

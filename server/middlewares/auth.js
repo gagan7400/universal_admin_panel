@@ -33,6 +33,7 @@ exports.isAuthenticatedUser = async (req, res, next) => {
 
             if (decoded) {
                 let user = await User.findById(decoded.id);
+               
                 req.user = user;
                 next();
             } else {

@@ -139,7 +139,7 @@ export default function NewProduct() {
       </div>
 
       <div className="mt-6 text-right">
-        <button type="submit" className=" bg-amber-300  text-blue-50 hover:bg-amber-400 hover:text-white px-6 py-2.5 rounded-md shadow-lg transition-transform transform hover:scale-105">
+        <button type="submit" className=" bg-amber-400 text-white  hover:bg-amber-600 hover:text-blue-50 px-6 py-2.5 rounded-md shadow-lg duration-75 transition-transform transform  ">
           Add Product
         </button>
       </div>

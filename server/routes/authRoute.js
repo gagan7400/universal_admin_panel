@@ -7,9 +7,15 @@ const {
     logoutAdmin,
     getprofile
 } = require("../controllers/adminController.js");
+let router = express.Router();
 const { isAuthenticatedAdmin, authorizeRoles } = require("../middlewares/auth.js");
+const { createSubadmin, deleteSubadmin, } = require("../controllers/subadminController");
 
-const router = express.Router();
+ 
+// subadmin route
+router.post("/subadmin", isAuthenticatedAdmin, authorizeRoles("admin"), createSubadmin);
+router.delete("/subadmin/:id", isAuthenticatedAdmin, authorizeRoles("admin"), deleteSubadmin);
+
 
 router.post("/register", register);
 router.post("/login", login);

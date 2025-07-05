@@ -9,62 +9,112 @@ const { generateToken } = require("../utils/token.js"); // Your custom token fun
 var url = require('url');
 
 const registration = async (req, res) => {
-    var hostname = req.headers.host; // hostname = 'localhost:8080'
-    let base_url = 'http://' + hostname;
+    const hostname = req.headers.host;
+    const base_url = 'http://' + hostname;
+
     try {
-        const schema = Joi.object().keys({
+        const addressSchema = Joi.object({
+            fullName: Joi.string().required(),
+            mobileNumber: Joi.number().required(),
+            addressLine: Joi.string().required(),
+            city: Joi.string().required(),
+            state: Joi.string().required(),
+            postalCode: Joi.string().required(),
+            country: Joi.string().optional(),
+            isDefault: Joi.boolean().optional()
+        });
+
+        const schema = Joi.object({
             firstName: Joi.string().required(),
             lastName: Joi.string().required(),
             email: Joi.string().email().required(),
             phone: Joi.string().optional(),
+            address: Joi.array().items(addressSchema).optional(),
             password: Joi.string().required(),
             applicationId: Joi.string().required(),
             deviceType: Joi.string().required(),
         });
-        let file = req.file;
-        let image = { filename: file.filename, url: `${base_url}/uploads/` + file.filename }
-        // 2. Validate incoming data
-        const { error } = schema.validate(req.body);
-        if (error) return res.status(400).json({ code: 400, status: false, message: error.details[0].message });
 
-        // 3. Check if user already exists
-        const existingUser = await User.findOne({ email: req.body.email });
-        if (existingUser) {
-            if (!existingUser.isActive) {
-                return res.status(400).json({ code: 400, status: true, message: "User already registered with given email. but not Verified!" });
+        const file = req.file;
+        const image = file
+            ? { filename: file.filename, url: `${base_url}/uploads/${file.filename}` }
+            : { filename: "", url: "" };
+
+        // Validate incoming data
+        if (typeof req.body.address === 'string') {
+            try {
+                req.body.address = JSON.parse(req.body.address);
+            } catch (e) {
+                return res.status(400).json({ code: 400, status: false, message: "Invalid address format" });
             }
-            return res.status(400).json({ code: 400, status: true, message: "User already registered with given email." });
+        }
+        const { error, value } = schema.validate(req.body, { allowUnknown: true });
+        if (error)
+            return res.status(400).json({
+                code: 400,
+                status: false,
+                message: error.details[0].message,
+            });
+
+        // Check if user already exists
+        const existingUser = await User.findOne({ email: value.email });
+        if (existingUser) {
+            return res.status(400).json({
+                code: 400,
+                status: false,
+                message: !existingUser.isActive
+                    ? "User already registered but not verified!"
+                    : "User already registered with given email.",
+            });
         }
 
-        // 4. Hash password & generate OTP
-        const hashPassword = bcrypt.hashSync(req.body.password, 10);
+        // Hash password & generate OTP
+        const hashPassword = bcrypt.hashSync(value.password, 10);
         const emailOTP = Math.floor(1000 + Math.random() * 9000);
 
-        // 5. Create and save user
+        // Ensure one default address
+        let addresses = [];
+        if (Array.isArray(value.address)) {
+            addresses = value.address.map((addr, index) => ({
+                ...addr,
+                isDefault: index === 0 ? true : addr.isDefault || false,
+            }));
+        }
+
+        // Create and save user
         const newUser = new User({
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email,
-            phone: req.body.phone,
+            firstName: value.firstName,
+            lastName: value.lastName,
+            email: value.email,
+            phone: value.phone,
             password: hashPassword,
-            applicationId: req.body.applicationId,
-            deviceType: req.body.deviceType,
+            applicationId: value.applicationId,
+            deviceType: value.deviceType,
             otp: emailOTP,
-            image: image
+            image,
+            address: addresses,
         });
+
         await newUser.save();
 
-        // 6. Send Email
+        // Send Email
         const subject = "Verify your email";
         const content = `<h1>${emailOTP}</h1>`;
-        common_functions.sendEmail(req.body.email, subject, content);
+        common_functions.sendEmail(value.email, subject, content);
 
-        // 7. Success response
-        return res.status(200).json({ code: 200, status: true, message: "User registered successfully." });
-
+        // Success response
+        return res.status(200).json({
+            code: 200,
+            status: true,
+            message: "User registered successfully.",
+        });
     } catch (error) {
-        console.error("Error while user registration:", error);
-        return res.status(400).json({ code: 400, status: false, message: "An error occurred while processing your request." });
+        console.error("Error during registration:", error);
+        return res.status(400).json({
+            code: 400,
+            status: false,
+            message: "An error occurred while processing your request.",
+        });
     }
 };
 
@@ -125,7 +175,7 @@ const login = async (req, res) => {
 
         // Create session
         const newSession = new UserSession({
-            userId: user._id,
+            id: user._id,
             applicationId: req.body.applicationId,
             deviceType: req.body.deviceType,
             token,
@@ -244,7 +294,7 @@ const verifyOTP = async (req, res) => {
 
         // Create a session
         const newSession = new UserSession({
-            userId: user._id,
+            id: user._id,
             applicationId,
             deviceType,
             token,
@@ -468,10 +518,10 @@ const deleteUserAccount = async (req, res) => {
             });
         }
 
-        const userId = value.id;
+        const id = value.id;
 
         // Check if active user exists
-        const user = await User.findOne({ _id: userId, isActive: true });
+        const user = await User.findOne({ _id: id, isActive: true });
 
         if (!user) {
             return res.status(404).json({
@@ -482,8 +532,8 @@ const deleteUserAccount = async (req, res) => {
         }
 
         // Soft delete user by setting isActive to false
-        await User.findByIdAndUpdate(userId, { isActive: false })
-        // await User.findByIdAndDelete(userId)
+        await User.findByIdAndUpdate(id, { isActive: false })
+        // await User.findByIdAndDelete(id)
         return res.status(200).json({
             code: 200,
             status: true,
@@ -527,22 +577,33 @@ const countUsers = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-    var hostname = req.headers.host; // hostname = 'localhost:8080'
-    let base_url = 'http://' + hostname;
     try {
-        const schema = Joi.object().keys({
+        const schema = Joi.object({
             firstName: Joi.string().optional(),
             lastName: Joi.string().optional(),
             phone: Joi.string().optional(),
             applicationId: Joi.string().optional(),
             deviceType: Joi.string().optional(),
+            address: Joi.array().items(
+                Joi.object({
+                    _id: Joi.string().optional(),
+                    fullName: Joi.string().required(),
+                    mobileNumber: Joi.string().required(),
+                    addressLine: Joi.string().required(),
+                    city: Joi.string().required(),
+                    state: Joi.string().required(),
+                    postalCode: Joi.string().required(),
+                    country: Joi.string().optional(),
+                    isDefault: Joi.boolean().optional()
+                })
+            ).optional()
         });
 
         const { error } = schema.validate(req.body);
         if (error) return res.status(400).json({ code: 400, status: false, message: error.details[0].message });
 
-        const userId = req.params.id;
-        const user = await User.findById(userId);
+        const id = req.params.id;
+        const user = await User.findById(id);
         if (!user) return res.status(404).json({ code: 404, status: false, message: "User not found" });
 
         let updatedData = {
@@ -550,35 +611,169 @@ const updateUser = async (req, res) => {
             lastName: req.body.lastName || user.lastName,
             phone: req.body.phone || user.phone,
             applicationId: req.body.applicationId || user.applicationId,
-            deviceType: req.body.deviceType || user.deviceType,
+            deviceType: req.body.deviceType || user.deviceType
         };
 
-        // Handle image replacement
+        // Handle image
         if (req.file) {
-            // Delete old image
-            if (user.image && user.image.filename) {
-                const oldImagePath = path.join(__dirname, "../uploads/", user.image.filename);
-                console.log(oldImagePath)
+            if (user.image?.filename) {
+                const oldImagePath = path.join(__dirname, "../uploads", user.image.filename);
                 if (fs.existsSync(oldImagePath)) {
                     fs.unlinkSync(oldImagePath);
                 }
             }
-            console.log(`${base_url}/uploads/` + req.file.filename)
-            // Set new image
+
             updatedData.image = {
                 filename: req.file.filename,
-                url: `${base_url}/uploads/` + req.file.filename
+                url: "http://localhost:4000/uploads/" + req.file.filename
             };
         }
 
-        await User.findByIdAndUpdate(userId, updatedData, { new: true });
+        // Handle address update
+        if (req.body.address) {
+            const incomingAddresses = req.body.address;
+            const updatedAddresses = [];
+
+            for (let addr of incomingAddresses) {
+                if (addr._id) {
+                    // Update existing address
+                    const index = user.address.findIndex(a => a._id.toString() === addr._id);
+                    if (index !== -1) {
+                        user.address[index] = { ...user.address[index]._doc, ...addr };
+                    } else {
+                        updatedAddresses.push(addr); // Not found, treat as new
+                    }
+                } else {
+                    updatedAddresses.push(addr); // New address
+                }
+            }
+
+            // Merge updated new addresses
+            updatedData.address = [...user.address, ...updatedAddresses];
+        }
+
+        await User.findByIdAndUpdate(id, updatedData, { new: true });
 
         return res.status(200).json({ code: 200, status: true, message: "User updated successfully." });
 
     } catch (err) {
         console.error("Error while updating user:", err);
-        return res.status(500).json({ code: 500, status: false, message: err.messsage });
+        return res.status(500).json({ code: 500, status: false, message: "Something went wrong" });
     }
 };
 
-module.exports = { registration, verifyOTP, verifyAccount, resendOTP, forgotPassword, login, setNewPassword, deleteUserAccount, getAllUsers, updateUser, countUsers };
+const addressSchema = Joi.object({
+    fullName: Joi.string().required(),
+    mobileNumber: Joi.number().required(),
+    addressLine: Joi.string().required(),
+    city: Joi.string().required(),
+    state: Joi.string().required(),
+    postalCode: Joi.string().required(),
+    country: Joi.string().optional(),
+    isDefault: Joi.boolean().optional(),
+});
+const getAddresses = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ status: false, message: "User not found" });
+        return res.status(200).json({ status: true, message: "Addresses fetched", data: user.address });
+    } catch (err) {
+        return res.status(500).json({ status: false, message: err.message });
+    }
+};
+
+const addAddress = async (req, res) => {
+    try {
+        const { error } = addressSchema.validate(req.body);
+        if (error) return res.status(400).json({ status: false, message: error.details[0].message });
+
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ status: false, message: "User not found" });
+
+        if (user.address.length === 0) {
+            req.body.isDefault = true;
+        } else if (req.body.isDefault) {
+            user.address.forEach(addr => addr.isDefault = false);
+        }
+
+        user.address.push(req.body);
+        await user.save();
+
+        return res.status(201).json({ status: true, message: "Address added", data: user.address });
+    } catch (err) {
+        return res.status(500).json({ status: false, message: err.message });
+    }
+};
+
+const updateAddress = async (req, res) => {
+    try {
+        const { error } = addressSchema.validate(req.body);
+        if (error) return res.status(400).json({ status: false, message: error.details[0].message });
+
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ status: false, message: "User not found" });
+
+        const address = user.address.id(req.params.addressId);
+        if (!address) return res.status(404).json({ status: false, message: "Address not found" });
+
+        if (req.body.isDefault) {
+            user.address.forEach(addr => addr.isDefault = false);
+        }
+
+        Object.assign(address, req.body);
+        await user.save();
+
+        return res.status(200).json({ status: true, message: "Address updated", data: address });
+    } catch (err) {
+        return res.status(500).json({ status: false, message: err.message });
+    }
+};
+
+const deleteAddress = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ status: false, message: "User not found" });
+
+        const addressIndex = user.address.findIndex(addr => addr._id.toString() === req.params.addressId);
+        if (addressIndex === -1) return res.status(404).json({ status: false, message: "Address not found" });
+
+        const wasDefault = user.address[addressIndex].isDefault;
+        user.address.splice(addressIndex, 1);
+        await user.save();
+
+        if (wasDefault && user.address.length > 0) {
+            user.address[0].isDefault = true;
+            await user.save();
+        }
+
+        return res.status(200).json({ status: true, message: "Address deleted" });
+    } catch (err) {
+        return res.status(500).json({ status: false, message: err.message });
+    }
+};
+
+const setDefaultAddress = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ status: false, message: "User not found" });
+
+        user.address.forEach(addr => addr.isDefault = false);
+        const defaultAddress = user.address.id(req.params.addressId);
+        if (!defaultAddress) return res.status(404).json({ status: false, message: "Address not found" });
+
+        defaultAddress.isDefault = true;
+        await user.save();
+
+        return res.status(200).json({ status: true, message: "Default address set", data: defaultAddress });
+    } catch (err) {
+        return res.status(500).json({ status: false, message: err.message });
+    }
+};
+
+module.exports = {
+    getAddresses,
+    addAddress,
+    updateAddress,
+    deleteAddress,
+    setDefaultAddress, registration, verifyOTP, verifyAccount, resendOTP, forgotPassword, login, setNewPassword, deleteUserAccount, getAllUsers, updateUser, countUsers
+};

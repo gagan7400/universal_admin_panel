@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     image: { filename: String, url: String },
     address: [{
         fullName: { type: String, required: true },
-        mobileNumber: { type: String, required: true },
+        mobileNumber: { type: Number, required: true },
         addressLine: { type: String, required: true },
         city: { type: String, required: true },
         state: { type: String, required: true },
