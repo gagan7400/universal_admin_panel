@@ -34,7 +34,7 @@ export default function NewProduct() {
     formData.append("dimensions", JSON.stringify(dimensions));
 
     try {
-      const { data } = await axios.post("http://localhost:4000/api/product/new", formData, {
+      const { data } = await axios.post("https://universal-admin-panel.onrender.com/api/product/new", formData, {
         withCredentials: true,
       });
       if (data.success) {
@@ -66,7 +66,7 @@ export default function NewProduct() {
   return (
     <form onSubmit={handleSubmit} className="  mx-auto bg-white shadow-xl rounded-lg p-8">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-emerald-800 mb-2">🛒 Add New Product</h2>
+        <h2 className="text-2xl font-bold   text-gray-800 mb-2">🛒 Add New Product</h2>
         <p className="text-sm text-gray-500">Fill in the details to add a new product to your store.</p>
       </div>
 

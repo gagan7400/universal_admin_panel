@@ -15,7 +15,7 @@ const ProtectedRoute = ({ children }) => {
         const checkAuth = async () => {
             dispatch(setAuthLoading());
             try {
-                const { data } = await axios.get("http://localhost:4000/api/admin/profile", {
+                const { data } = await axios.get("https://universal-admin-panel.onrender.com/api/admin/profile", {
                     withCredentials: true,
                 });
                 if (data.success) {

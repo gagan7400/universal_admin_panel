@@ -16,7 +16,7 @@ export default function Products() {
 
     const getProducts = async () => {
         try {
-            let { data } = await axios.get("http://localhost:4000/api/product/all");
+            let { data } = await axios.get("https://universal-admin-panel.onrender.com/api/product/all");
             if (data.success) {
                 setProducts(data.data);
                 setFilteredProducts(data.data);
@@ -63,7 +63,7 @@ export default function Products() {
     const deleteHandler = async (id) => {
         if (confirm("Are you sure you want to delete this ")) {
             try {
-                let { data } = await axios.delete("http://localhost:4000/api/product/" + id, {
+                let { data } = await axios.delete("https://universal-admin-panel.onrender.com/api/product/" + id, {
                     withCredentials: true,
                 });
                 if (data.success) {
@@ -108,7 +108,7 @@ export default function Products() {
                     onChange={(e) => setSearch(e.target.value)}
                 />
                 <div className="w-1/5   min-w-fit flex  gap-4 justify-between items-center  ">
-                    <NavLink to="/dashboard/product" className="bg-amber-400 text-white  min-w-fit hover:bg-amber-600 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex "> <img src="/img/add.svg" /> Add New Product</NavLink>
+                    <NavLink to="/dashboard/product" className="bg-amber-400 text-white  min-w-fit hover:bg-amber-600 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex ">  Add New Product</NavLink>
                     <select
                         className="p-2 w-25 bg-amber-400 text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-amber-600 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
                         value={selectedCategory}

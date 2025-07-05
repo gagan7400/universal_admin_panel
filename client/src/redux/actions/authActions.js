@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API = import.meta.env.VITE_API || "http://localhost:4000";
+const API = import.meta.env.VITE_API || "https://universal-admin-panel.onrender.com";
 
 export const setAuthLoading = () => ({
   type: "LOGIN_ADMIN_REQUEST"
@@ -15,12 +15,12 @@ export const loginAdmin = (email, password, navigate) => async (dispatch) => {
   dispatch({ type: "LOGIN_ADMIN_REQUEST" });
   try {
     const res = await axios.post(
-      "http://localhost:4000/api/admin/login",
+      "https://universal-admin-panel.onrender.com/api/admin/login",
       { email, password },
       { withCredentials: true }
     );
 
-    const { data } = await axios.get("http://localhost:4000/api/admin/profile", {
+    const { data } = await axios.get("https://universal-admin-panel.onrender.com/api/admin/profile", {
       withCredentials: true, credentials: 'include'
     });
     if (data.success) {
@@ -84,7 +84,7 @@ export const loadAdmin = () => async (dispatch) => {
 
   dispatch({ type: "LOGIN_ADMIN_REQUEST" }); // ✅ Start loading
   try {
-    const { data } = await axios.get("http://localhost:4000/api/admin/profile", { withCredentials: true });
+    const { data } = await axios.get("https://universal-admin-panel.onrender.com/api/admin/profile", { withCredentials: true });
     if (data.success) {
       dispatch(loginSuccess(data.admin));
     } else {
@@ -100,7 +100,7 @@ export const getAllUsers = () => async (dispatch) => {
   dispatch({ type: "GET_USER_REQUEST" });
   try {
     const { data } = await axios.get(
-      "http://localhost:4000/api/user/getallusers",
+      "https://universal-admin-panel.onrender.com/api/user/getallusers",
       { withCredentials: true }
     );
     if (data.success) {

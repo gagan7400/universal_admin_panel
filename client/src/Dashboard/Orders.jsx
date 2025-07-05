@@ -43,6 +43,7 @@ export default function Orders() {
     useEffect(() => {
         dispatch(getAllOrders())
     }, [])
+    console.log(  allorders)
     const rowsPerPage = 5;
 
     const filteredData = useMemo(() => {
@@ -95,7 +96,7 @@ export default function Orders() {
     };
     return (
         <div className=" mx-auto bg-white rounded-2xl shadow-xl p-8 space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800">Employee Table</h2>
+            <h2 className="text-2xl font-bold text-gray-800">Orders</h2>
             <div className="flex flex-wrap gap-4">
                 {columns.map((col) => (
                     <label key={col} className="text-sm text-gray-700 flex items-center space-x-1">
