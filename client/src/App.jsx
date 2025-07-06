@@ -26,7 +26,7 @@ function App() {
           <Route path="/dashboard/" element={<DashboardComp />} > </Route>
           <Route path="/dashboard/users" element={<Users />} > </Route>
           <Route path="/dashboard/products" element={<Products />} > </Route>
-          <Route path="/dashboard/product" element={<NewProduct />} > </Route>
+          {/* <Route path="/dashboard/product" element={<NewProduct />} > </Route> */}
           <Route path="/dashboard/orders" element={<Orders />} > </Route>
           <Route path="/dashboard/sub-admins" element={<SubAdmins />} > </Route>
         </Route>

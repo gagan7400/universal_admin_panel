@@ -2,18 +2,67 @@ const Order = require("../models/orderModel");
 const Product = require("../models/productModel");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
+const mongoose = require("mongoose");
+
 
 // Create new Order
 exports.newOrder = catchAsyncErrors(async (req, res, next) => {
-    const { shippingInfo, orderItems, paymentInfo, itemsPrice, taxPrice, shippingPrice, totalPrice, } = req.body;
+    const {
+        shippingInfo,
+        orderItems,
+        paymentInfo,
+        itemsPrice,
+        taxPrice,
+        shippingPrice,
+        totalPrice,
+    } = req.body;
 
-    const order = await Order.create({ shippingInfo, orderItems, paymentInfo, itemsPrice, taxPrice, shippingPrice, totalPrice, paidAt: Date.now(), user: req.user._id, });
+    // 1. 🔍 Check stock availability for each product
+    for (let item of orderItems) {
+        const product = await Product.findById(item.product);
+
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: `Product with ID ${item.product} not found`,
+            });
+        }
+
+        if (product.stock < item.quantity) {
+            return res.status(400).json({
+                success: false,
+                message: `Insufficient stock for product: ${product.name}. Available: ${product.stock}, Required: ${item.quantity}`,
+            });
+        }
+    }
+
+    // 2. 🛒 If all items are valid, create the order
+    const order = await Order.create({
+        shippingInfo,
+        orderItems,
+        paymentInfo,
+        itemsPrice,
+        taxPrice,
+        shippingPrice,
+        totalPrice,
+        paidAt: Date.now(),
+        user: req.user._id,
+    });
+
+    // 3. 🔻 Reduce stock for each product
+    for (let item of orderItems) {
+        const product = await Product.findById(item.product);
+        product.stock -= item.quantity;
+        await product.save({ validateBeforeSave: false });
+    }
 
     res.status(201).json({
         success: true,
+        message: "Order placed successfully",
         data: order,
     });
 });
+
 
 // get Single Order
 exports.getSingleOrder = catchAsyncErrors(async (req, res, next) => {
@@ -71,32 +120,43 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("You have already delivered this order", 400));
     }
 
-    if (req.body.status === "Shipped") {
+    if (req.body.orderStatus === "Shipped") {
         order.orderItems.forEach(async (o) => {
             await updateStock(o.product, o.quantity);
         });
     }
-    order.orderStatus = req.body.status;
+    order.orderStatus = req.body.orderStatus;
 
-    if (req.body.status === "Delivered") {
+    if (req.body.orderStatus === "Delivered") {
         order.deliveredAt = Date.now();
     }
 
     await order.save({ validateBeforeSave: false });
     res.status(200).json({
         success: true,
-        message: "Order Updated Successfully"
+        message: "Order Updated Successfully",
+        data: order
     });
 });
 
 async function updateStock(id, quantity) {
+    console.log("Updating stock for:", id);
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        console.log("❌ Invalid product ID");
+        return;
+    }
+
     const product = await Product.findById(id);
+    if (!product) {
+        console.log("❌ Product not found");
+        return;
+    }
 
-    product.Stock -= quantity;
-
+    console.log("✅ Product found:", product.name);
+    product.stock -= quantity;
     await product.save({ validateBeforeSave: false });
 }
-
 // delete Order -- Admin
 exports.deleteOrder = catchAsyncErrors(async (req, res, next) => {
     const order = await Order.findById(req.params.id);
@@ -105,7 +165,7 @@ exports.deleteOrder = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Order not found with this Id", 404));
     }
 
-    await order.remove();
+    await Order.findByIdAndDelete(order._id)
 
     res.status(200).json({
         success: true,

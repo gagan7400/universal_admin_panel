@@ -45,6 +45,10 @@ const productSchema = mongoose.Schema({
         type: Number,
         default: 0,
     },
+    bannerImage: {
+        fileName: { type: String, required: true },
+        url: { type: String, required: true },
+    },
     reviews: [
         {
             user: {

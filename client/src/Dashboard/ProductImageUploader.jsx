@@ -1,16 +1,29 @@
 import React, { useRef, useState } from "react";
 
-const ProductImageUploader = ({ images, setImages }) => {
+const ProductImageUploader = ({ images, setImages, bannerImage, setBannerImage, title, setDeletedImages = () => { } }) => {
     const inputRef = useRef(null);
     const [dragging, setDragging] = useState(false);
 
     const handleFiles = (files) => {
-        const fileArray = Array.from(files).map((file) => ({
-            fileName: file.name,
-            url: URL.createObjectURL(file),
-            file,
-        }));
-        setImages((prev) => [...prev, ...fileArray]);
+        if (images) {
+            console.log("Image Wala ")
+            const fileArray = Array.from(files).map((file) => ({
+                fileName: file.name,
+                url: URL.createObjectURL(file),
+                file,
+            }));
+            setImages((prev) => [...prev, ...fileArray]);
+
+        } else {
+            console.log("Banner Wala ")
+            const fileArray = Array.from(files).map((file) => ({
+                fileName: file.name,
+                url: URL.createObjectURL(file),
+                file,
+            }));
+            setBannerImage((prev) => [...prev, ...fileArray]);
+        }
+
     };
 
     const handleDrop = (e) => {
@@ -40,7 +53,7 @@ const ProductImageUploader = ({ images, setImages }) => {
 
     return (
         <div>
-            <label className="text-sm font-semibold text-gray-700 mb-1 block">Product Images</label>
+            <label className="text-sm font-semibold text-gray-700 mb-1 block">{title}</label>
             <div
                 className={`border-2 border-dashed rounded-md h-48 flex flex-col justify-center items-center cursor-pointer transition-colors duration-300 hover:border-amber-400 ${dragging
                     ? "border-blue-400 bg-blue-50 text-blue-600"
@@ -79,9 +92,9 @@ const ProductImageUploader = ({ images, setImages }) => {
                 ref={inputRef}
                 onChange={handleFileChange}
             />
-
+            {console.log(Array.isArray(bannerImage))}
             {/* Preview Section */}
-            {images.length > 0 && (
+            {images ? images.length > 0 && (
                 <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     {images.map((img, index) => (
                         <div key={index} className="relative group rounded-md overflow-hidden border border-gray-200">
@@ -91,16 +104,53 @@ const ProductImageUploader = ({ images, setImages }) => {
                                 className="object-cover w-full h-32 transition-transform duration-300 group-hover:scale-105"
                             />
                             <div className="absolute top-1 right-1 bg-white text-red-500 hover:text-red-700 rounded-full p-1 cursor-pointer shadow"
-                                onClick={() =>
-                                    setImages((prev) =>
-                                        prev.filter((_, i) => i !== index)
-                                    )
-                                }
+                                onClick={() => {
+                                    const removedImage = images[index];
+                                    if (!removedImage.file && removedImage.url) {
+                                        setDeletedImages((prev) => [...prev, removedImage]);
+                                    }
+                                    setImages((prev) => prev.filter((_, i) => i !== index));
+                                }}
                             >
                                 ✕
                             </div>
                         </div>
                     ))}
+                </div>
+            ) : (!Array.isArray(bannerImage) || bannerImage.length > 0) && (
+                <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+
+                    {Array.isArray(bannerImage) ? bannerImage.map((img, index) => (
+                        <div key={index} className="relative group rounded-md overflow-hidden border border-gray-200">
+                            <img
+                                src={img.url}
+                                alt={`Product ${index}`}
+                                className="object-cover w-full h-32 transition-transform duration-300 group-hover:scale-105"
+                            />
+                            <div className="absolute top-1 right-1 bg-white text-red-500 hover:text-red-700 rounded-full p-1 cursor-pointer shadow"
+                                onClick={() =>
+                                    setBannerImage("")
+                                }
+                            >
+                                ✕
+                            </div>
+                        </div>
+                    )) : <> {bannerImage && <div className="relative group rounded-md overflow-hidden border border-gray-200">
+                        <img
+
+                            src={bannerImage.url}
+                            alt={`Product ${bannerImage.fileName}`}
+                            className="object-cover w-full h-32 transition-transform duration-300 group-hover:scale-105"
+                        />
+                        <div className="absolute top-1 right-1 bg-white text-red-500 hover:text-red-700 rounded-full p-1 cursor-pointer shadow"
+                            onClick={() =>
+                                setBannerImage("")
+                            }
+                        >
+                            ✕
+                        </div>
+                    </div>}</>
+                    }
                 </div>
             )}
         </div>

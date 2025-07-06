@@ -50,10 +50,7 @@ const Sidebar = () => {
     };
 
     return (
-        <div
-            style={{ width: `${sidebarWidth}px`, background: 'var(--blue)' }}
-            className="relative transition-all duration-300 ease-in-out"
-        >
+        <div style={{ width: `${sidebarWidth}px`, background: 'var(--blue)' }} className="relative transition-all duration-300 ease-in-out" >
             <div style={{ width: `${sidebarWidth}px` }} className="h-full p-4 py-6 flex flex-col justify-between transition-all duration-300">
                 {/* Logo and Nav */}
                 <div>
@@ -70,7 +67,7 @@ const Sidebar = () => {
                         {[
                             { path: "/dashboard", icon: '/img/dashboard.svg', text: 'Dashboard', exact: true },
                             { path: "/dashboard/users", icon: '/img/users.svg', text: 'Users' },
-                            { path: "/dashboard/product", icon: '/img/newproduct.svg', text: 'Add New Product' },
+                            // { path: "/dashboard/product", icon: '/img/newproduct.svg', text: 'Add New Product' },
                             { path: "/dashboard/products", icon: '/img/product.svg', text: 'Products' },
                             { path: "/dashboard/orders", icon: '/img/order.svg', text: 'Orders' },
                             { path: "/dashboard/sub-admins", icon: '/img/subadmin.svg', text: 'Sub Admin' },

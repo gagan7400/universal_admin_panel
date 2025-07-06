@@ -18,6 +18,10 @@ const subadminSchema = new mongoose.Schema({
         type: [String], // e.g., ["view_orders", "process_orders"]
         default: [],
     },
+    role: {
+        type: String,
+        default: "subadmin"
+    },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Admin",

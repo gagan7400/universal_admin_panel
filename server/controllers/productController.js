@@ -6,21 +6,66 @@ const fs = require("fs");
 var http = require('http');
 var url = require('url');
 
+
 const createProductController = catchAsyncErrors(async (req, res, next) => {
-    var hostname = req.headers.host; // hostname = 'localhost:8080'
-    let base_url = 'http://' + hostname;
+    const hostname = req.headers.host;
+    const base_url = `http://${hostname}`;
 
+    const files = req.files;
+    const bannerFile = files.bannerImage?.[0];
+    const galleryFiles = files.images || [];
 
-    const files = req.files; // Array of image files;
-    const images = files.map((file) => ({ fileName: file.filename, url: `${base_url}/uploads/${file.filename}` }));
-    let { name, description, price, ratings = 0, category, Stock, numOfReviews = 0, weight, size, discountPercentage, material, dimensions } = req.body;
-
-    if (typeof (dimensions) == "string") {
-        dimensions = JSON.parse(dimensions)
+    if (!bannerFile) {
+        return res.status(400).json({ success: false, message: "Banner image is required." });
     }
-    let newProduct = { name, description, price, ratings, images, category, Stock, numOfReviews, weight, size, discountPercentage, material, dimensions }
-    const product = new Product(newProduct);
 
+    const bannerImage = {
+        fileName: bannerFile.filename,
+        url: `${base_url}/uploads/${bannerFile.filename}`,
+    };
+
+    const images = galleryFiles.map((file) => ({
+        fileName: file.filename,
+        url: `${base_url}/uploads/${file.filename}`,
+    }));
+
+    let {
+        name,
+        description,
+        price,
+        ratings = 0,
+        category,
+        stock,
+        numOfReviews = 0,
+        weight,
+        size,
+        discountPercentage,
+        material,
+        dimensions,
+    } = req.body;
+
+    if (typeof dimensions === "string") {
+        dimensions = JSON.parse(dimensions);
+    }
+
+    const newProduct = {
+        name,
+        description,
+        price,
+        ratings,
+        bannerImage,
+        images,
+        category,
+        stock,
+        numOfReviews,
+        weight,
+        size,
+        discountPercentage,
+        material,
+        dimensions,
+    };
+
+    const product = new Product(newProduct);
     await product.save();
 
     res.status(201).json({
@@ -31,8 +76,6 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
 });
 
 let getAllProducts = catchAsyncErrors(async (req, res, next) => {
-
-
     let products = await Product.find();
     res.status(200).json({
         success: true,
@@ -40,6 +83,7 @@ let getAllProducts = catchAsyncErrors(async (req, res, next) => {
         message: "Products Find Successfully"
     })
 })
+
 let countProduct = catchAsyncErrors(async (req, res, next) => {
     let products = await Product.countDocuments();
     res.status(200).json({
@@ -67,17 +111,25 @@ const deleteProduct = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Product not found", 404));
     }
 
-    // 🧹 Delete associated images from disk
+    // 🧹 Delete banner image from disk
+    if (product.bannerImage) {
+        const bannerPath = path.join(__dirname, "../uploads/", product.bannerImage.url.split("/uploads/")[1]);
+        if (fs.existsSync(bannerPath)) {
+            fs.unlinkSync(bannerPath);
+        }
+    }
+
+    // 🧹 Delete gallery images
     if (product.images && product.images.length > 0) {
         product.images.forEach((img) => {
-            const filePath = path.join(__dirname, "../uploads/", img.fileName);
+            const filePath = path.join(__dirname, "../uploads/", img.url.split("/uploads/")[1]);
             if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath);
             }
         });
     }
 
-    // 🗑️ Delete the product from DB
+    // 🗑️ Delete product from DB
     await Product.findByIdAndDelete(req.params.id);
 
     res.status(200).json({
@@ -87,14 +139,20 @@ const deleteProduct = catchAsyncErrors(async (req, res, next) => {
     });
 });
 
-const updateProduct = catchAsyncErrors(async (req, res, next) => {
-    let product = await Product.findById(req.params.id);
-    if (!product) {
-        return next(new ErrorHandler("Product not found", 404));
-    }
 
-    // Parse dimensions if provided
-    if (req.body.dimensions) {
+const updateProduct = catchAsyncErrors(async (req, res, next) => {
+    const product = await Product.findById(req.params.id);
+    if (!product) return next(new ErrorHandler("Product not found", 404));
+
+    const hostname = req.headers.host;
+    const base_url = `http://${hostname}`;
+    const files = req.files || {};
+    const bannerFile = files.bannerImage?.[0];
+    const galleryFiles = files.images || [];
+    let bannerImageNew = "";
+    let imagesNew = ""
+    // 🔄 Parse dimensions
+    if (req.body.dimensions && typeof req.body.dimensions === "string") {
         try {
             req.body.dimensions = JSON.parse(req.body.dimensions);
         } catch (err) {
@@ -102,29 +160,59 @@ const updateProduct = catchAsyncErrors(async (req, res, next) => {
         }
     }
 
-    // Handle new image uploads
-    let newImages = [];
-    if (req.files && req.files.length > 0) {
-        newImages = req.files.map((file) => ({
-            fileName: file.originalname,
-            url: `uploads/${file.filename}`,
-        }));
+    // ✅ Handle bannerImage
+    if (bannerFile && bannerFile.filename) {
+        // Delete old banner
+        if (product.bannerImage?.fileName) {
+            const oldBannerPath = path.join(__dirname, "../uploads/", product.bannerImage.fileName);
+            if (fs.existsSync(oldBannerPath)) fs.unlinkSync(oldBannerPath);
+        }
 
-        // Optional: delete old images from disk
-        product.images.forEach((img) => {
-            const imgPath = path.join(__dirname, "../", img.url);
-            if (fs.existsSync(imgPath)) {
-                fs.unlinkSync(imgPath);
-            }
-        });
-
-        req.body.images = newImages;
+        bannerImageNew = {
+            fileName: bannerFile.filename,
+            url: `${base_url}/uploads/${bannerFile.filename}`,
+        };
+    } else if (req.body.bannerImageData) {
+        let dataImage = JSON.parse(req.body.bannerImageData);
+        bannerImageNew = { fileName: dataImage && dataImage.url.split("/uploads/")[1], url: dataImage.url };
     } else {
-        // Keep existing images if no new images are uploaded
-        req.body.images = product.images;
+        bannerImageNew = product.bannerImage;
     }
 
-    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, {
+    // ✅ Handle gallery images
+    let retainedImages = [];
+
+    if (req.body.imagesData) {
+        try {
+            let dataImage = JSON.parse(req.body.imagesData);
+
+            retainedImages = dataImage.map((img) => {
+                return { fileName: img && img.url.split("/uploads/")[1], url: img.url }
+            })
+        } catch (err) {
+            return next(new ErrorHandler("Invalid imagesData format", 400));
+        }
+    }
+
+    // Delete old images that are NOT in retainedImages
+    const retainedFileNames = retainedImages.map(img => img.fileName);
+    product.images.forEach((img) => {
+        if (!retainedFileNames.includes(img.fileName)) {
+            const imgPath = path.join(__dirname, "../uploads/", img.fileName);
+            if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
+        }
+    });
+
+    // Map new uploaded images
+    const newUploadedImages = galleryFiles.map((file) => ({
+        fileName: file.filename,
+        url: `${base_url}/uploads/${file.filename}`,
+    }));
+
+    // Combine old + new
+    imagesNew = [...retainedImages, ...newUploadedImages];
+    // ✅ Final Update
+    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, { ...req.body, bannerImage: bannerImageNew, images: imagesNew }, {
         new: true,
     });
 
@@ -134,5 +222,9 @@ const updateProduct = catchAsyncErrors(async (req, res, next) => {
         data: updatedProduct,
     });
 });
+
+
+module.exports = { updateProduct };
+
 
 module.exports = { createProductController, getAllProducts, getProductDetails, deleteProduct, updateProduct, countProduct }

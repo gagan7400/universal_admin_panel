@@ -1,74 +1,102 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
 import { getAllOrders } from '../redux/actions/orderAction';
-const initialData = [
-    { _id: '1', name: 'Noel', email: 'noel@example.com', position: 'Customer Data Director', company: 'Howell - Rippin', country: 'Germany' },
-    { _id: '2', name: 'Jonathan', email: 'jonathan@example.com', position: 'Senior Implementation Architect', company: 'Hauck Inc', country: 'Holy See' },
-    { _id: '3', name: 'Harold', email: 'harold@example.com', position: 'Forward Creative Coordinator', company: 'Metz Inc', country: 'Iran' },
-    { _id: '4', name: 'Cathy', email: 'cathy@example.com', position: 'Customer Data Director', company: 'Ebert, Schamberger and Johnston', country: 'Mexico' },
-    { _id: '5', name: 'Kerry', email: 'kerry@example.com', position: 'Lead Applications Associate', company: 'Feeney, Langworth and Tremblay', country: 'Niger' },
-    { _id: '6', name: 'Alice', email: 'alice@example.com', position: 'Software Engineer', company: 'Alpha Corp', country: 'India' },
-    { _id: '7', name: 'Bob', email: 'bob@example.com', position: 'Product Manager', company: 'Beta LLC', country: 'USA' },
-    { _id: '8', name: 'Charlie', email: 'charlie@example.com', position: 'UI Designer', company: 'Gamma Ltd', country: 'France' },
-    { _id: '9', name: 'David', email: 'david@example.com', position: 'CTO', company: 'Delta Group', country: 'UK' },
-    { _id: '10', name: 'Eva', email: 'eva@example.com', position: 'Data Analyst', company: 'Epsilon Pvt', country: 'Canada' },
-];
+import axios from 'axios';
+import { Bounce, toast } from 'react-toastify';
 
-const columns = ['name', 'email', 'position', 'company', 'country'];
+const Orders = () => {
+    const dispatch = useDispatch();
+    const { allorders, loading, error } = useSelector(state => state.order);
 
-const updatePositionAPI = async (_id, newPosition) => {
-    try {
-        const response = await fetch(`/api/employees/${_id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ position: newPosition }),
-        });
-        return await response.json();
-    } catch (err) {
-        console.error('Update failed', err);
-    }
-};
-
-export default function Orders() {
-    const [data, setData] = useState(initialData);
     const [search, setSearch] = useState('');
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
     const [currentPage, setCurrentPage] = useState(1);
-    const [visibleColumns, setVisibleColumns] = useState(columns);
-    const [editingRowIndex, setEditingRowIndex] = useState(null);
-    const [editingValue, setEditingValue] = useState('');
-    let { allorders, loading, error } = useSelector(state => state.order)
-    let dispatch = useDispatch();
+    const [visibleColumns, setVisibleColumns] = useState(['orderId', 'userId', 'status', 'totalPrice', 'paidAt']);
+    const [statusFilter, setStatusFilter] = useState('');
     useEffect(() => {
-        dispatch(getAllOrders())
-    }, [])
-    console.log(  allorders)
+        dispatch(getAllOrders());
+    }, [dispatch]);
+
+    const handleStatusUpdate = async (orderId, newStatus) => {
+        try {
+            let { data } = await axios.put(`http://localhost:4000/api/order/admin/order/${orderId}/`, { orderStatus: newStatus }, { withCredentials: true });
+            dispatch(getAllOrders()); // Refresh after update
+            toast.success(data.message, {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
+        } catch (err) {
+            toast.error(err?.response?.data?.message, {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
+        }
+    };
+
+    const formattedData = useMemo(() => {
+        if (!allorders) return [];
+        return allorders.map(order => ({
+            orderId: order._id,
+            userId: order.user,
+            status: order.orderStatus,
+            totalPrice: order.totalPrice,
+            paidAt: new Date(order.paidAt).toLocaleDateString(),
+        }));
+    }, [allorders]);
+
     const rowsPerPage = 5;
 
     const filteredData = useMemo(() => {
-        return data.filter(row =>
-            visibleColumns.some(column =>
-                row[column].toLowerCase().includes(search.toLowerCase())
-            )
-        );
-    }, [search, data, visibleColumns]);
+        let result = formattedData;
+
+        // Filter by search
+        if (search.trim()) {
+            result = result.filter(row =>
+                visibleColumns.some(column =>
+                    row[column]?.toString().toLowerCase().includes(search.toLowerCase())
+                )
+            );
+        }
+
+        // Filter by status
+        if (statusFilter) {
+            result = result.filter(row => row.status === statusFilter);
+        }
+
+        return result;
+    }, [search, formattedData, visibleColumns, statusFilter]);
+
 
     const sortedData = useMemo(() => {
         if (!sortField) return filteredData;
         return [...filteredData].sort((a, b) => {
-            const valA = a[sortField].toLowerCase();
-            const valB = b[sortField].toLowerCase();
+            const valA = a[sortField]?.toString().toLowerCase() || '';
+            const valB = b[sortField]?.toString().toLowerCase() || '';
             return sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
         });
     }, [filteredData, sortField, sortOrder]);
 
-    const totalPages = Math.ceil(sortedData.length / rowsPerPage);
     const paginatedData = sortedData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+    const totalPages = Math.ceil(sortedData.length / rowsPerPage);
 
     const handleSort = (field) => {
         if (sortField === field) {
-            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+            setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
         } else {
             setSortField(field);
             setSortOrder('asc');
@@ -76,29 +104,19 @@ export default function Orders() {
     };
 
     const toggleColumn = (col) => {
-        setVisibleColumns((prev) =>
+        setVisibleColumns(prev =>
             prev.includes(col) ? prev.filter(c => c !== col) : [...prev, col]
         );
     };
 
-    const handleDoubleClick = (index) => {
-        setEditingRowIndex(index);
-        setEditingValue(data[index].position);
-    };
+    const statusOptions = ["Processing", "Shipped", "Delivered", "Completed", "Cancelled"];
 
-    const handleSave = async (index) => {
-        const updated = [...data];
-        const row = updated[index];
-        row.position = editingValue;
-        setData(updated);
-        setEditingRowIndex(null);
-        await updatePositionAPI(row._id, editingValue);
-    };
+
     return (
-        <div className=" mx-auto bg-white rounded-2xl shadow-xl p-8 space-y-6">
+        <div className="mx-auto bg-white rounded-2xl shadow-xl p-8 space-y-6">
             <h2 className="text-2xl font-bold text-gray-800">Orders</h2>
             <div className="flex flex-wrap gap-4">
-                {columns.map((col) => (
+                {['orderId', 'userId', 'status', 'totalPrice', 'paidAt'].map(col => (
                     <label key={col} className="text-sm text-gray-700 flex items-center space-x-1">
                         <input
                             type="checkbox"
@@ -111,28 +129,43 @@ export default function Orders() {
                 ))}
             </div>
 
-            <input
-                type="text"
-                placeholder="Search..."
-                className="w-1/4 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 outline-none"
-                value={search}
-                onChange={(e) => {
-                    setSearch(e.target.value);
-                    setCurrentPage(1);
-                }}
-            />
+            <div className="flex flex-wrap gap-4 items-center justify-between">
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 outline-none"
+                    value={search}
+                    onChange={(e) => {
+                        setSearch(e.target.value);
+                        setCurrentPage(1);
+                    }}
+                />
+
+                <select
+                    className="p-2 w-35 bg-amber-400 text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-amber-600 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
+                    value={statusFilter}
+                    onChange={(e) => {
+                        setStatusFilter(e.target.value);
+                        setCurrentPage(1);
+                    }}
+                >
+                    <option value="">All Statuses</option>
+                    {statusOptions.map((status) => (
+                        <option key={status} value={status}>
+                            {status}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
 
             <div className="overflow-x-auto rounded-lg shadow-sm">
                 <table className="min-w-full border border-gray-200 text-sm text-left bg-white rounded-lg">
                     <thead className="bg-blue-100 text-gray-700 uppercase text-xs">
                         <tr>
-                            {visibleColumns.map((col) => (
-                                <th
-                                    key={col}
-                                    onClick={() => handleSort(col)}
-                                    className="px-4 py-3 cursor-pointer"
-                                >
-                                    <div className="flex justify-between items-center">
+                            {visibleColumns.map(col => (
+                                <th key={col} onClick={() => handleSort(col)} className="px-4 py-3 cursor-pointer">
+                                    <div className="flex justify-left gap-2 items-center">
                                         <span className="capitalize">{col}</span>
                                         <span>{sortField === col ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'}</span>
                                     </div>
@@ -141,45 +174,50 @@ export default function Orders() {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
-                        {paginatedData.map((row, rowIndex) => (
+                        {paginatedData.map((row, index) => (
                             <tr
-                                key={row._id}
-                                className="hover:bg-blue-50 transition-all duration-150"
+                                disabled={['Delivered', 'Completed'].includes(row.status)}
+                                key={row.orderId}
+                                className={`transition-all duration-150 ${['Delivered', 'Completed'].includes(row.status)
+                                    ? 'bg-green-50 text-green-700 font-semibold'
+                                    : 'hover:bg-blue-50'
+                                    }`}
                             >
-                                {visibleColumns.map((col) => {
-                                    const globalIndex = (currentPage - 1) * rowsPerPage + rowIndex;
-                                    return (
-                                        <td
-                                            key={col}
-                                            onDoubleClick={() => col === 'position' && handleDoubleClick(globalIndex)}
-                                            className={`px-4 py-3 ${col === 'position' && editingRowIndex === globalIndex ? 'bg-yellow-100' : ''
-                                                }`}
-                                        >
-                                            {col === 'position' && editingRowIndex === globalIndex ? (
-                                                <input
-                                                    type="text"
-                                                    value={editingValue}
-                                                    onChange={(e) => setEditingValue(e.target.value)}
-                                                    onBlur={() => handleSave(globalIndex)}
-                                                    onKeyDown={(e) => e.key === 'Enter' && handleSave(globalIndex)}
-                                                    className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400"
-                                                    autoFocus
-                                                />
-                                            ) : (
-                                                row[col]
-                                            )}
-                                        </td>
-                                    );
-                                })}
+                                {visibleColumns.map(col => (
+                                    <td key={col} className="px-4 py-3">
+                                        {col === 'status' ? (
+                                            <select
+                                                disabled={['Delivered', 'Completed'].includes(row.status)}
+                                                value={row.status}
+                                                onChange={(e) => handleStatusUpdate(row.orderId, e.target.value)}
+                                                className={`border rounded px-2 pe-5  py-1 text-sm ${['Delivered', 'Completed'].includes(row.status)
+                                                    ? 'bg-green-100 border-green-400 text-green-800 cursor-not-allowed'
+                                                    : 'bg-white border-gray-300'
+                                                    }`}
+                                            >
+                                                {statusOptions.map((status) => (
+                                                    <option key={status} value={status}>
+                                                        {status}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        ) : (
+                                            row[col]
+                                        )}
+                                    </td>
+
+                                ))}
                             </tr>
                         ))}
+
                     </tbody>
                 </table>
             </div>
 
+            {/* Pagination Controls */}
             <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
                 <p>
-                    Showing {Math.min((currentPage - 1) * rowsPerPage + 1, sortedData.length)} to{' '}
+                    Showing {(currentPage - 1) * rowsPerPage + 1} to{' '}
                     {Math.min(currentPage * rowsPerPage, sortedData.length)} of {sortedData.length} results
                 </p>
                 <div className="space-x-1">
@@ -194,8 +232,7 @@ export default function Orders() {
                         <button
                             key={i}
                             onClick={() => setCurrentPage(i + 1)}
-                            className={`px-3 py-1 rounded-lg ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'
-                                }`}
+                            className={`px-3 py-1 rounded-lg ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
                         >
                             {i + 1}
                         </button>
@@ -210,5 +247,8 @@ export default function Orders() {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
+
+export default Orders;
+

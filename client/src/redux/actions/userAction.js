@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const API = import.meta.env.VITE_API || "https://universal-admin-panel.onrender.com";
+const API = import.meta.env.VITE_API || "http://localhost:4000";
 
 export const getAllUsers = () => async (dispatch) => {
     dispatch({ type: "GET_USER_REQUEST" });
     try {
         const { data } = await axios.get(
-            "https://universal-admin-panel.onrender.com/api/user/getallusers",
+            "http://localhost:4000/api/user/getallusers",
             { withCredentials: true }
         );
         if (data.success) {
@@ -24,7 +24,7 @@ export const countUsers = () => async (dispatch) => {
     dispatch({ type: "COUNT_USER_REQUEST" });
     try {
         const { data } = await axios.get(
-            "https://universal-admin-panel.onrender.com/api/user/count-users",
+            "http://localhost:4000/api/user/count-users",
             { withCredentials: true }
         );
         if (data.success) {

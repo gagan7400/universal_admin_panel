@@ -5,22 +5,20 @@ let router = express.Router();
 
 const { isAuthenticatedAdmin, authorizeRoles } = require("../middlewares/auth");
 let upload = require("../middlewares/upload.js")
-
-// ✅ Route for creating new product with images (multipart/form-data)
-router.post("/new", isAuthenticatedAdmin, authorizeRoles("admin"), upload.array("images"), createProductController);
-
+router.post("/new", isAuthenticatedAdmin, authorizeRoles("admin"), upload.fields([
+    { name: "bannerImage", maxCount: 1 },
+    { name: "images", maxCount: 10 },
+]), createProductController);
 router.get("/count-products", isAuthenticatedAdmin, authorizeRoles("admin"), countProduct);
-// ✔️ Get all products
-router.get("/all", getAllProducts);
 
-// ✔️ Get product by ID
+router.get("/all", getAllProducts);
 router.get("/:id", getProductDetails);
 
-// ✔️ Delete product (admin only)
 router.delete("/:id", isAuthenticatedAdmin, authorizeRoles("admin"), deleteProduct);
 
-// ❗ Update product does not currently support image uploads
-// If you want to allow image updates too, add upload middleware here
-router.put("/:id", isAuthenticatedAdmin, authorizeRoles("admin"), upload.array("images"), updateProduct);
+router.put("/:id", isAuthenticatedAdmin, authorizeRoles("admin"), upload.fields([
+    { name: "bannerImage", maxCount: 1 },
+    { name: "images", maxCount: 10 },
+]), updateProduct);
 
 module.exports = router;

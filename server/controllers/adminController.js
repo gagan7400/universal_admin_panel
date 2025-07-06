@@ -30,14 +30,14 @@ const register = async (req, res) => {
     try {
         const { email, password } = req.body;
         const existing = await Admin.findOne({ email });
-        if (existing) return res.status(400).json({ message: "Admin already exists" });
+        if (existing) return res.status(400).json({ success: false, message: "Admin already exists" });
 
         const hashed = await bcrypt.hash(password, 12);
         const admin = await Admin.create({ email, password: hashed });
 
-        res.status(200).json({ message: "Admin Registered Successfully" });
+        res.status(200).json({ success: true, message: "Admin Registered Successfully" });
     } catch (error) {
-        res.status(500).json({ message: "Internal Server Error", error });
+        res.status(500).json({ success: false, message: "Internal Server Error", error });
     }
 };
 
@@ -53,7 +53,7 @@ const login = async (req, res) => {
         if (error) {
             return res.status(400).json({
                 code: 400,
-                status: false,
+                success:false,
                 message: error.details[0].message,
             });
         }
@@ -61,14 +61,14 @@ const login = async (req, res) => {
         const admin = await Admin.findOne({ email });
         if (!admin) return res.status(400).json({
             code: 400,
-            status: false,
+            success:false,
             message: "User not found."
         });
 
         const match = await bcrypt.compare(password, admin.password);
         if (!match) return res.status(400).json({
             code: 400,
-            status: false,
+            success:false,
             message: "Password is incorrect."
         });
 
@@ -80,7 +80,7 @@ const login = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000 // 1 day
         }).status(200).json({
             code: 200,
-            status: true,
+            success:true,
             message: "Admin logged in successfully...",
             token,
             data: admin
@@ -88,7 +88,7 @@ const login = async (req, res) => {
     } catch (err) {
         return res.status(400).json({
             code: 400,
-            status: false,
+            success:false,
             message: "An error occurred while processing your request.",
         });
     }

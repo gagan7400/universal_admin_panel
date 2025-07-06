@@ -15,11 +15,13 @@ export default function NewProduct() {
   const [discountPercentage, setDiscountPercentage] = useState("");
   const [material, setMaterial] = useState("");
   const [images, setImages] = useState([]);
+  const [bannerImage, setBannerImage] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
     images.forEach((img) => formData.append("images", img.file));
+    formData.append("bannerImage", bannerImage[0].file);
 
     formData.append("name", name);
     formData.append("description", description);
@@ -34,7 +36,7 @@ export default function NewProduct() {
     formData.append("dimensions", JSON.stringify(dimensions));
 
     try {
-      const { data } = await axios.post("https://universal-admin-panel.onrender.com/api/product/new", formData, {
+      const { data } = await axios.post("http://localhost:4000/api/product/new", formData, {
         withCredentials: true,
       });
       if (data.success) {
@@ -61,6 +63,7 @@ export default function NewProduct() {
     setWeight("");
     setDiscountPercentage("");
     setImages([]);
+    setBannerImage([]);
   };
 
   return (
@@ -95,8 +98,9 @@ export default function NewProduct() {
           <label className="text-sm font-semibold text-gray-700 mb-1">Category</label>
           <select value={category} onChange={(e) => setCategory(e.target.value)} className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400">
             <option className="hover:bg-amber-400">Select category</option>
-            <option className="hover:bg-amber-400">Item 1</option>
-            <option className="hover:bg-amber-400" >Item 2</option>
+            <option className="hover:bg-amber-400">Iron</option>
+            <option className="hover:bg-amber-400" >Bronze</option>
+            <option className="hover:bg-amber-400" >Silver</option>
           </select>
         </div>
 
@@ -135,7 +139,10 @@ export default function NewProduct() {
       </div>
 
       <div className="mt-6">
-        <ProductImageUploader images={images} setImages={setImages} />
+        <ProductImageUploader bannerImage={bannerImage} setBannerImage={setBannerImage} title="Banner Image" />
+      </div>
+      <div className="mt-6">
+        <ProductImageUploader images={images} setImages={setImages} title="Product Images" />
       </div>
 
       <div className="mt-6 text-right">

@@ -17,7 +17,7 @@ export default function Users() {
 
     // const getusers = async () => {
     //     try {
-    //         let { data } = await axios.get("https://universal-admin-panel.onrender.com/api/user/getallusers", {
+    //         let { data } = await axios.get("http://localhost:4000/api/user/getallusers", {
     //             withCredentials: true
     //         });
     //         if (data.success) {
