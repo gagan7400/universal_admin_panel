@@ -51,7 +51,7 @@ const Sidebar = () => {
 
     return (
         <div style={{ width: `${sidebarWidth}px`, background: 'var(--blue)' }} className="relative transition-all duration-300 ease-in-out" >
-            <div style={{ width: `${sidebarWidth}px` }} className="h-full p-4 py-6 flex flex-col justify-between transition-all duration-300">
+            <div style={{ width: `${sidebarWidth}px` , background: 'var(--blue)'}} className="h-full p-4 py-6 flex flex-col justify-between transition-all duration-300">
                 {/* Logo and Nav */}
                 <div>
                     <div className="flex items-center justify-center">
@@ -105,10 +105,11 @@ const Sidebar = () => {
                 onMouseDown={() => { isDragging.current = true }}
                 onClick={handleToggle}
                 title={isCollapsed ? "Open Sidebar" : "Close Sidebar"}
-                className="absolute top-9 -right-3 transform -translate-y-1/2 w-6 h-12 z-50 flex items-center justify-center cursor-ew-resize bg-amber-500 hover:bg-amber-600 text-white rounded-r shadow"
+                style={{ background: "blue", zIndex: "0" }}
+                className="absolute top-9 -right-6 transform -translate-y-1/2 w-12 h-12 flex items-center justify-center text-amber-50  rotate-45 rounded-t-sm shadow"
             >
                 {/* Icon can be image or emoji */}
-                <span>{isCollapsed ? '➤' : '◀'}</span>
+                <span className='text-2xl  rotate-[-35deg]'>{isCollapsed ? '>' : '<'}</span>
             </div>
         </div>
     );

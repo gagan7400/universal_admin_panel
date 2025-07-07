@@ -15,21 +15,6 @@ export default function Users() {
     let dispatch = useDispatch();
     let { loading, error, users } = useSelector(state => state.user);
 
-    // const getusers = async () => {
-    //     try {
-    //         let { data } = await axios.get("http://localhost:4000/api/user/getallusers", {
-    //             withCredentials: true
-    //         });
-    //         if (data.success) {
-    //             setusers(data.data);
-    //             setFilteredusers(data.data);
-    //         } else {
-    //             setusers([]);
-    //         }
-    //     } catch (error) {
-    //         console.log("Error Fetching Data", error);
-    //     }
-    // };
 
     useEffect(() => {
         dispatch(getAllUsers())
@@ -39,7 +24,7 @@ export default function Users() {
     }, [users])
 
     useEffect(() => {
-        let temp = [...users];
+        let temp = [...users.reverse()];
 
         // 🌟 Search filter: checks firstName, lastName, email, phone
         if (search) {
@@ -87,6 +72,7 @@ export default function Users() {
         { label: "Phone Number", key: "phone" },
         { label: "Active", key: "isActive" },
         { label: "Verified", key: "isVerified" },
+        { label: "Created At", key: "createdAt" },
     ];
 
     const handleSort = (key) => {
@@ -169,6 +155,7 @@ export default function Users() {
                                 <td className="px-6 py-3">{v.phone}</td>
                                 <td className="px-6 py-3">{v.isActive.toString()}</td>
                                 <td className="px-6 py-3">{v.isVerified.toString()}</td>
+                                <td className="px-6 py-3">{new Date(v.createdAt).toLocaleDateString()}</td>
                             </tr>
                         ))}
                         {paginatedData.length === 0 && (
