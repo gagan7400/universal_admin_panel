@@ -1,5 +1,4 @@
 const initialState = {
-    token: localStorage.getItem("adminToken") || null,
     loading: true,
     error: null,
     message: null,
@@ -38,44 +37,3 @@ export const authReducer = (state = initialState, action) => {
     }
 };
 
-
-
-// const initialState = {
-//     isAuthenticated: false,
-//     admin: null,
-//     error: null,
-//     loading: true,
-// };
-
-// export const adminReducer = (state = initialState, action) => {
-//     switch (action.type) {
-//         case "AUTH_LOADING":
-//             return { ...state, loading: true };
-//         case "LOGIN_SUCCESS":
-//             return {
-//                 ...state,
-//                 isAuthenticated: true,
-//                 admin: action.payload,
-//                 error: null,
-//                 loading: false
-//             };
-//         case "LOGIN_FAIL":
-//             return {
-//                 ...state,
-//                 isAuthenticated: false,
-//                 admin: null,
-//                 error: action.payload,
-//                 loading: false
-//             };
-//         case "LOGOUT":
-//             return {
-//                 ...state,
-//                 isAuthenticated: false,
-//                 admin: null,
-//                 error: null,
-//                 loading: false
-//             };
-//         default:
-//             return state;
-//     }
-// };

@@ -1,5 +1,4 @@
 const initialState = {
-    token: localStorage.getItem("adminToken") || null,
     loading: true,
     error: null,
     message: null,

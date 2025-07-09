@@ -75,7 +75,7 @@ const login = async (req, res) => {
         const token = await generateToken(admin._id);
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
+            secure: process.env.NODE_ENV === "Production",
             sameSite: "lax",
             maxAge: 24 * 60 * 60 * 1000 // 1 day
         }).status(200).json({
@@ -98,7 +98,7 @@ let logoutAdmin = async (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
         sameSite: "strict",
-        secure: process.env.NODE_ENV === "production"
+        secure: process.env.NODE_ENV === "Production"
     });
     res.json({ success: true, message: "Logged out" });
 }

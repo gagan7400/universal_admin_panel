@@ -3,7 +3,6 @@ import axios from "axios";
 import { useSelector, useDispatch } from 'react-redux'
 import { getAllUsers } from "../redux/actions/userAction";
 export default function Users() {
-    // const [users, setusers] = useState([]);
     const [filteredusers, setFilteredusers] = useState([]);
     const [search, setSearch] = useState("");
     const [sortField, setSortField] = useState("");
@@ -24,7 +23,7 @@ export default function Users() {
     }, [users])
 
     useEffect(() => {
-        let temp = [...users.reverse()];
+        let temp = [...users].reverse();
 
         // 🌟 Search filter: checks firstName, lastName, email, phone
         if (search) {

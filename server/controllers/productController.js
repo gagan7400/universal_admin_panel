@@ -6,10 +6,11 @@ const fs = require("fs");
 var http = require('http');
 var url = require('url');
 
+const base_url = process.env.NODE_ENV == "Production" ? process.env.BASE_URL_LIVE : process.env.BASE_URL;
+
 
 const createProductController = catchAsyncErrors(async (req, res, next) => {
-    const hostname = req.headers.host;
-    const base_url = `http://${hostname}`;
+
 
     const files = req.files;
     const bannerFile = files.bannerImage?.[0];
@@ -144,8 +145,6 @@ const updateProduct = catchAsyncErrors(async (req, res, next) => {
     const product = await Product.findById(req.params.id);
     if (!product) return next(new ErrorHandler("Product not found", 404));
 
-    const hostname = req.headers.host;
-    const base_url = `http://${hostname}`;
     const files = req.files || {};
     const bannerFile = files.bannerImage?.[0];
     const galleryFiles = files.images || [];

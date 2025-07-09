@@ -50,8 +50,8 @@ const Sidebar = () => {
     };
 
     return (
-        <div style={{ width: `${sidebarWidth}px`, background: 'var(--blue)' }} className="relative transition-all duration-300 ease-in-out" >
-            <div style={{ width: `${sidebarWidth}px` , background: 'var(--blue)'}} className="h-full p-4 py-6 flex flex-col justify-between transition-all duration-300">
+        <div style={{ width: `${sidebarWidth}px`, background: 'var(--blue)', zIndex: "10" }} className="relative   transition-all duration-300 ease-in-out" >
+            <div style={{ width: `${sidebarWidth}px`, background: 'var(--blue)' }} className="h-full p-4 py-6 flex flex-col justify-between transition-all duration-300">
                 {/* Logo and Nav */}
                 <div>
                     <div className="flex items-center justify-center">
@@ -105,8 +105,8 @@ const Sidebar = () => {
                 onMouseDown={() => { isDragging.current = true }}
                 onClick={handleToggle}
                 title={isCollapsed ? "Open Sidebar" : "Close Sidebar"}
-                style={{ background: "blue", zIndex: "0" }}
-                className="absolute top-9 -right-6 transform -translate-y-1/2 w-12 h-12 flex items-center justify-center text-amber-50  rotate-45 rounded-t-sm shadow"
+                style={{ zIndex: "0" }}
+                className="absolute  top-9 -right-6 transform -translate-y-1/2 w-12 h-12 flex items-center justify-center bg-amber-300 text-amber-50  rotate-45 rounded-t-sm shadow"
             >
                 {/* Icon can be image or emoji */}
                 <span className='text-2xl  rotate-[-35deg]'>{isCollapsed ? '>' : '<'}</span>
