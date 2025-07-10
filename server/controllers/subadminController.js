@@ -18,7 +18,7 @@ const createSubadmin = async (req, res) => {
             email,
             password: hashedPassword,
             permissions,
-            createdBy: req.admin._id,
+            createdBy: req.user._id,
         });
 
         res.status(201).json({ success: true, subadmin: newSubadmin });
@@ -71,4 +71,20 @@ const deleteSubadmin = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
-module.exports = { createSubadmin, deleteSubadmin, loginSubadmin }
+const updateSubadmin = async (req, res) => {
+    try {
+        const subadmin = await Subadmin.findById(req.params.id);
+        if (!subadmin) {
+            return res.status(404).json({ message: "Subadmin not found" });
+        }
+        if (req.body.password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            req.body.password = hashedPassword;
+        }
+        await Subadmin.findByIdAndUpdate(subadmin._id, req.body)
+        res.status(200).json({ success: true, message: "Subadmin Updated Successfully" });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+module.exports = { createSubadmin, deleteSubadmin, loginSubadmin, updateSubadmin }

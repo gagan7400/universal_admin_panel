@@ -9,12 +9,14 @@ const {
 } = require("../controllers/adminController.js");
 let router = express.Router();
 const { isAuthenticatedAdmin, authorizeRoles } = require("../middlewares/auth.js");
-const { createSubadmin, deleteSubadmin, } = require("../controllers/subadminController");
+const { createSubadmin, deleteSubadmin, updateSubadmin, loginSubadmin } = require("../controllers/subadminController");
 
- 
+
 // subadmin route
 router.post("/subadmin", isAuthenticatedAdmin, authorizeRoles("admin"), createSubadmin);
+router.put("/subadmin/:id", isAuthenticatedAdmin, authorizeRoles("admin"), updateSubadmin);
 router.delete("/subadmin/:id", isAuthenticatedAdmin, authorizeRoles("admin"), deleteSubadmin);
+router.post("/subadmin/login",  loginSubadmin);
 
 
 router.post("/register", register);
