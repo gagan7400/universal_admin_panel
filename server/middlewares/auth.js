@@ -15,6 +15,7 @@ exports.isAuthenticatedAdmin = catchAsyncErrors(async (req, res, next) => {
     next();
 });
 exports.isAuthenticatedUser = async (req, res, next) => {
+    
     let bearerHeader = req.header("authorization");
 
     if (bearerHeader !== undefined) {
@@ -33,7 +34,7 @@ exports.isAuthenticatedUser = async (req, res, next) => {
 
             if (decoded) {
                 let user = await User.findById(decoded.id);
-               
+
                 req.user = user;
                 next();
             } else {

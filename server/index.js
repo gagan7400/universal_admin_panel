@@ -17,6 +17,7 @@ let authRoute = require("./routes/authRoute");
 let userRoute = require("./routes/userRoute");
 let orderRoute = require("./routes/orderRoute");
 let productRoute = require("./routes/productRoute");
+let cartRoute = require("./routes/cartRoute");
 let errorMiddleware = require("./middlewares/error");
 1
 
@@ -36,7 +37,7 @@ app.use("/api/admin", authRoute);
 app.use("/api/user", userRoute);
 app.use("/api/order", orderRoute);
 app.use("/api/product", productRoute);
-
+app.use('/api/cart', cartRoute);
 app.use(errorMiddleware);
 
 app.listen(port, () => {

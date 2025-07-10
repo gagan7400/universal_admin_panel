@@ -208,7 +208,7 @@ const Orders = () => {
 
                                 ))}
                             </tr>
-                        ))}
+                        )).reverse()}
 
                     </tbody>
                 </table>
