@@ -4,8 +4,8 @@ let nodemailer = require("nodemailer");
 let jwt = require("jsonwebtoken");
 let Joi = require("joi");
 const common_functions = require("../utils/common_functions.js");
-const generateToken = (adminId) => {
-    return jwt.sign({ id: adminId }, process.env.JWT_SECRET, { expiresIn: "7d" });
+const generateToken = ({ adminId, role }) => {
+    return jwt.sign({ id: adminId, role }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
 const transporter = nodemailer.createTransport({
@@ -53,7 +53,7 @@ const login = async (req, res) => {
         if (error) {
             return res.status(400).json({
                 code: 400,
-                success:false,
+                success: false,
                 message: error.details[0].message,
             });
         }
@@ -61,18 +61,18 @@ const login = async (req, res) => {
         const admin = await Admin.findOne({ email });
         if (!admin) return res.status(400).json({
             code: 400,
-            success:false,
+            success: false,
             message: "User not found."
         });
 
         const match = await bcrypt.compare(password, admin.password);
         if (!match) return res.status(400).json({
             code: 400,
-            success:false,
+            success: false,
             message: "Password is incorrect."
         });
 
-        const token = await generateToken(admin._id);
+        const token = await generateToken({ adminId: admin._id, role: "admin" });
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "Production",
@@ -80,7 +80,7 @@ const login = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000 // 1 day
         }).status(200).json({
             code: 200,
-            success:true,
+            success: true,
             message: "Admin logged in successfully...",
             token,
             data: admin
@@ -88,7 +88,7 @@ const login = async (req, res) => {
     } catch (err) {
         return res.status(400).json({
             code: 400,
-            success:false,
+            success: false,
             message: "An error occurred while processing your request.",
         });
     }

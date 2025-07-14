@@ -99,13 +99,13 @@ export default function Users() {
 
     return (
         <div className="  mx-auto bg-white rounded-xl shadow-xl p-6">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Users Dashboard</h2>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Users</h2>
 
             {/* Top controls */}
             <div className="flex flex-wrap gap-4 justify-between items-center mb-6">
                 <input
                     type="text"
-                    placeholder="Search users..."
+                    placeholder="Search Users..."
                     className="w-64 p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 outline-none"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}

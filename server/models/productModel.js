@@ -74,7 +74,6 @@ const productSchema = mongoose.Schema({
     size: String,
     discountPercentage: String,
     material: String,
-
     createdAt: {
         type: Date,
         default: Date.now,

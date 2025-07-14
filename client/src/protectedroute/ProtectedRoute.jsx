@@ -6,10 +6,10 @@ import { logout, loginSuccess, setAuthLoading } from '../redux/actions/authActio
 import axios from 'axios';
 import Loader from '../layout/Loader.jsx';
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, allowedRoles = [] }) => {
     const dispatch = useDispatch();
     const location = useLocation();
-    const { isAuthenticated, loading, error } = useSelector((state) => state.auth);
+    const { isAuthenticated, loading, admin } = useSelector((state) => state.auth);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -19,7 +19,7 @@ const ProtectedRoute = ({ children }) => {
                     withCredentials: true,
                 });
                 if (data.success) {
-                    dispatch(loginSuccess(data.data));
+                    dispatch(loginSuccess(data.data)); // data.data includes role and permissions
                 } else {
                     dispatch(logout());
                 }
@@ -29,9 +29,15 @@ const ProtectedRoute = ({ children }) => {
         };
         checkAuth();
     }, [dispatch]);
-    if (loading) { return <Loader /> };
+
+    if (loading) return <Loader />;
 
     if (!isAuthenticated) return <Navigate to="/login" state={{ from: location }} replace />;
+
+    // Role-based restriction
+    if (allowedRoles.length > 0 && !allowedRoles.includes(admin?.role)) {
+        return <Navigate to="/unauthorized" replace />;
+    }
 
     return children;
 };

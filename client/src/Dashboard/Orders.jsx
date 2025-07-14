@@ -113,7 +113,7 @@ const Orders = () => {
 
 
     return (
-        <div className="mx-auto bg-white rounded-2xl shadow-xl p-8 space-y-6">
+        <div className="mx-auto bg-white rounded-xl shadow-xl p-6 space-y-6">
             <h2 className="text-2xl font-bold text-gray-800">Orders</h2>
             <div className="flex flex-wrap gap-4">
                 {['orderId', 'userId', 'status', 'totalPrice', 'paidAt'].map(col => (
@@ -132,7 +132,7 @@ const Orders = () => {
             <div className="flex flex-wrap gap-4 items-center justify-between">
                 <input
                     type="text"
-                    placeholder="Search..."
+                    placeholder="Search Orders..."
                     className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 outline-none"
                     value={search}
                     onChange={(e) => {

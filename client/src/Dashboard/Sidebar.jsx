@@ -105,11 +105,11 @@ const Sidebar = () => {
                 onMouseDown={() => { isDragging.current = true }}
                 onClick={handleToggle}
                 title={isCollapsed ? "Open Sidebar" : "Close Sidebar"}
-                style={{ zIndex: "0" }}
-                className="absolute  top-9 -right-6 transform -translate-y-1/2 w-12 h-12 flex items-center justify-center bg-amber-300 text-amber-50  rotate-45 rounded-t-sm shadow"
+                style={{ zIndex: "-1" }}
+                className="absolute top-9 -right-6 transform -translate-y-1/2 w-12 h-12 flex  justify-center bg-amber-300 text-amber-50  rotate-45 rounded-t-sm shadow"
             >
                 {/* Icon can be image or emoji */}
-                <span className='text-2xl  rotate-[-35deg]'>{isCollapsed ? '>' : '<'}</span>
+                <span className='ms-7 text-2xl rotate-[-45deg]'>{isCollapsed ? '>' : '<'}</span>
             </div>
         </div>
     );

@@ -10,7 +10,7 @@ const base_url = process.env.NODE_ENV == "Production" ? process.env.BASE_URL_LIV
 
 
 const createProductController = catchAsyncErrors(async (req, res, next) => {
-
+    console.log(req.user)
 
     const files = req.files;
     const bannerFile = files.bannerImage?.[0];

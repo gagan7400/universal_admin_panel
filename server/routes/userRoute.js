@@ -19,9 +19,9 @@ router.post("/resend-otp", resendOTP);
 router.post("/forgot-password", forgotPassword);
 router.post("/set-new-password", setNewPassword);
 router.post("/delete-user-account/:id", deleteUserAccount);
-router.get("/getallusers", isAuthenticatedAdmin, authorizeRoles("admin"), getAllUsers);
+router.get("/getallusers", isAuthenticatedAdmin, getAllUsers);
 router.put("/update/:id", isAuthenticatedUser, authorizeRoles("user"), upload.single("image"), updateUser);
-router.get("/count-users", isAuthenticatedAdmin, authorizeRoles("admin"), countUsers);
+router.get("/count-users", isAuthenticatedAdmin, countUsers);
 
 router.get("/:id/addresses", isAuthenticatedUser, authorizeRoles("user"), getAddresses);
 router.post("/:id/add-new-address", isAuthenticatedUser, authorizeRoles("user"), addAddress);

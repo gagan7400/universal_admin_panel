@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { loginAdmin } from '../redux/actions/authActions';
+import { loginSubAdmin } from '../redux/actions/authActions';
 import { Bounce, toast } from 'react-toastify';
-const Login = () => {
+const SubadminLogin = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
@@ -12,7 +12,7 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(loginAdmin(email, password, navigate));
+        dispatch(loginSubAdmin(email, password, navigate));
     };
 
     useEffect(() => {
@@ -33,7 +33,7 @@ const Login = () => {
         <>
             <div className="min-h-screen bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300 flex items-center justify-center font-sans antialiased text-gray-900">
                 <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 sm:p-10 transition-all duration-300 ease-in-out">
-                    <h2 className="text-3xl font-extrabold text-center text-blue-800 mb-6">Login</h2>
+                    <h2 className="text-3xl font-extrabold text-center text-blue-800 mb-6">SubAdmin Login</h2>
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
@@ -69,16 +69,10 @@ const Login = () => {
                             Login
                         </button>
                     </form>
-
-                    <div className="text-center mt-5">
-                        <NavLink to="/forgot-password" className="text-blue-600 hover:underline text-base">
-                            Forgot your password?
-                        </NavLink>
-                    </div>
                 </div>
             </div>
         </>
     );
 };
 
-export default Login;
+export default SubadminLogin;
