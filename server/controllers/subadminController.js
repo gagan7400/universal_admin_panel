@@ -120,4 +120,12 @@ let getsubadminprofile = async (req, res) => {
         res.status(500).json({ success: false, message: err.message });
     }
 }
-module.exports = { createSubadmin, getAllSubadmins, deleteSubadmin, loginSubadmin, updateSubadmin, getsubadminprofile }
+let logoutSubAdmin = async (req, res) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "Production"
+    });
+    res.json({ success: true, message: "Logged out" });
+}
+module.exports = { createSubadmin, getAllSubadmins, deleteSubadmin, loginSubadmin, updateSubadmin, getsubadminprofile, logoutSubAdmin }
