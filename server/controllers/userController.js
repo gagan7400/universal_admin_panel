@@ -699,7 +699,7 @@ const addAddress = async (req, res) => {
         user.address.push(req.body);
         await user.save();
 
-        return res.status(201).json({ status: true, message: "Address added", data: user.address });
+        return res.status(200).json({ status: true, message: "Address added", data: user.address });
     } catch (err) {
         return res.status(500).json({ status: false, message: err.message });
     }
