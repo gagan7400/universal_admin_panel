@@ -21,7 +21,7 @@ const createSubadmin = async (req, res) => {
             createdBy: req.user._id,
         });
 
-        res.status(201).json({ success: true, subadmin: newSubadmin, message: "SubAdmin Created Successfully" });
+        res.status(200).json({ success: true, subadmin: newSubadmin, message: "SubAdmin Created Successfully" });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }

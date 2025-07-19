@@ -69,7 +69,7 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
     const product = new Product(newProduct);
     await product.save();
 
-    res.status(201).json({
+    res.status(200).json({
         success: true,
         message: "Product Created Successfully",
         data: product,

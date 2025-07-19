@@ -222,7 +222,7 @@ const verifyAccount = async (req, res) => {
         const subject = "Verify your email";
         const content = `<h1>${emailOTP}</h1>`;
         await common_functions.sendEmail(email, subject, content);
-        res.send({ success: true, message: "Otp Sent on your Email Id" })
+        res.send({ status: true, message: "Otp Sent on your Email Id" })
 
     } catch (error) {
         return res.status(400).json({
@@ -491,7 +491,6 @@ const setNewPassword = async (req, res) => {
             message: "Your password has been updated successfully.",
         });
     } catch (err) {
-        console.error("Error while resetting password:", err);
         return res.status(400).json({
             code: 400,
             status: false,
@@ -552,7 +551,7 @@ const deleteUserAccount = async (req, res) => {
 const getAllUsers = async (req, res) => {
     try {
         let users = await User.find();
-        res.status(200).send({ success: true, message: "Users Get Successfully", data: users })
+        res.status(200).send({ status: true, message: "Users Get Successfully", data: users })
     } catch (error) {
         return res.status(400).json({
             code: 400,
@@ -565,7 +564,7 @@ const getAllUsers = async (req, res) => {
 const countUsers = async (req, res) => {
     try {
         let users = await User.countDocuments();
-        res.status(200).send({ success: true, message: "Users Get Successfully", data: users })
+        res.status(200).send({ status: true, message: "Users Get Successfully", data: users })
     } catch (error) {
         return res.status(400).json({
             code: 400,
@@ -699,7 +698,7 @@ const addAddress = async (req, res) => {
         user.address.push(req.body);
         await user.save();
 
-        return res.status(201).json({ status: true, message: "Address added", data: user.address });
+        return res.status(200).json({ status: true, message: "Address added", data: user.address });
     } catch (err) {
         return res.status(500).json({ status: false, message: err.message });
     }

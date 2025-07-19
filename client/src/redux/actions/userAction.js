@@ -9,7 +9,7 @@ export const getAllUsers = () => async (dispatch) => {
             "http://localhost:4000/api/user/getallusers",
             { withCredentials: true }
         );
-        if (data.success) {
+        if (data.status) {
             dispatch({ type: "GET_USER_SUCCESS", payload: data.data });
         } else {
             dispatch({ type: "GET_USER_FAIL", payload: data.message });
@@ -27,7 +27,7 @@ export const countUsers = () => async (dispatch) => {
             "http://localhost:4000/api/user/count-users",
             { withCredentials: true }
         );
-        if (data.success) {
+        if (data.status) {
             dispatch({ type: "COUNT_USER_SUCCESS", payload: data.data });
         } else {
             dispatch({ type: "COUNT_USER_FAIL", payload: data.message });

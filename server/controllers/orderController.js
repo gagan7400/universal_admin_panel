@@ -56,7 +56,7 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
         await product.save({ validateBeforeSave: false });
     }
 
-    res.status(201).json({
+    res.status(200).json({
         success: true,
         message: "Order placed successfully",
         data: order,

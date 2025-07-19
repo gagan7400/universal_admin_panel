@@ -12,7 +12,7 @@ const Orders = () => {
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
     const [currentPage, setCurrentPage] = useState(1);
-    const [visibleColumns, setVisibleColumns] = useState(['orderId', 'userId', 'status', 'totalPrice', 'paidAt']);
+    const [visibleColumns, setVisibleColumns] = useState(['orderId', 'userId', 'status', 'totalPrice', 'paidAt', 'quantity', 'paymentStatus']);
     const [statusFilter, setStatusFilter] = useState('');
     useEffect(() => {
         dispatch(getAllOrders());
@@ -55,6 +55,8 @@ const Orders = () => {
             userId: order.user,
             status: order.orderStatus,
             totalPrice: order.totalPrice,
+            quantity: order.orderItems[0].quantity,
+            paymentStatus: order.paymentInfo.status,
             paidAt: new Date(order.paidAt).toLocaleDateString(),
         }));
     }, [allorders]);
@@ -110,13 +112,12 @@ const Orders = () => {
     };
 
     const statusOptions = ["Processing", "Shipped", "Delivered", "Completed", "Cancelled"];
-
-
+    console.log(allorders)
     return (
         <div className="mx-auto bg-white rounded-xl shadow-xl p-6 space-y-6">
             <h2 className="text-2xl font-bold text-gray-800">Orders</h2>
             <div className="flex flex-wrap gap-4">
-                {['orderId', 'userId', 'status', 'totalPrice', 'paidAt'].map(col => (
+                {['orderId', 'userId', 'quantity', 'status', 'totalPrice', 'paidAt', "paymentStatus"].map(col => (
                     <label key={col} className="text-sm text-gray-700 flex items-center space-x-1">
                         <input
                             type="checkbox"
@@ -158,7 +159,6 @@ const Orders = () => {
                 </select>
             </div>
 
-
             <div className="overflow-x-auto rounded-lg shadow-sm">
                 <table className="min-w-full border border-gray-200 text-sm text-left bg-white rounded-lg">
                     <thead className="bg-blue-100 text-gray-700 uppercase text-xs">
@@ -190,7 +190,7 @@ const Orders = () => {
                                                 disabled={['Delivered', 'Completed'].includes(row.status)}
                                                 value={row.status}
                                                 onChange={(e) => handleStatusUpdate(row.orderId, e.target.value)}
-                                                className={`border rounded px-2 pe-5  py-1 text-sm ${['Delivered', 'Completed'].includes(row.status)
+                                                className={`border rounded px-2 pe-6  py-1 text-sm ${['Delivered', 'Completed'].includes(row.status)
                                                     ? 'bg-green-100 border-green-400 text-green-800 cursor-not-allowed'
                                                     : 'bg-white border-gray-300'
                                                     }`}
@@ -201,9 +201,8 @@ const Orders = () => {
                                                     </option>
                                                 ))}
                                             </select>
-                                        ) : (
-                                            row[col]
-                                        )}
+
+                                        ) : (row[col])}
                                     </td>
 
                                 ))}

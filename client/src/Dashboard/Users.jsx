@@ -13,7 +13,7 @@ export default function Users() {
     const itemsPerPage = 5;
     let dispatch = useDispatch();
     let { loading, error, users } = useSelector(state => state.user);
-
+console.log(users)
 
     useEffect(() => {
         dispatch(getAllUsers())

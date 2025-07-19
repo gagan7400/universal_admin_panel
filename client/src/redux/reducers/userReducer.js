@@ -16,7 +16,7 @@ export const userReducer = (state = initialState, action) => {
         case 'COUNT_USER_SUCCESS':
             return { ...state, loading: false, usercount: action.payload, error: null };
         case 'GET_USER_FAIL':
-            return { ...state, loading: false, error: action.payload, users: null };
+            return { ...state, loading: false, error: action.payload, users: [] };
         case 'COUNT_USER_FAIL':
             return { ...state, usercount: 0, loading: false, error: action.payload };
         default:

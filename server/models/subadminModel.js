@@ -17,7 +17,7 @@ const subadminSchema = new mongoose.Schema({
     permissions: {
         type: [String], // e.g., ["view_orders", "process_orders"]
         default: [],
-        enum: ["orders", "proccess_orders", "users", "products", "update_products", "delete_products", "add_products"]
+        enum: ["orders", "users", "products",]
     },
     role: {
         type: String,
