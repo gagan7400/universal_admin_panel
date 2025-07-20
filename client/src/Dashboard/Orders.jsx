@@ -4,6 +4,7 @@ import { getAllOrders } from '../redux/actions/orderAction';
 import axios from 'axios';
 import { Bounce, toast } from 'react-toastify';
 import OrderDialog from './OrderDialog';
+import Loader from '../layout/Loader';
 
 const Orders = () => {
     const dispatch = useDispatch();
@@ -21,7 +22,7 @@ const Orders = () => {
 
     const handleStatusUpdate = async (orderId, newStatus) => {
         try {
-            let { data } = await axios.put(`http://localhost:4000/api/order/admin/order/${orderId}/`, { orderStatus: newStatus }, { withCredentials: true });
+            let { data } = await axios.put(`https://universal-admin-panel.onrender.com/api/order/admin/order/${orderId}/`, { orderStatus: newStatus }, { withCredentials: true });
             dispatch(getAllOrders()); // Refresh after update
             toast.success(data.message, {
                 position: "top-right",
@@ -60,7 +61,7 @@ const Orders = () => {
             totalPrice: order.totalPrice,
             quantity: order.orderItems[0].quantity,
             paymentStatus: order.paymentInfo.status,
-             
+
         }));
     }, [allorders]);
 
@@ -162,7 +163,7 @@ const Orders = () => {
             </div>
 
             <div className="overflow-x-auto rounded-lg shadow-sm">
-                <table className="min-w-full border border-gray-200 text-sm text-left bg-white rounded-lg">
+                {loading ? <div className="flex justify-center items-center p-3"><Loader /></div> : <table className="min-w-full border border-gray-200 text-sm text-left bg-white rounded-lg">
                     <thead className="bg-blue-100 text-gray-700 uppercase text-xs">
                         <tr>
                             {visibleColumns.map(col => (
@@ -211,7 +212,7 @@ const Orders = () => {
                             </tr>
                         )).reverse()}
                     </tbody>
-                </table>
+                </table>}
             </div>
 
             {/* Pagination Controls */}

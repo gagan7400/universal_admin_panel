@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const API = import.meta.env.VITE_API || "http://localhost:4000";
+const API = import.meta.env.VITE_API || "https://universal-admin-panel.onrender.com";
 
 export const getAllOrders = () => async (dispatch) => {
     dispatch({ type: "GET_ORDERS_REQUEST" });
     try {
         const { data } = await axios.get(
-            "http://localhost:4000/api/order/admin/orders",
+            "https://universal-admin-panel.onrender.com/api/order/admin/orders",
             { withCredentials: true }
         );
         if (data.success) {
@@ -24,7 +24,7 @@ export const countOrders = () => async (dispatch) => {
     dispatch({ type: "COUNT_ORDERS_REQUEST" });
     try {
         const { data } = await axios.get(
-            "http://localhost:4000/api/order/admin/count-orders",
+            "https://universal-admin-panel.onrender.com/api/order/admin/count-orders",
             { withCredentials: true }
         );
         if (data.success) {

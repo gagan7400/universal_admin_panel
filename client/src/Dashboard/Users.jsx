@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from 'react-redux'
 import { getAllUsers } from "../redux/actions/userAction";
+import Loader from "../layout/Loader";
 export default function Users() {
     const [filteredusers, setFilteredusers] = useState([]);
     const [search, setSearch] = useState("");
@@ -123,7 +124,7 @@ export default function Users() {
 
             {/* Table */}
             <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left border rounded-lg overflow-hidden">
+                {loading ? <div className="flex justify-center items-center p-3"><Loader /></div> : <><table className="w-full text-sm text-left border rounded-lg overflow-hidden">
                     <thead className="bg-blue-100 text-gray-700 text-xs uppercase">
                         <tr>
                             {columns.map((col, index) => (
@@ -132,7 +133,7 @@ export default function Users() {
                                     className="px-6 py-3 cursor-pointer select-none"
                                     onClick={() => handleSort(col.key)}
                                 >
-                                    <div className="flex items-center gap-1">
+                                    <div className="flex items-center gap-1 whitespace-nowrap">
                                         <span className="text-sm capitalize">{col.label}</span>
                                         {col.key && (
                                             sortField === col.key ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'
@@ -163,7 +164,7 @@ export default function Users() {
                             </tr>
                         )}
                     </tbody>
-                </table>
+                </table></>}
             </div>
 
             {/* Pagination */}

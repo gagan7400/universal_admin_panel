@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loader from "../layout/Loader";
 
 const SubadminManager = () => {
     const [subadmins, setSubadmins] = useState([]);
     const [show, setShow] = useState(false);
+    let [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -15,11 +17,13 @@ const SubadminManager = () => {
     const [editId, setEditId] = useState(null);
 
     const fetchSubadmins = async () => {
+        setLoading(true)
         try {
-            const { data } = await axios.get("http://localhost:4000/api/admin/subadmins", {
+            const { data } = await axios.get("https://universal-admin-panel.onrender.com/api/admin/subadmins", {
                 withCredentials: true,
             });
             setSubadmins(data.data);
+            setLoading(false)
         } catch (err) {
             toast.error(err.response?.data?.message || "Failed to fetch subadmins");
         }
@@ -50,16 +54,18 @@ const SubadminManager = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            setLoading(true)
             if (isEditMode) {
                 const { data } = await axios.put(
-                    `http://localhost:4000/api/admin/subadmin/${editId}`,
+                    `https://universal-admin-panel.onrender.com/api/admin/subadmin/${editId}`,
                     formData,
                     { withCredentials: true }
                 );
                 toast.success(data.message);
+
             } else {
                 const { data } = await axios.post(
-                    "http://localhost:4000/api/admin/subadmin/new",
+                    "https://universal-admin-panel.onrender.com/api/admin/subadmin/new",
                     formData,
                     { withCredentials: true }
                 );
@@ -69,7 +75,9 @@ const SubadminManager = () => {
             setIsEditMode(false);
             setEditId(null);
             fetchSubadmins();
+            setLoading(false)
             setShow(false)
+
         } catch (err) {
             toast.error(err.response?.data?.message);
         }
@@ -91,7 +99,7 @@ const SubadminManager = () => {
         if (!window.confirm("Are you sure you want to delete this subadmin?")) return;
         try {
             const { data } = await axios.delete(
-                `http://localhost:4000/api/admin/subadmin/${id}`,
+                `https://universal-admin-panel.onrender.com/api/admin/subadmin/${id}`,
                 { withCredentials: true }
             );
             toast.success(data.message);
@@ -190,7 +198,7 @@ const SubadminManager = () => {
                 <>
                     {/* Subadmin Table */}
                     <div className="overflow-x-auto">
-                        <table className="min-w-full border border-gray-200 text-sm text-left rounded-lg overflow-hidden">
+                        {loading ? <div className="flex justify-center items-center p-3"><Loader /></div> : <table className="min-w-full border border-gray-200 text-sm text-left rounded-lg overflow-hidden">
                             <thead className="bg-blue-100 text-gray-800 font-semibold">
                                 <tr>
                                     <th className="px-4 py-3">Name</th>
@@ -207,10 +215,10 @@ const SubadminManager = () => {
                                         <td className="px-4 py-2">{subadmin.name}</td>
                                         <td className="px-4 py-2">{subadmin.email}</td>
                                         <td className="px-4 py-2 capitalize">{subadmin.role}</td>
-                                        <td className="px-4 py-2 w-40 capitalize  flex justify-between flex-wrap items-center gap-1 ">{subadmin.permissions.map((v,i) => (
+                                        <td className="px-4 py-2 w-40 capitalize  flex justify-between flex-wrap items-center gap-1 ">{subadmin.permissions.map((v, i) => (
                                             <p key={i}> {v}</p>
                                         ))}</td>
-                                         
+
                                         <td className="px-4 py-2 capitalize">{subadmin?.status?.toString()}</td>
                                         <td className="px-6 py-3 min-w-fit whitespace-nowrap">
                                             <button
@@ -237,7 +245,7 @@ const SubadminManager = () => {
                                     </tr>
                                 )}
                             </tbody>
-                        </table>
+                        </table>}
                     </div>
                 </>
             }

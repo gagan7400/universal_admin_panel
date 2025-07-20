@@ -1,10 +1,10 @@
 import axios from 'axios';
-const API = import.meta.env.VITE_API || "http://localhost:4000";
+// const API = import.meta.env.VITE_API || "https://universal-admin-panel.onrender.com";
+const API = 'https://universal-admin-panel.onrender.com';
 
 export const setAuthLoading = () => ({ type: "LOGIN_ADMIN_REQUEST" });
 
 export const loginSuccess = (admin) => ({
-
   type: "LOGIN_ADMIN_SUCCESS",
   payload: admin
 });
@@ -30,7 +30,7 @@ export const loginAdmin = (email, password, navigate) => async (dispatch) => {
   }
 };
 
- 
+
 
 export const logout = () => async (dispatch) => {
   try {
@@ -40,7 +40,7 @@ export const logout = () => async (dispatch) => {
     dispatch({ type: "LOGIN_ADMIN_FAIL", payload: err.message });
   }
 };
- 
+
 export const loadAdmin = () => async (dispatch) => {
   dispatch(setAuthLoading());
   try {
@@ -54,7 +54,7 @@ export const loadAdmin = () => async (dispatch) => {
     dispatch(logout());
   }
 };
- 
+
 
 export const getAllUsers = () => async (dispatch) => {
   dispatch({ type: "GET_USER_REQUEST" });

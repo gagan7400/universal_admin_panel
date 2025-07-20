@@ -3,6 +3,7 @@ import axios from "axios";
 import ProductImageUploader from "./ProductImageUploader";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import Loader from "../layout/Loader";
 
 export default function Products() {
     const [products, setProducts] = useState([]);
@@ -13,6 +14,7 @@ export default function Products() {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [show, setShow] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const itemsPerPage = 5;
 
@@ -68,7 +70,7 @@ export default function Products() {
         // ✅ Update or Create Logic
         if (isUpdate && isUpdateId) {
             try {
-                const { data } = await axios.put(`http://localhost:4000/api/product/${isUpdateId}`, formData, {
+                const { data } = await axios.put(`https://universal-admin-panel.onrender.com/api/product/${isUpdateId}`, formData, {
                     withCredentials: true,
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -91,7 +93,7 @@ export default function Products() {
         } else {
             // 👇 Add New Product Logic (already working)
             try {
-                const { data } = await axios.post("http://localhost:4000/api/product/new", formData, {
+                const { data } = await axios.post("https://universal-admin-panel.onrender.com/api/product/new", formData, {
                     withCredentials: true,
                 });
                 if (data.success) {
@@ -134,8 +136,9 @@ export default function Products() {
     // new product statess end 
 
     const getProducts = async () => {
+        setLoading(true)
         try {
-            let { data } = await axios.get("http://localhost:4000/api/product/all");
+            let { data } = await axios.get("https://universal-admin-panel.onrender.com/api/product/all");
             if (data.success) {
                 setProducts(data.data);
                 setFilteredProducts(data.data);
@@ -143,8 +146,10 @@ export default function Products() {
                 setProducts([]);
                 toast.error(data.message || "Error occured");
             }
+            setLoading(false)
         } catch (error) {
             toast.error(error.response?.data?.message || "Error occured");
+            setLoading(false)
         }
     };
 
@@ -182,7 +187,7 @@ export default function Products() {
     const deleteHandler = async (id) => {
         if (confirm("Are you sure you want to delete this ")) {
             try {
-                let { data } = await axios.delete("http://localhost:4000/api/product/" + id, {
+                let { data } = await axios.delete("https://universal-admin-panel.onrender.com/api/product/" + id, {
                     withCredentials: true,
                 });
                 if (data.success) {
@@ -380,7 +385,7 @@ export default function Products() {
 
                             {/* Table */}
                             <div className="overflow-x-auto">
-                                <table className="w-full text-sm text-left border rounded-lg overflow-hidden">
+                                {loading ? <div className="flex justify-center items-center p-3"><Loader /></div> : <table className="w-full text-sm text-left border rounded-lg overflow-hidden">
                                     <thead className="bg-blue-100 text-gray-700 text-xs uppercase">
                                         <tr>
                                             {["Banner", "name", "price", "description", "category", "stock", "size", "dimensions", "Images"].map((col) => (
@@ -448,7 +453,7 @@ export default function Products() {
                                             </tr>
                                         )}
                                     </tbody>
-                                </table>
+                                </table>}
                             </div>
 
                             {/* Pagination */}

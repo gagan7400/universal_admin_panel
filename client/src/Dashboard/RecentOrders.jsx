@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getAllOrders } from "../redux/actions/orderAction";
+import Loader from "../layout/Loader";
 
 
 export default function RecentOrders() {
@@ -29,41 +30,42 @@ export default function RecentOrders() {
                 </div>
             </div>
             <div className="max-w-full overflow-x-auto">
-                <Table>
-                    {/* Table Header */}
-                    <TableHeader className="border-gray-100   border-y">
-                        <TableRow>
-                            <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs "  >  Products  </TableCell>
-                            <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs "  >  Price  </TableCell>
-                            <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs "  >  Payment Status  </TableCell>
-                            <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs "  >  Status  </TableCell>
-                        </TableRow>
-                    </TableHeader>
-
-                    <TableBody className="divide-y divide-gray-100  ">
-                        {allorders && allorders.slice(0, 5).map((order) => (
-                            <TableRow key={order._id} className="">
-                                <TableCell className="py-3">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-[50px] w-[50px] overflow-hidden rounded-md">
-                                            <img src={order.orderItems[0].image} className="h-[50px] w-[50px]" alt={order.name}
-                                            />
-                                        </div>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="py-3 text-gray-500 text-theme-sm  ">
-                                    {order.totalPrice}
-                                </TableCell>
-                                <TableCell className="py-3 text-gray-500 text-theme-sm  ">
-                                    {order.paymentInfo.status}
-                                </TableCell>
-                                <TableCell className="py-3 text-gray-500 text-theme-sm  ">
-                                    <Badge size="sm" color={order.orderStatus === "Delivered" ? "success" : order.orderStatus === "Processing" ? "warning" : "error"} >{order.orderStatus} </Badge>
-                                </TableCell>
+                {loading ? <div className="w-full p-3 flex justify-center items-center scrollbar-hide"><Loader /></div> :
+                    <Table>
+                        {/* Table Header */}
+                        <TableHeader className="border-gray-100   border-y">
+                            <TableRow>
+                                <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs "  >  Products  </TableCell>
+                                <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs "  >  Price  </TableCell>
+                                <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs "  >  Payment Status  </TableCell>
+                                <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs "  >  Status  </TableCell>
                             </TableRow>
-                        )).reverse()}
-                    </TableBody>
-                </Table>
+                        </TableHeader>
+
+                        <TableBody className="divide-y divide-gray-100  ">
+                            {allorders && allorders.slice(0, 5).map((order) => (
+                                <TableRow key={order._id} className="">
+                                    <TableCell className="py-3">
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-[50px] w-[50px] overflow-hidden rounded-md">
+                                                <img src={order.orderItems[0].image} className="h-[50px] w-[50px]" alt={order.name}
+                                                />
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-3 text-gray-500 text-theme-sm  ">
+                                        {order.totalPrice}
+                                    </TableCell>
+                                    <TableCell className="py-3 text-gray-500 text-theme-sm  ">
+                                        {order.paymentInfo.status}
+                                    </TableCell>
+                                    <TableCell className="py-3 text-gray-500 text-theme-sm  ">
+                                        <Badge size="sm" color={order.orderStatus === "Delivered" ? "success" : order.orderStatus === "Processing" ? "warning" : "error"} >{order.orderStatus} </Badge>
+                                    </TableCell>
+                                </TableRow>
+                            )).reverse()}
+                        </TableBody>
+                    </Table>}
             </div>
         </div>
     )

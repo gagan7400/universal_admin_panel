@@ -12,31 +12,31 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
     const location = useLocation();
     const { isAuthenticated, loading, admin } = useSelector((state) => state.auth);
 
-
+console.log("protectroute")
     useEffect(() => {
         const checkAuth = async () => {
             dispatch(setAuthLoading());
             try {
-                const { data } = await axios.get("http://localhost:4000/api/admin/profile", {
+                const { data } = await axios.get("https://universal-admin-panel.onrender.com/api/admin/profile", {
                     withCredentials: true,
                 });
                 if (data.success) {
                     dispatch(loginSuccess(data.data));
                 } else {
+                    console.log("console wala else logut out ", data)
                     dispatch(logout());
                 }
             } catch (error) {
+                console.log("catch wala else logut out ", error)
                 dispatch(logout());
             }
         };
-        if (!isAuthenticated && !admin) {
-            checkAuth();
-        }
+        checkAuth()
     }, [dispatch]);
 
 
     if (loading) return <Loader />;
-
+    console.log(isAuthenticated ,admin)
     if (!isAuthenticated) return <Navigate to="/login" replace />;
 
     // // Role-based restriction 

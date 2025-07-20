@@ -3,12 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { loginAdmin } from '../redux/actions/authActions';
 import { Bounce, toast } from 'react-toastify';
+import Loader from '../layout/Loader'
+import './loaderlogin.css'
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { token, error } = useSelector((state) => state.auth);
+    const { token, error ,loading } = useSelector((state) => state.auth);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -63,8 +65,9 @@ const Login = () => {
 
                         <button
                             type="submit"
-                            className="w-full bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white text-lg font-semibold py-2 rounded-lg shadow-md hover:shadow-lg transition duration-300"
+                            className="w-full flex justify-center items-center gap-3 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white text-lg font-semibold py-2 rounded-lg shadow-md hover:shadow-lg transition duration-300"
                         >
+                        {loading &&   <div className="loaderlogin "></div> }
                             Login
                         </button>
                     </form>

@@ -28,7 +28,7 @@ const Login = () => {
 
 
         try {
-            const response = await axios.post("http://localhost:4000/api/user/login", formData);
+            const response = await axios.post("https://universal-admin-panel.onrender.com/api/user/login", formData);
             if (response.data.status) {
                 console.log(response.data)
                 toast.success(response.data.message, {
