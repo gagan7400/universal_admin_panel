@@ -71,13 +71,13 @@ const login = async (req, res) => {
             success: false,
             message: "Password is incorrect."
         });
-         
+
         const token = await generateToken({ adminId: admin._id, role: admin.role });
-     
+
         res.cookie("token", token, {
             httpOnly: true,
             secure: true,
-             sameSite:"none",
+            sameSite: process.env.NODE_ENV ? "none" : "lax",
             maxAge: 24 * 60 * 60 * 1000 // 1 day
         }).status(200).json({
             code: 200,
@@ -98,7 +98,7 @@ const login = async (req, res) => {
 let logoutAdmin = async (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
-         sameSite:"none",
+        sameSite: process.env.NODE_ENV ? "none" : "lax",
         secure: true
     });
     res.json({ success: true, message: "Logged out" });
@@ -149,13 +149,13 @@ const resetPassword = async (req, res) => {
 };
 
 let getprofile = async (req, res) => {
-     
+
     try {
         const admin = await Admin.findById(req.user._id).select("-password"); // exclude password
         if (!admin) {
             return res.status(404).json({ success: false, message: "Admin not found" });
         }
-         
+
         res.status(200).json({
             success: true,
             data: admin
