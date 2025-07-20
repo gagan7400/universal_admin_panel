@@ -49,7 +49,6 @@ const SubadminManager = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData)
         try {
             if (isEditMode) {
                 const { data } = await axios.put(
@@ -159,7 +158,7 @@ const SubadminManager = () => {
                                             onChange={handleCheckboxChange}
                                             checked={formData?.permissions?.includes("orders")}
                                             value="orders" />
-                                        <label htmlFor=""> Orders     </label>
+                                        <label htmlFor=""> Orders </label>
                                     </div>
                                     <div>
                                         <input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2 " name="permissions"
@@ -168,27 +167,7 @@ const SubadminManager = () => {
                                             value="products" />
                                         <label htmlFor=""> Products  </label>
                                     </div>
-                                    <div>
-                                        <input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2 " name="permissions"
-                                            onChange={handleCheckboxChange}
-                                            checked={formData?.permissions?.includes("add_products")}
-                                            value="add_products" />
-                                        <label htmlFor=""> Add_products </label>
-                                    </div>
-                                    <div>
-                                        <input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2 " name="permissions"
-                                            onChange={handleCheckboxChange}
-                                            checked={formData?.permissions?.includes("update_products")}
-                                            value="update_products" />
-                                        <label htmlFor=""> Update_products  </label>
-                                    </div>
-                                    <div>
-                                        <input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2 " name="permissions"
-                                            onChange={handleCheckboxChange}
-                                            checked={formData?.permissions?.includes("delete_products")}
-                                            value="delete_products" />
-                                        <label htmlFor=""> Delete_products  </label>
-                                    </div>
+
                                     <div>
                                         <input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2 " name="permissions"
                                             onChange={handleCheckboxChange}
@@ -228,10 +207,11 @@ const SubadminManager = () => {
                                         <td className="px-4 py-2">{subadmin.name}</td>
                                         <td className="px-4 py-2">{subadmin.email}</td>
                                         <td className="px-4 py-2 capitalize">{subadmin.role}</td>
-                                        <td className="px-4 py-2 w-40 capitalize  flex justify-between flex-wrap items-center gap-1 ">{subadmin.permissions.map((v) => (
-                                            <p> {v}</p>
+                                        <td className="px-4 py-2 w-40 capitalize  flex justify-between flex-wrap items-center gap-1 ">{subadmin.permissions.map((v,i) => (
+                                            <p key={i}> {v}</p>
                                         ))}</td>
-                                        <td className="px-4 py-2 capitalize">{subadmin.status.toString()}</td>
+                                         
+                                        <td className="px-4 py-2 capitalize">{subadmin?.status?.toString()}</td>
                                         <td className="px-6 py-3 min-w-fit whitespace-nowrap">
                                             <button
                                                 onClick={() => handleEdit(subadmin)}

@@ -1,15 +1,17 @@
-// ProtectedRoute.jsx
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
-import { logout, loginSuccess, setAuthLoading } from '../redux/actions/authActions.js';
+// import { loadAdmin } from '../redux/actions/authActions.js';
 import axios from 'axios';
 import Loader from '../layout/Loader.jsx';
+import { loginSuccess, logout, setAuthLoading } from '../redux/actions/authActions.js';
+import { toast } from 'react-toastify';
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, allowedRoles = [] }) => {
     const dispatch = useDispatch();
     const location = useLocation();
-    const { isAuthenticated, loading, error } = useSelector((state) => state.auth);
+    const { isAuthenticated, loading, admin } = useSelector((state) => state.auth);
+
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -27,44 +29,23 @@ const ProtectedRoute = ({ children }) => {
                 dispatch(logout());
             }
         };
-        checkAuth();
+        if (!isAuthenticated && !admin) {
+            checkAuth();
+        }
     }, [dispatch]);
-    if (loading) { return <Loader /> };
 
-    if (!isAuthenticated) return <Navigate to="/login" state={{ from: location }} replace />;
+
+    if (loading) return <Loader />;
+
+    if (!isAuthenticated) return <Navigate to="/login" replace />;
+
+    // // Role-based restriction 
+    if (allowedRoles.length > 0 && !allowedRoles.includes(admin?.role)) {
+        toast.error("you are not allowed to this route");
+        return <Navigate to="/dashboard" replace />;
+    }
 
     return children;
 };
 
 export default ProtectedRoute;
-
-// // ProtectedRoute.jsx
-// import React, { useEffect } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { Navigate, useLocation } from 'react-router-dom';
-// import { loadAdmin } from '../redux/actions/authActions.js';
-// import axios from 'axios';
-// import Loader from '../layout/Loader.jsx';
-
-// const ProtectedRoute = ({ children, allowedRoles = [] }) => {
-//     const dispatch = useDispatch();
-//     const location = useLocation();
-//     const { isAuthenticated, loading, admin } = useSelector((state) => state.auth);
-
-//     useEffect(() => {
-//         loadAdmin()
-//     }, [dispatch]);
-
-//     if (loading) return <Loader />;
-
-//     if (!isAuthenticated) return <Navigate to="/login" replace />;
-
-//     // // Role-based restriction
-//     // if (allowedRoles.length > 0 && !allowedRoles.includes(admin?.role)) {
-//     //     return <Navigate to="/login" replace />;
-//     // }
-
-//     return children;
-// };
-
-// export default ProtectedRoute;

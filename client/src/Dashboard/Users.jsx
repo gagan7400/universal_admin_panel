@@ -9,11 +9,9 @@ export default function Users() {
     const [sortOrder, setSortOrder] = useState("asc");
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedCategory, setSelectedCategory] = useState("All");
-
     const itemsPerPage = 5;
     let dispatch = useDispatch();
     let { loading, error, users } = useSelector(state => state.user);
-console.log(users)
 
     useEffect(() => {
         dispatch(getAllUsers())

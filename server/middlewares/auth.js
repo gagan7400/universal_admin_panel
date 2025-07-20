@@ -3,46 +3,20 @@ const catchAsyncErrors = require("./catchAsyncErrors");
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/admin");
 const User = require("../models/usermodel");
-const subAdmin = require("../models/subadminModel");
-
-// exports.isAuthenticatedSubAdmin = catchAsyncErrors(async (req, res, next) => {
-//     const { token } = req.cookies;
-//     if (!token) {
-//         return next(new ErrorHandler("Please Login to access this resource", 401));
-//     }
-//     const decodedData = jwt.verify(token, process.env.JWT_SECRET);
-//     //we can access the user information from the req whenever the user logines;
-//     let user = await subAdmin.findById(decodedData.id);
-//     if (!user) {
-//         return next(new ErrorHandler("SubAdmin Not Found", 401));
-//     }
-//     req.user = user;
-//     next();
-// });
+ 
 exports.isAuthenticatedAdmin = catchAsyncErrors(async (req, res, next) => {
-
     const { token } = req.cookies;
     if (!token) {
         return next(new ErrorHandler("Please Login to access this resource", 401));
     }
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
         let user;
-        if (decoded.role === 'admin') {
-            user = await Admin.findById(decoded.id);
-            if (!user) {
-                return next(new ErrorHandler("Unauthorized ", 401));
-            }
-        } else if (decoded.role === 'subadmin') {
-            user = await subAdmin.findById(decoded.id);
-            if (!user || !user.status) {
-                return next(new ErrorHandler("Unauthorized or Deactivated", 401));
-            }
+        user = await Admin.findById(decoded.id);
+        if (!user) {
+            return next(new ErrorHandler("Unauthorized ", 401));
         }
-
         req.user = user;
-        req.user.role = decoded.role;
         next();
     } catch (err) {
         return next(new ErrorHandler(err.message, 401));

@@ -44,9 +44,15 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
         itemsPrice,
         taxPrice,
         shippingPrice,
-        totalPrice,
+        totalPrice: Number(itemsPrice) + Number(taxPrice) + Number(shippingPrice),
         paidAt: Date.now(),
-        user: req.user._id,
+        user: {
+            id: req.user._id,
+            name: req.user.firstName + " " + req.user.lastName,
+            email: req.user.email,
+            phone: req.user.phone,
+            image: req.user.image,
+        }
     });
 
     // 3. 🔻 Reduce stock for each product

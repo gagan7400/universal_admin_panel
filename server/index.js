@@ -7,9 +7,10 @@ const cookieParser = require('cookie-parser');
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-    origin: ['http://localhost:5174', 'http://localhost:80', 'http://localhost:5173'], // Whitelist domains
-    credentials: true, // Allow cookies and credentials
+    origin: (origin, callback) => callback(null, true),
+    credentials: true
 }));
+
 app.use(express.json()); // ✅ For JSON payloads
 let connectDb = require("./db/connectDb");
 let port = process.env.PORT || 4000;

@@ -3,16 +3,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getAllOrders } from '../redux/actions/orderAction';
 import axios from 'axios';
 import { Bounce, toast } from 'react-toastify';
+import OrderDialog from './OrderDialog';
 
 const Orders = () => {
     const dispatch = useDispatch();
     const { allorders, loading, error } = useSelector(state => state.order);
-
+    const [open, setOpen] = useState(false)
     const [search, setSearch] = useState('');
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
     const [currentPage, setCurrentPage] = useState(1);
-    const [visibleColumns, setVisibleColumns] = useState(['orderId', 'userId', 'status', 'totalPrice', 'paidAt', 'quantity', 'paymentStatus']);
+    const [visibleColumns, setVisibleColumns] = useState(['orderId', 'user', 'email', 'status', 'totalPrice', 'quantity', 'paymentStatus']);
     const [statusFilter, setStatusFilter] = useState('');
     useEffect(() => {
         dispatch(getAllOrders());
@@ -51,13 +52,15 @@ const Orders = () => {
     const formattedData = useMemo(() => {
         if (!allorders) return [];
         return allorders.map(order => ({
+            order: order,
             orderId: order._id,
-            userId: order.user,
+            user: order.user,
+            email: order.user.email,
             status: order.orderStatus,
             totalPrice: order.totalPrice,
             quantity: order.orderItems[0].quantity,
             paymentStatus: order.paymentInfo.status,
-            paidAt: new Date(order.paidAt).toLocaleDateString(),
+             
         }));
     }, [allorders]);
 
@@ -112,12 +115,11 @@ const Orders = () => {
     };
 
     const statusOptions = ["Processing", "Shipped", "Delivered", "Completed", "Cancelled"];
-    console.log(allorders)
     return (
         <div className="mx-auto bg-white rounded-xl shadow-xl p-6 space-y-6">
             <h2 className="text-2xl font-bold text-gray-800">Orders</h2>
             <div className="flex flex-wrap gap-4">
-                {['orderId', 'userId', 'quantity', 'status', 'totalPrice', 'paidAt', "paymentStatus"].map(col => (
+                {['orderId', 'user', 'quantity', 'status', 'totalPrice', "paymentStatus"].map(col => (
                     <label key={col} className="text-sm text-gray-700 flex items-center space-x-1">
                         <input
                             type="checkbox"
@@ -171,6 +173,7 @@ const Orders = () => {
                                     </div>
                                 </th>
                             ))}
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
@@ -194,21 +197,19 @@ const Orders = () => {
                                                     ? 'bg-green-100 border-green-400 text-green-800 cursor-not-allowed'
                                                     : 'bg-white border-gray-300'
                                                     }`}
-                                            >
-                                                {statusOptions.map((status) => (
-                                                    <option key={status} value={status}>
-                                                        {status}
-                                                    </option>
-                                                ))}
+                                            > {statusOptions.map((status) => (
+                                                <option key={status} value={status}>
+                                                    {status}
+                                                </option>
+                                            ))}
                                             </select>
 
-                                        ) : (row[col])}
+                                        ) : col === 'user' ? (<div className='flex  gap-1'> <img src={row?.user?.image?.url} className='w-5 rounded-2xl' /> <p className='whitespace-pre'>{row.user.name}</p></div>) : (row[col])}
                                     </td>
-
                                 ))}
+                                <OrderDialog order={row.order} />
                             </tr>
                         )).reverse()}
-
                     </tbody>
                 </table>
             </div>

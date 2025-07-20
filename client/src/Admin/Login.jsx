@@ -16,7 +16,6 @@ const Login = () => {
     };
 
     useEffect(() => {
-        console.log("error", error)
         toast.error(error, {
             position: "top-right",
             autoClose: 2000,

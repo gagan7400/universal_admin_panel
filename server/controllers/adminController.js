@@ -33,7 +33,7 @@ const register = async (req, res) => {
         if (existing) return res.status(400).json({ success: false, message: "Admin already exists" });
 
         const hashed = await bcrypt.hash(password, 12);
-        const admin = await Admin.create({ email, password: hashed });
+        const admin = await Admin.create({ email, password: hashed, role: "admin" });
 
         res.status(200).json({ success: true, message: "Admin Registered Successfully" });
     } catch (error) {
@@ -62,7 +62,7 @@ const login = async (req, res) => {
         if (!admin) return res.status(400).json({
             code: 400,
             success: false,
-            message: "User not found."
+            message: "Admin or SubAdmin not found."
         });
 
         const match = await bcrypt.compare(password, admin.password);
@@ -71,8 +71,9 @@ const login = async (req, res) => {
             success: false,
             message: "Password is incorrect."
         });
-
-        const token = await generateToken({ adminId: admin._id, role: "admin" });
+         
+        const token = await generateToken({ adminId: admin._id, role: admin.role });
+     
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "Production",
@@ -148,11 +149,13 @@ const resetPassword = async (req, res) => {
 };
 
 let getprofile = async (req, res) => {
+     
     try {
         const admin = await Admin.findById(req.user._id).select("-password"); // exclude password
         if (!admin) {
             return res.status(404).json({ success: false, message: "Admin not found" });
         }
+         
         res.status(200).json({
             success: true,
             data: admin

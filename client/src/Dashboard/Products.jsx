@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductImageUploader from "./ProductImageUploader";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 export default function Products() {
     const [products, setProducts] = useState([]);
@@ -31,7 +33,7 @@ export default function Products() {
     const [isUpdate, setIsUpdate] = useState(false)
     const [isUpdateId, setIsUpdateId] = useState(null)
     const [deletedImages, setDeletedImages] = useState([]);
-
+    let { admin } = useSelector(state => state.auth)
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -98,10 +100,10 @@ export default function Products() {
                     getProducts();
                     setShow(false);
                 } else {
-                    // console.log(data.message);
+                    toast.error(data.message || "Error occured");
                 }
             } catch (err) {
-                // console.error("❌ Error uploading product:", err);
+                toast.error(err.response?.data?.message || "Error occured");
             }
         }
     };
@@ -139,10 +141,10 @@ export default function Products() {
                 setFilteredProducts(data.data);
             } else {
                 setProducts([]);
-                // console.log("error", data.message);
+                toast.error(data.message || "Error occured");
             }
         } catch (error) {
-            // console.log("Error Fetching Data", error);
+            toast.error(error.response?.data?.message || "Error occured");
         }
     };
 
@@ -187,10 +189,10 @@ export default function Products() {
                     alert("Product Deleted Successfully");
                     getProducts();
                 } else {
-                    // console.log(data.message);
+                    toast.error(data?.message || "Error occured");
                 }
             } catch (error) {
-                // console.log(error);
+                toast.error(error.response?.data?.message || "Error occured");
             }
         }
     };
@@ -360,8 +362,8 @@ export default function Products() {
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                 />
-                                <div className="w-1/5   min-w-fit flex  gap-4 justify-between items-center  ">
-                                    <button className="bg-amber-400 text-white  min-w-fit hover:bg-amber-600 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(true) }}>  Add New Product</button>
+                                <div className="w-1/5   min-w-fit flex  gap-4 justify-end items-center  ">
+                                    {admin.role == "admin" && <button className="bg-amber-400 text-white  min-w-fit hover:bg-amber-600 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(true) }}>  Add New Product</button>}
                                     <select
                                         className="p-2 w-25 bg-amber-400 text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-amber-600 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
                                         value={selectedCategory}
@@ -396,7 +398,7 @@ export default function Products() {
                                                 </th>
                                             ))}
 
-                                            <th className="px-6 py-3">Action </th>
+                                            {admin.role == "admin" && <th className="px-6 py-3">Action </th>}
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
@@ -422,7 +424,7 @@ export default function Products() {
                                                         )
                                                     })}
                                                 </td>
-                                                <td className="px-6 py-3 min-w-fit whitespace-nowrap">
+                                                {admin.role == "admin" && <td className="px-6 py-3 min-w-fit whitespace-nowrap">
                                                     <button
                                                         onClick={() => updateHandler(v._id, v)}
                                                         className=" text-xs font-semibold   rounded-lg hover:scale-110"
@@ -435,7 +437,7 @@ export default function Products() {
                                                     >
                                                         <img src="/img/delete-icon.svg" alt="" />
                                                     </button>
-                                                </td>
+                                                </td>}
                                             </tr>
                                         ))}
                                         {paginatedData.length === 0 && (

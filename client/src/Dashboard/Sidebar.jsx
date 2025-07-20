@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/actions/authActions';
 
 const Sidebar = () => {
@@ -9,7 +9,7 @@ const Sidebar = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const isDragging = useRef(false);
     const dragStartX = useRef(0);
-
+    let { admin } = useSelector(state => state.auth)
     // 🖱️ Mouse event listeners for drag
     useEffect(() => {
         const handleMouseMove = (e) => {
@@ -64,28 +64,49 @@ const Sidebar = () => {
                     </div>
 
                     <div className="space-y-4 mt-10">
+                         
                         {[
                             { path: "/dashboard", icon: '/img/dashboard.svg', text: 'Dashboard', exact: true },
                             { path: "/dashboard/users", icon: '/img/users.svg', text: 'Users' },
                             // { path: "/dashboard/product", icon: '/img/newproduct.svg', text: 'Add New Product' },
                             { path: "/dashboard/products", icon: '/img/product.svg', text: 'Products' },
                             { path: "/dashboard/orders", icon: '/img/order.svg', text: 'Orders' },
-                            { path: "/dashboard/sub-admins", icon: '/img/subadmin.svg', text: 'Sub Admin' },
-                        ].map((item, index) => (
-                            <NavLink
-                                to={item.path}
-                                key={index}
-                                end={item.exact}
-                                className={({ isActive }) =>
-                                    `flex items-center ${isCollapsed ? 'gap-0' : 'gap-3'} p-2 text-amber-50 rounded hover:bg-amber-900 cursor-pointer transition-all duration-300 ${isActive ? 'bg-amber-900' : ''}`
+                            admin.role && { path: "/dashboard/sub-admins", icon: '/img/subadmin.svg', text: 'Sub Admin' },
+                        ].map((item, index) => {
+                            if (admin.role == 'subadmin') {
+                                if (item.text !== 'Sub Admin') {
+                                    return <NavLink
+                                        to={item.path}
+                                        key={index}
+                                        end={item.exact}
+                                        className={({ isActive }) =>
+                                            `flex items-center ${isCollapsed ? 'gap-0' : 'gap-3'} p-2 text-amber-50 rounded hover:bg-amber-900 cursor-pointer transition-all duration-300 ${isActive ? 'bg-amber-900' : ''}`
+                                        }
+                                    >
+                                        <img src={item.icon} alt="" className="w-6 h-6" loading="lazy" />
+                                        <span className={`text-lg transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
+                                            {item.text}
+                                        </span>
+                                    </NavLink>
                                 }
-                            >
-                                <img src={item.icon} alt="" className="w-6 h-6" loading="lazy" />
-                                <span className={`text-lg transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
-                                    {item.text}
-                                </span>
-                            </NavLink>
-                        ))}
+                            } else {
+                                return <NavLink
+                                    to={item.path}
+                                    key={index}
+                                    end={item.exact}
+                                    className={({ isActive }) =>
+                                        `flex items-center ${isCollapsed ? 'gap-0' : 'gap-3'} p-2 text-amber-50 rounded hover:bg-amber-900 cursor-pointer transition-all duration-300 ${isActive ? 'bg-amber-900' : ''}`
+                                    }
+                                >
+                                    <img src={item.icon} alt="" className="w-6 h-6" loading="lazy" />
+                                    <span className={`text-lg transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
+                                        {item.text}
+                                    </span>
+                                </NavLink>
+                            }
+                        }
+
+                        )}
                     </div>
                 </div>
 

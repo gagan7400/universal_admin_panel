@@ -55,9 +55,15 @@ const orderSchema = new mongoose.Schema({
         },
     ],
     user: {
-        type: mongoose.Schema.ObjectId,
-        ref: "User",
-        required: true,
+        id: {
+            type: mongoose.Schema.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        name: { type: String },
+        email: { type: String },
+        phone: { type: String },
+        image: { filename: String, url: String }
     },
     paymentInfo: {
         id: {

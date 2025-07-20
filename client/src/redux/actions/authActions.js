@@ -4,6 +4,7 @@ const API = import.meta.env.VITE_API || "http://localhost:4000";
 export const setAuthLoading = () => ({ type: "LOGIN_ADMIN_REQUEST" });
 
 export const loginSuccess = (admin) => ({
+
   type: "LOGIN_ADMIN_SUCCESS",
   payload: admin
 });
@@ -11,34 +12,25 @@ export const loginSuccess = (admin) => ({
 export const loginAdmin = (email, password, navigate) => async (dispatch) => {
   dispatch(setAuthLoading());
   try {
-    await axios.post(`${API}/api/admin/login`, { email, password }, { withCredentials: true });
-    const { data } = await axios.get(`${API}/api/admin/profile`, { withCredentials: true });
-    if (data.success) {
-      dispatch(loginSuccess(data.data));
-      navigate("/dashboard");
+    let user = await axios.post(`${API}/api/admin/login`, { email, password }, { withCredentials: true });
+    if (user.data.success) {
+      const { data } = await axios.get(`${API}/api/admin/profile`, { withCredentials: true });
+      if (data.success) {
+        dispatch(loginSuccess(data.data));
+        navigate("/dashboard");
+      } else {
+        dispatch({ type: "LOGIN_ADMIN_FAIL", payload: data.message });
+      }
     } else {
-      dispatch({ type: "LOGIN_ADMIN_FAIL", payload: data.message });
+      console.log(user)
     }
+
   } catch (err) {
     dispatch({ type: "LOGIN_ADMIN_FAIL", payload: err?.response?.data?.message });
   }
 };
 
-export const loginSubAdmin = (email, password, navigate) => async (dispatch) => {
-  dispatch(setAuthLoading());
-  try {
-    await axios.post(`${API}/api/admin/subadmin/login`, { email, password }, { withCredentials: true });
-    const { data } = await axios.get(`${API}/api/admin/subadmin/profile`, { withCredentials: true });
-    if (data.success) {
-      dispatch(loginSuccess(data.data));
-      navigate("/dashboard");
-    } else {
-      dispatch({ type: "LOGIN_ADMIN_FAIL", payload: data.message });
-    }
-  } catch (err) {
-    dispatch({ type: "LOGIN_ADMIN_FAIL", payload: err?.response?.data?.message });
-  }
-};
+ 
 
 export const logout = () => async (dispatch) => {
   try {
@@ -48,15 +40,7 @@ export const logout = () => async (dispatch) => {
     dispatch({ type: "LOGIN_ADMIN_FAIL", payload: err.message });
   }
 };
-export const logoutSubadmin = () => async (dispatch) => {
-  try {
-    await axios.get(`${API}/api/admin/logout`, { withCredentials: true });
-    dispatch({ type: "ADMIN_LOGOUT" });
-  } catch (err) {
-    dispatch({ type: "LOGIN_ADMIN_FAIL", payload: err.message });
-  }
-};
-
+ 
 export const loadAdmin = () => async (dispatch) => {
   dispatch(setAuthLoading());
   try {
@@ -70,19 +54,7 @@ export const loadAdmin = () => async (dispatch) => {
     dispatch(logout());
   }
 };
-export const loadSubAdmin = () => async (dispatch) => {
-  dispatch(setAuthLoading());
-  try {
-    const { data } = await axios.get(`${API}/api/admin/subadmin/profile`, { withCredentials: true });
-    if (data.success) {
-      dispatch(loginSuccess(data.data));
-    } else {
-      dispatch(logout());
-    }
-  } catch (err) {
-    dispatch(logout());
-  }
-};
+ 
 
 export const getAllUsers = () => async (dispatch) => {
   dispatch({ type: "GET_USER_REQUEST" });

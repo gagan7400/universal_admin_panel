@@ -16,7 +16,7 @@ export const productReducer = (state = initialState, action) => {
         case 'COUNT_PRODUCT_SUCCESS':
             return { ...state, loading: false, productcount: action.payload, error: null };
         case 'GET_PRODUCT_FAIL':
-            return { ...state, loading: false, error: action.payload, allproducts: null };
+            return { ...state, loading: false, error: action.payload };
         case 'COUNT_PRODUCT_FAIL':
             return { ...state, productcount: 0, loading: false, error: action.payload };
         default:

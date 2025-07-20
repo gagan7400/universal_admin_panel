@@ -1,4 +1,4 @@
-const Subadmin = require("../models/subadminModel");
+const Subadmin = require("../models/admin");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -19,6 +19,7 @@ const createSubadmin = async (req, res) => {
             password: hashedPassword,
             permissions,
             createdBy: req.user._id,
+            role: "subadmin"
         });
 
         res.status(200).json({ success: true, subadmin: newSubadmin, message: "SubAdmin Created Successfully" });
@@ -28,7 +29,7 @@ const createSubadmin = async (req, res) => {
 };
 const getAllSubadmins = async (req, res) => {
     try {
-        let subadmins = await Subadmin.find();
+        let subadmins = await Subadmin.find({ role: "subadmin" });
         res.status(200).json({ success: true, message: "SubAdmins Get Successfully", data: subadmins })
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -37,7 +38,7 @@ const getAllSubadmins = async (req, res) => {
 const loginSubadmin = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const subadmin = await Subadmin.findOne({ email });
+        const subadmin = await Subadmin.findOne({ email, role: "subadmin" });
 
         if (!subadmin) {
             return res.status(404).json({ message: "Subadmin not found" });
@@ -47,7 +48,7 @@ const loginSubadmin = async (req, res) => {
         }
 
         const isMatch = await bcrypt.compare(password, subadmin.password);
-        console.log(isMatch, subadmin, email, password)
+
         if (!isMatch) {
             return res.status(401).json({ success: false, message: "Invalid credentials" });
         }
@@ -106,26 +107,5 @@ const updateSubadmin = async (req, res) => {
         res.status(500).json({ success: false, message: err.message });
     }
 };
-let getsubadminprofile = async (req, res) => {
-    try {
-        const admin = await Subadmin.findById(req.user._id).select("-password"); // exclude password
-        if (!admin) {
-            return res.status(404).json({ success: false, message: "SubAdmin not found" });
-        }
-        res.status(200).json({
-            success: true,
-            data: admin
-        });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-}
-let logoutSubAdmin = async (req, res) => {
-    res.clearCookie("token", {
-        httpOnly: true,
-        sameSite: "strict",
-        secure: process.env.NODE_ENV === "Production"
-    });
-    res.json({ success: true, message: "Logged out" });
-}
-module.exports = { createSubadmin, getAllSubadmins, deleteSubadmin, loginSubadmin, updateSubadmin, getsubadminprofile, logoutSubAdmin }
+
+module.exports = { createSubadmin, getAllSubadmins, deleteSubadmin, loginSubadmin, updateSubadmin }
