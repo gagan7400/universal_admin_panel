@@ -6,8 +6,9 @@ let cors = require("cors");
 const cookieParser = require('cookie-parser');
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
 app.use(cors({
-    origin: "*", // Whitelist domains
+    origin:process.env.CORSPATH, // Whitelist domains
     credentials: true, // Allow cookies and credentials
 }));
 app.use(express.json()); // ✅ For JSON payloads
