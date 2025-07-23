@@ -8,7 +8,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(cors({
-    origin:process.env.CORSPATH, // Whitelist domains
+    origin: function (origin, callback) {
+        const allowedOrigins = [
+            "http://localhost:5173",
+            "https://yourfrontend.com",
+            "http://127.0.0.1:5173"
+        ];
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    }, // Whitelist domains
     credentials: true, // Allow cookies and credentials
 }));
 app.use(express.json()); // ✅ For JSON payloads
