@@ -6,11 +6,10 @@ const User = require("../models/usermodel.js");
 const common_functions = require("../utils/common_functions.js"); // adjust path if needed
 const UserSession = require("../models/userSessionmodel.js"); // Session model
 const { generateToken } = require("../utils/token.js"); // Your custom token function
-var url = require('url');
+const base_url = process.env.NODE_ENV == "production" ? process.env.BASE_URL_LIVE : process.env.BASE_URL;
+ 
 
 const registration = async (req, res) => {
-    const hostname = req.headers.host;
-    const base_url = 'http://' + hostname;
 
     try {
         const addressSchema = Joi.object({

@@ -6,7 +6,7 @@ const fs = require("fs");
 var http = require('http');
 var url = require('url');
 
-const base_url = process.env.NODE_ENV == "Production" ? process.env.BASE_URL_LIVE : process.env.BASE_URL;
+const base_url = process.env.NODE_ENV == "production" ? process.env.BASE_URL_LIVE : process.env.BASE_URL;
 
 
 const createProductController = catchAsyncErrors(async (req, res, next) => {
