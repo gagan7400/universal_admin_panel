@@ -76,9 +76,9 @@ const login = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false,
-            sameSite:   "lax",
-            maxAge: 24 * 60 * 60 * 1000 // 1 day
+            secure: process.env.NODE_ENV === "production", // dynamically set secure flag
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // allow cross-site cookies
+            maxAge: 24 * 60 * 60 * 1000,
         }).status(200).json({
             code: 200,
             success: true,
@@ -98,8 +98,9 @@ const login = async (req, res) => {
 let logoutAdmin = async (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
-        sameSite: "lax",
-        secure: false
+        secure: process.env.NODE_ENV === "production", // dynamically set secure flag
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // allow cross-site cookies
+        maxAge: 24 * 60 * 60 * 1000,
     });
     res.json({ success: true, message: "Logged out" });
 }

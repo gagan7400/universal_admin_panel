@@ -40,7 +40,6 @@ export default function DashboardComp() {
                         </Badge>
                     </div>
                 </NavLink>
-
                 <NavLink to="/dashboard/orders" className="rounded-2xl border border-gray-200 bg-white p-5     md:p-6">
                     <div className="group flex items-center justify-center w-12 h-12  text-gray-500 bg-amber-300 hover:bg-amber-200  hover:text-blue-400 rounded-xl  ">
                         <BoxIconLine className=" 0  transition-all duration-700 text-2xl text-gray-50 group-hover:text-blue-400 " />

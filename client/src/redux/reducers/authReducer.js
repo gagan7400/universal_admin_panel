@@ -5,10 +5,11 @@ const initialState = {
   isAuthenticated: false,
   users: null,
   admin: null,
-  permissions: [],
+  permissions: [],  
   role: 'subadmin',
   usererror: null,
-  userloading: true
+  userloading: true ,
+  authChecked: false,
 };
 
 export const authReducer = (state = initialState, action) => {
@@ -16,13 +17,14 @@ export const authReducer = (state = initialState, action) => {
     case 'LOGIN_ADMIN_REQUEST':
     case 'FORGOT_PASSWORD_REQUEST':
     case 'RESET_PASSWORD_REQUEST':
-      return { ...state, loading: true, error: null };
+      return { ...state, loading: true, error: null ,authChecked: false };
     case 'GET_USER_REQUEST':
       return { ...state, userloading: true, usererror: null };
     case 'LOGIN_ADMIN_SUCCESS':
       return {
         ...state,
         loading: false,
+         authChecked: true,
         isAuthenticated: true,
         admin: action.payload,
         role: action.payload.role,
@@ -42,6 +44,7 @@ export const authReducer = (state = initialState, action) => {
         ...state,
         users: null,
         admin: null,
+        authChecked: true,
         permissions: [],
         isAuthenticated: false,
         loading: false,
@@ -51,6 +54,7 @@ export const authReducer = (state = initialState, action) => {
       return {
         ...state,
         admin: null,
+        authChecked: true,
         permissions: [],
         isAuthenticated: false,
         loading: false

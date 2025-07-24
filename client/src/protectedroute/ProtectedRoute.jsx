@@ -4,40 +4,25 @@ import { Navigate, useLocation } from 'react-router-dom';
 // import { loadAdmin } from '../redux/actions/authActions.js';
 import axios from 'axios';
 import Loader from '../layout/Loader.jsx';
-import { loginSuccess, logout, setAuthLoading } from '../redux/actions/authActions.js';
+import { loadAdmin, loginSuccess, logout, setAuthLoading, } from '../redux/actions/authActions.js';
 import { toast } from 'react-toastify';
 
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
     const dispatch = useDispatch();
     const location = useLocation();
-    const { isAuthenticated, loading, admin } = useSelector((state) => state.auth);
+    const { isAuthenticated, loading, admin, authChecked } = useSelector((state) => state.auth);
 
-console.log("protectroute")
     useEffect(() => {
-        const checkAuth = async () => {
-            dispatch(setAuthLoading());
-            try {
-                const { data } = await axios.get("https://universal-admin-panel.onrender.com/api/admin/profile", {
-                    withCredentials: true,
-                });
-                if (data.success) {
-                    dispatch(loginSuccess(data.data));
-                } else {
-                    console.log("console wala else logut out ", data)
-                    dispatch(logout());
-                }
-            } catch (error) {
-                console.log("catch wala else logut out ", error)
-                dispatch(logout());
-            }
-        };
-        checkAuth()
+        console.log('eff')
+        dispatch(loadAdmin())
     }, [dispatch]);
 
+    if (!authChecked || loading) return <div className='w-[100%] h-[100vh] flex justify-center items-center'><Loader /></div>;
 
-    if (loading) return <Loader />;
-    console.log(isAuthenticated ,admin)
-    if (!isAuthenticated) return <Navigate to="/login" replace />;
+    if (!isAuthenticated) {
+        console.log("thisss", isAuthenticated)
+        return <Navigate to="/login" replace />
+    };
 
     // // Role-based restriction 
     if (allowedRoles.length > 0 && !allowedRoles.includes(admin?.role)) {

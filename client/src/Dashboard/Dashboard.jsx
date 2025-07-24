@@ -55,7 +55,7 @@ export default function Dashboard() {
                 </nav>
                 {/* Main Content Body */}
                 <div className="main_content flex-1 p-6 overflow-x-auto overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
-                    <div className="min-w-[1200px]">
+                    <div className="min-w-[1000px]">
                         <Outlet />
                     </div>
                 </div>

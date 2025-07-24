@@ -13,6 +13,7 @@ export const loginAdmin = (email, password, navigate) => async (dispatch) => {
   dispatch(setAuthLoading());
   try {
     let user = await axios.post(`${API}/api/admin/login`, { email, password }, { withCredentials: true });
+    console.log(user)
     if (user.data.success) {
       const { data } = await axios.get(`${API}/api/admin/profile`, { withCredentials: true });
       if (data.success) {
@@ -44,11 +45,14 @@ export const loadAdmin = () => async (dispatch) => {
   try {
     const { data } = await axios.get(`${API}/api/admin/profile`, { withCredentials: true });
     if (data.success) {
+      console.log('loogg', data)
       dispatch(loginSuccess(data.data));
     } else {
+      console.log('outttt', data)
       dispatch(logout());
     }
   } catch (err) {
+    console.log(err)
     dispatch(logout());
   }
 };

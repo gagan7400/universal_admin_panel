@@ -3,7 +3,7 @@ const catchAsyncErrors = require("./catchAsyncErrors");
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/admin");
 const User = require("../models/usermodel");
- 
+
 exports.isAuthenticatedAdmin = catchAsyncErrors(async (req, res, next) => {
     const { token } = req.cookies;
     console.log(token)
@@ -13,7 +13,7 @@ exports.isAuthenticatedAdmin = catchAsyncErrors(async (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         let user;
-        user = await Admin.findById(decoded.id);
+        user = await Admin.findById(decoded.id).select("-password");
         if (!user) {
             return next(new ErrorHandler("Unauthorized ", 401));
         }
