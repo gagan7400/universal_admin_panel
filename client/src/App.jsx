@@ -25,7 +25,7 @@ function App() {
           <Route path="/dashboard/" element={<DashboardComp />} > </Route>
           <Route path="/dashboard/users" element={<Users />} > </Route>
           <Route path="/dashboard/products" element={<Products />} > </Route>
-          <Route path="/dashboard/sub-admins" element={<ProtectedRoute allowedRoles={['admin']} > <SubAdmins /></ProtectedRoute>} > </Route>
+          <Route path="/dashboard/sub-admins" element={<SubAdmins />} > </Route>
           <Route path="/dashboard/orders" element={<Orders />} > </Route>
         </Route>
       </Routes>

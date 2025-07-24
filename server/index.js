@@ -11,7 +11,7 @@ app.use(cors({
     origin: function (origin, callback) {
         const allowedOrigins = [
             "http://localhost:5173",
-            "https://yourfrontend.com",
+            "https://universalureca.netlify.app",
             "http://127.0.0.1:5173"
         ];
         if (!origin || allowedOrigins.includes(origin)) {
