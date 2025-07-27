@@ -5,8 +5,8 @@ import { logout } from '../redux/actions/authActions';
 
 const Sidebar = () => {
     const dispatch = useDispatch();
-    const [sidebarWidth, setSidebarWidth] = useState(260);
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [sidebarWidth, setSidebarWidth] = useState(75);
+    const [isCollapsed, setIsCollapsed] = useState(true);
     const isDragging = useRef(false);
     const dragStartX = useRef(0);
     let { admin } = useSelector(state => state.auth)

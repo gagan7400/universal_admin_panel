@@ -117,7 +117,7 @@ const Orders = () => {
 
     const statusOptions = ["Processing", "Shipped", "Delivered", "Completed", "Cancelled"];
     return (
-        <div className="mx-auto bg-white rounded-xl shadow-xl p-6 space-y-6">
+        <div className="mx-auto min-w-[800px] bg-white rounded-xl shadow-xl sm:p-6 p-3 space-y-6">
             <h2 className="text-2xl font-bold text-gray-800">Orders</h2>
             <div className="flex flex-wrap gap-4">
                 {['orderId', 'user', 'quantity', 'status', 'totalPrice', "paymentStatus"].map(col => (

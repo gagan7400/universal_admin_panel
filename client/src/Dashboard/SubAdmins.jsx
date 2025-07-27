@@ -110,7 +110,7 @@ const SubadminManager = () => {
     };
 
     return (
-        <div className=" mx-auto p-6 bg-white shadow-xl rounded-xl space-y-6">
+        <div className="min-w-[800px] mx-auto   bg-white shadow-xl rounded-xl space-y-6 sm:p-6 p-3">
             <div className="flex flex-wrap gap-4 justify-between items-center mb-6">
 
                 <h2 className="text-2xl font-bold text-gray-800">Subadmins Manager</h2>
@@ -161,14 +161,14 @@ const SubadminManager = () => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Permissions</label>
                                 <div className="grid grid-cols-3 gap-4">
-                                    <div>
+                                    <div className="whitespace-nowrap">
                                         <input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2 " name="permissions"
                                             onChange={handleCheckboxChange}
                                             checked={formData?.permissions?.includes("orders")}
                                             value="orders" />
                                         <label htmlFor=""> Orders </label>
                                     </div>
-                                    <div>
+                                    <div className="whitespace-nowrap">
                                         <input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2 " name="permissions"
                                             onChange={handleCheckboxChange}
                                             checked={formData?.permissions?.includes("products")}
@@ -176,7 +176,7 @@ const SubadminManager = () => {
                                         <label htmlFor=""> Products  </label>
                                     </div>
 
-                                    <div>
+                                    <div className="whitespace-nowrap">
                                         <input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2 " name="permissions"
                                             onChange={handleCheckboxChange}
                                             checked={formData?.permissions?.includes("users")}

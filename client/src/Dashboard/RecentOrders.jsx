@@ -35,31 +35,35 @@ export default function RecentOrders() {
                         {/* Table Header */}
                         <TableHeader className="border-gray-100   border-y">
                             <TableRow>
-                                <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs "  >  Products  </TableCell>
-                                <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs "  >  Price  </TableCell>
-                                <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs "  >  Payment Status  </TableCell>
-                                <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs "  >  Status  </TableCell>
+                                <TableCell isHeader className="py-3 whitespace-nowrap  font-medium text-gray-500 text-start px-1 text-theme-xs "  >  Products  </TableCell>
+                                <TableCell isHeader className="py-3 whitespace-nowrap  font-medium text-gray-500 text-start px-1 text-theme-xs "  >  Order By  </TableCell>
+                                <TableCell isHeader className="py-3 whitespace-nowrap  font-medium text-gray-500 text-start px-1 text-theme-xs "  >  Price  </TableCell>
+                                <TableCell isHeader className="py-3 whitespace-nowrap  font-medium text-gray-500 text-start px-1 text-theme-xs "  >  Payment Status  </TableCell>
+                                <TableCell isHeader className="py-3 whitespace-nowrap  font-medium text-gray-500 text-start px-1 text-theme-xs "  >  Status  </TableCell>
                             </TableRow>
                         </TableHeader>
 
                         <TableBody className="divide-y divide-gray-100  ">
                             {allorders && allorders.slice(0, 5).map((order) => (
                                 <TableRow key={order._id} className="">
-                                    <TableCell className="py-3">
-                                        <div className="flex items-center gap-3">
-                                            <div className="h-[50px] w-[50px] overflow-hidden rounded-md">
-                                                <img src={order.orderItems[0].image} className="h-[50px] w-[50px]" alt={order.name}
+                                    <TableCell className="py-3 px-1 whitespace-nowrap">
+                                        <div className="flex items-center">
+                                            <div className="sm:h-[50px] sm:w-[50px]  w-[20px]  h-[20px] overflow-hidden rounded-md">
+                                                <img src={order.orderItems[0].image} className="sm:h-[50px] sm:w-[50px]  w-[20px]  h-[20px]" alt={order.name}
                                                 />
                                             </div>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="py-3 text-gray-500 text-theme-sm  ">
+                                    <TableCell className="py-3 px-1 whitespace-nowrap text-gray-500 text-theme-sm  ">
+                                        {order.user.name}
+                                    </TableCell>
+                                    <TableCell className="py-3 px-1 whitespace-nowrap text-gray-500 text-theme-sm  ">
                                         {order.totalPrice}
                                     </TableCell>
-                                    <TableCell className="py-3 text-gray-500 text-theme-sm  ">
+                                    <TableCell className="py-3 px-1 whitespace-nowrap text-gray-500 text-theme-sm  ">
                                         {order.paymentInfo.status}
                                     </TableCell>
-                                    <TableCell className="py-3 text-gray-500 text-theme-sm  ">
+                                    <TableCell className="py-3 px-1 whitespace-nowrap text-gray-500 text-theme-sm  ">
                                         <Badge size="sm" color={order.orderStatus === "Delivered" ? "success" : order.orderStatus === "Processing" ? "warning" : "error"} >{order.orderStatus} </Badge>
                                     </TableCell>
                                 </TableRow>

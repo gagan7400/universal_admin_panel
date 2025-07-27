@@ -19,8 +19,8 @@ export default function DashboardComp() {
         dispatch(countProducts())
     }, [])
     return (
-        <>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-6">
+        <div className='sm:p-6 p-3'>
+            <div className="grid grid-cols-1 gap-4  lg:grid-cols-3 md:gap-6  ">
                 <NavLink to="/dashboard/users" className="rounded-2xl border border-gray-200 bg-white p-5 not-[]:md:p-6">
                     <div className="group flex items-center justify-center w-12 h-12 bg-amber-300  transition-all duration-700  hover:bg-amber-200 hover:text-blue-400 rounded-xl  ">
                         <GroupIcon className="transition-all duration-700 text-2xl text-gray-50 group-hover:text-blue-400    " />
@@ -81,13 +81,14 @@ export default function DashboardComp() {
                     </div>
                 </NavLink>
             </div>
-            <div className="flex gap-4">
-                <div className='w-1/2 mt-4'>
+            <div className="grid grid-cols-1 gap-4">
+                <div className=' mt-4'>
                     <MonthlySalesChart />
                 </div>
-                <div className='w-1/2 mt-4'>
+                <div className=' mt-4'>
                     <RecentOrders />
-                </div></div>
-        </>
+                </div>
+            </div>
+        </div>
     )
 }

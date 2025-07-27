@@ -97,7 +97,7 @@ export default function Users() {
     );
 
     return (
-        <div className="  mx-auto bg-white rounded-xl shadow-xl p-6">
+        <div className="min-w-[800px]  mx-auto bg-white rounded-xl shadow-xl sm:p-6 p-3">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Users</h2>
 
             {/* Top controls */}

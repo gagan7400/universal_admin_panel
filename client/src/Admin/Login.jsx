@@ -10,7 +10,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { token, error ,loading } = useSelector((state) => state.auth);
+    const { token, error, loading } = useSelector((state) => state.auth);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -46,6 +46,7 @@ const Login = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="you@example.com"
+                                autoComplete='off'
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                             />
                         </div>
@@ -59,6 +60,7 @@ const Login = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="••••••••"
+                                autocomplete="new-password"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                             />
                         </div>
@@ -67,7 +69,7 @@ const Login = () => {
                             type="submit"
                             className="w-full flex justify-center items-center gap-3 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white text-lg font-semibold py-2 rounded-lg shadow-md hover:shadow-lg transition duration-300"
                         >
-                        {loading &&   <div className="loaderlogin "></div> }
+                            {loading && <div className="loaderlogin "></div>}
                             Login
                         </button>
                     </form>

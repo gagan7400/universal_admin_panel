@@ -138,7 +138,7 @@ export default function Products() {
     const getProducts = async () => {
         setLoading(true)
         try {
-            let { data } = await axios.get("https://universal-admin-panel.onrender.com/api/product/all");
+            let { data } = await axios.get("http://srv918880.hstgr.cloud:4000/api/product/all");
             if (data.success) {
                 setProducts(data.data);
                 setFilteredProducts(data.data);
@@ -254,10 +254,10 @@ export default function Products() {
     );
 
     return (
-        <>
+        <div className="min-w-[800px] ">
             {show ?
                 <>
-                    <div className="  mx-auto bg-white rounded-xl shadow-xl p-6">
+                    <div className="  mx-auto bg-white rounded-xl shadow-xl sm:p-6 p-3 ">
                         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Products</h2>
                         <div className="flex flex-wrap gap-4 justify-between items-center mb-6">
 
@@ -354,7 +354,7 @@ export default function Products() {
                 </>
                 :
                 <>
-                    <div className="mx-auto bg-white rounded-xl shadow-xl p-6">
+                    <div className="mx-auto bg-white rounded-xl shadow-xl sm:p-6 p-3">
                         <h2 className="text-2xl  font-semibold text-gray-800 mb-4">Products</h2>
 
                         {/* Top controls */}
@@ -496,6 +496,6 @@ export default function Products() {
                     </div>
                 </>
             }
-        </>
+        </div>
     );
 }
