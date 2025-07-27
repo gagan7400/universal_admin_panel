@@ -138,7 +138,7 @@ export default function Products() {
     const getProducts = async () => {
         setLoading(true)
         try {
-            let { data } = await axios.get("http://srv918880.hstgr.cloud:4000/api/product/all");
+            let { data } = await axios.get("https://universal-admin-panel.onrender.com/api/product/all");
             if (data.success) {
                 setProducts(data.data);
                 setFilteredProducts(data.data);
