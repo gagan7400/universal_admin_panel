@@ -22,7 +22,7 @@ export const loginAdmin = (email, password, navigate) => async (dispatch) => {
         dispatch({ type: "LOGIN_ADMIN_FAIL", payload: data.message });
       }
     } else {
-      console.log(user)
+     
     }
 
   } catch (err) {

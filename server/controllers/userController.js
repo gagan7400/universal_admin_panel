@@ -108,7 +108,7 @@ const registration = async (req, res) => {
             message: "User registered successfully.",
         });
     } catch (error) {
-        console.error("Error during registration:", error);
+     
         return res.status(400).json({
             code: 400,
             status: false,
@@ -314,7 +314,7 @@ const verifyOTP = async (req, res) => {
             },
         });
     } catch (err) {
-        console.error("Error while verifying OTP:", err);
+         
         return res.status(400).json({
             code: 400,
             status: false,
@@ -655,7 +655,7 @@ const updateUser = async (req, res) => {
         return res.status(200).json({ code: 200, status: true, message: "User updated successfully." });
 
     } catch (err) {
-        console.error("Error while updating user:", err);
+     
         return res.status(500).json({ code: 500, status: false, message: "Something went wrong" });
     }
 };

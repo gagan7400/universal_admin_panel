@@ -13,7 +13,7 @@ const ForgotPassword = () => {
     e.preventDefault();
     dispatch(forgotPassword(email, navigate));
   };
-  console.log(message, error)
+ 
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 flex items-center justify-center font-sans antialiased text-gray-900">

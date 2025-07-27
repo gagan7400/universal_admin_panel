@@ -85,10 +85,10 @@ export default function Products() {
                     setIsUpdateId(null);
                     getProducts();
                 } else {
-                    // console.log(data.message);
+                     
                 }
             } catch (err) {
-                // console.error("❌ Error updating product:", err);
+                 
             }
         } else {
             // 👇 Add New Product Logic (already working)

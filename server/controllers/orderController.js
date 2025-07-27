@@ -146,8 +146,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
 });
 
 async function updateStock(id, quantity) {
-    console.log("Updating stock for:", id);
-
+ 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         console.log("❌ Invalid product ID");
         return;
@@ -159,7 +158,6 @@ async function updateStock(id, quantity) {
         return;
     }
 
-    console.log("✅ Product found:", product.name);
     product.stock -= quantity;
     await product.save({ validateBeforeSave: false });
 }

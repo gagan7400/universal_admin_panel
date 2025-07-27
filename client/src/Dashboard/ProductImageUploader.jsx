@@ -6,8 +6,7 @@ const ProductImageUploader = ({ images, setImages, bannerImage, setBannerImage, 
 
     const handleFiles = (files) => {
         if (images) {
-            console.log("Image Wala ")
-            const fileArray = Array.from(files).map((file) => ({
+         const fileArray = Array.from(files).map((file) => ({
                 fileName: file.name,
                 url: URL.createObjectURL(file),
                 file,
@@ -15,8 +14,7 @@ const ProductImageUploader = ({ images, setImages, bannerImage, setBannerImage, 
             setImages((prev) => [...prev, ...fileArray]);
 
         } else {
-            console.log("Banner Wala ")
-            const fileArray = Array.from(files).map((file) => ({
+             const fileArray = Array.from(files).map((file) => ({
                 fileName: file.name,
                 url: URL.createObjectURL(file),
                 file,
@@ -92,8 +90,7 @@ const ProductImageUploader = ({ images, setImages, bannerImage, setBannerImage, 
                 ref={inputRef}
                 onChange={handleFileChange}
             />
-            {console.log(Array.isArray(bannerImage))}
-            {/* Preview Section */}
+             {/* Preview Section */}
             {images ? images.length > 0 && (
                 <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     {images.map((img, index) => (
