@@ -1,7 +1,7 @@
 let express = require("express");
 let app = express();
 let path = require("path");
-let dotenv = require("dotenv").config({ path: path.join(__dirname, "/config/.env") });
+let dotenv = require("dotenv").config();
 let cors = require("cors");
 const cookieParser = require('cookie-parser');
 app.use(express.urlencoded({ extended: true }));
