@@ -623,7 +623,7 @@ const updateUser = async (req, res) => {
 
             updatedData.image = {
                 filename: req.file.filename,
-                url: "http://localhost:4000/uploads/" + req.file.filename
+                url: `${base_url}/uploads/${file.filename}`
             };
         }
 

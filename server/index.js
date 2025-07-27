@@ -9,19 +9,17 @@ app.use(cookieParser());
 
 app.use(cors({
     origin: function (origin, callback) {
-        const allowedOrigins = [
-            "http://localhost:5173",
-            "https://universalureca.netlify.app",
-            "http://127.0.0.1:5173"
-        ];
+        const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
+
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error("Not allowed by CORS"));
         }
-    }, // Whitelist domains
+    },
     credentials: true, // Allow cookies and credentials
 }));
+
 app.use(express.json()); // ✅ For JSON payloads
 let connectDb = require("./db/connectDb");
 let port = process.env.PORT || 4000;
