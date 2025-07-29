@@ -28,9 +28,9 @@ const Login = () => {
 
 
         try {
-            const response = await axios.post("https://universal-admin-panel.onrender.com/api/user/login", formData);
+            const response = await axios.post("http://srv918880.hstgr.cloud:4000/api/user/login", formData);
             if (response.data.status) {
-                 toast.success(response.data.message, {
+                toast.success(response.data.message, {
                     position: "top-right",
                     autoClose: 2000,
                     hideProgressBar: false,

@@ -24,7 +24,7 @@ const Register = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('https://universal-admin-panel.onrender.com/api/user/registration', formData);
+            const res = await axios.post('http://srv918880.hstgr.cloud:4000/api/user/registration', formData);
             toast.success(res.data.message, {
                 position: "top-right",
                 autoClose: 2000,
@@ -55,7 +55,7 @@ const Register = () => {
     const handleVerifyOtp = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('https://universal-admin-panel.onrender.com/api/user/verify-otp', {
+            const res = await axios.post('http://srv918880.hstgr.cloud:4000/api/user/verify-otp', {
                 email: formData.email,
                 otp,
             });
@@ -88,7 +88,7 @@ const Register = () => {
 
     const handleResendOtp = async () => {
         try {
-            const res = await axios.post('https://universal-admin-panel.onrender.com/api/user/resend-otp', {
+            const res = await axios.post('http://srv918880.hstgr.cloud:4000/api/user/resend-otp', {
                 email: formData.email,
             });
             toast.success(res.data.message, {

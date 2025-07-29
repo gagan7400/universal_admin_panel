@@ -36,7 +36,7 @@ export default function NewProduct() {
     formData.append("dimensions", JSON.stringify(dimensions));
 
     try {
-      const { data } = await axios.post("https://universal-admin-panel.onrender.com/api/product/new", formData, {
+      const { data } = await axios.post("http://srv918880.hstgr.cloud:4000/api/product/new", formData, {
         withCredentials: true,
       });
       if (data.success) {

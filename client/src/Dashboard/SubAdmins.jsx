@@ -19,7 +19,7 @@ const SubadminManager = () => {
     const fetchSubadmins = async () => {
         setLoading(true)
         try {
-            const { data } = await axios.get("https://universal-admin-panel.onrender.com/api/admin/subadmins", {
+            const { data } = await axios.get("http://srv918880.hstgr.cloud:4000/api/admin/subadmins", {
                 withCredentials: true,
             });
             setSubadmins(data.data);
@@ -57,7 +57,7 @@ const SubadminManager = () => {
             setLoading(true)
             if (isEditMode) {
                 const { data } = await axios.put(
-                    `https://universal-admin-panel.onrender.com/api/admin/subadmin/${editId}`,
+                    `http://srv918880.hstgr.cloud:4000/api/admin/subadmin/${editId}`,
                     formData,
                     { withCredentials: true }
                 );
@@ -65,7 +65,7 @@ const SubadminManager = () => {
 
             } else {
                 const { data } = await axios.post(
-                    "https://universal-admin-panel.onrender.com/api/admin/subadmin/new",
+                    "http://srv918880.hstgr.cloud:4000/api/admin/subadmin/new",
                     formData,
                     { withCredentials: true }
                 );
@@ -99,7 +99,7 @@ const SubadminManager = () => {
         if (!window.confirm("Are you sure you want to delete this subadmin?")) return;
         try {
             const { data } = await axios.delete(
-                `https://universal-admin-panel.onrender.com/api/admin/subadmin/${id}`,
+                `http://srv918880.hstgr.cloud:4000/api/admin/subadmin/${id}`,
                 { withCredentials: true }
             );
             toast.success(data.message);

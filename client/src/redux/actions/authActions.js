@@ -1,6 +1,6 @@
 import axios from 'axios';
-// const API = import.meta.env.VITE_API || "https://universal-admin-panel.onrender.com";
-const API = 'https://universal-admin-panel.onrender.com';
+// const API = import.meta.env.VITE_API || "http://srv918880.hstgr.cloud:4000";
+const API = 'http://srv918880.hstgr.cloud:4000';
 
 export const setAuthLoading = () => ({ type: "LOGIN_ADMIN_REQUEST" });
 
@@ -22,7 +22,7 @@ export const loginAdmin = (email, password, navigate) => async (dispatch) => {
         dispatch({ type: "LOGIN_ADMIN_FAIL", payload: data.message });
       }
     } else {
-     
+
     }
 
   } catch (err) {

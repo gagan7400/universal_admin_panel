@@ -28,8 +28,9 @@ let userRoute = require("./routes/userRoute");
 let orderRoute = require("./routes/orderRoute");
 let productRoute = require("./routes/productRoute");
 let cartRoute = require("./routes/cartRoute");
+let paymentRoute = require("./routes/paymentRoute");
 let errorMiddleware = require("./middlewares/error");
-1
+
 
 let uploadpath = path.join(__dirname, "/uploads");
 app.use("/uploads/", express.static(uploadpath))
@@ -48,6 +49,7 @@ app.use("/api/user", userRoute);
 app.use("/api/order", orderRoute);
 app.use("/api/product", productRoute);
 app.use('/api/cart', cartRoute);
+app.use('/api/payment', paymentRoute);
 app.use(errorMiddleware);
 
 app.listen(port, () => {
