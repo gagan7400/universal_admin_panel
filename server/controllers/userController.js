@@ -6,7 +6,8 @@ const User = require("../models/usermodel.js");
 const common_functions = require("../utils/common_functions.js"); // adjust path if needed
 const UserSession = require("../models/userSessionmodel.js"); // Session model
 const { generateToken } = require("../utils/token.js"); // Your custom token function
-const base_url = process.env.NODE_ENV == "production" ? process.env.BASE_URL_LIVE : process.env.BASE_URL;
+// const base_url = process.env.NODE_ENV == "production" ? process.env.BASE_URL_LIVE : process.env.BASE_URL;
+const base_url = "http://srv918880.hstgr.cloud:4000"
  
 
 const registration = async (req, res) => {
