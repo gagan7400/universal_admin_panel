@@ -76,12 +76,12 @@ const login = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // dynamically set secure flag
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // allow cross-site cookies
+            secure: true, // dynamically set secure flag
+            sameSite: "none", // allow cross-site cookies
             maxAge: 24 * 60 * 60 * 1000,
         }).status(200).json({
             code: 200,
-            nn:process.env.NODE_ENV,
+            nn: process.env.NODE_ENV,
             success: true,
             message: "Admin logged in successfully...",
             token,
@@ -95,12 +95,11 @@ const login = async (req, res) => {
         });
     }
 };
-
 let logoutAdmin = async (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // dynamically set secure flag
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // allow cross-site cookies
+        secure: true, // dynamically set secure flag
+        sameSite: "none", // allow cross-site cookies
         maxAge: 24 * 60 * 60 * 1000,
     });
     res.json({ success: true, message: "Logged out" });

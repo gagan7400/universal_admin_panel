@@ -72,7 +72,7 @@ export const forgotPassword = (email, navigate) => async (dispatch) => {
   dispatch({ type: 'FORGOT_PASSWORD_REQUEST' });
   try {
 
-    const res = await axios.post(`${API}/api/admin/forgot-password`, { email });
+    const res = await axios.post(`${API}/api/admin/forgot-password`, { email } , { withCredentials: true });
     if (res.data.success) {
       navigate("/reset-password")
     }
@@ -89,7 +89,7 @@ export const forgotPassword = (email, navigate) => async (dispatch) => {
 export const resetPassword = (data, navigate) => async (dispatch) => {
   dispatch({ type: 'RESET_PASSWORD_REQUEST' });
   try {
-    const res = await axios.post(`${API}/api/admin/reset-password`, data);
+    const res = await axios.post(`${API}/api/admin/reset-password`, data , { withCredentials: true });
     if (res.data.success) {
       navigate("/login")
     }

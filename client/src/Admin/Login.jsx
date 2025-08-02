@@ -66,7 +66,7 @@ const Login = () => {
 
                         <button
                             type="submit"
-                            className="w-full flex justify-center items-center gap-3 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white text-lg font-semibold py-2 rounded-lg shadow-md hover:shadow-lg transition duration-300"
+                            className="w-full flex justify-center items-center gap-3 bg-gradient-to-r bg-amber-400 text-white   hover:bg-amber-600 hover:text-blue-50 text-lg font-semibold py-2 rounded-lg shadow-md hover:shadow-lg transition duration-300"
                         >
                             {loading && <div className="loaderlogin "></div>}
                             Login

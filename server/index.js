@@ -7,18 +7,22 @@ const cookieParser = require('cookie-parser');
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(cors({
-    origin: function (origin, callback) {
-        const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
+const allowedOrigins = [
+  "https://technicalceramics.in",
+  "http://technicalceramics.in"
+];
 
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
-    credentials: true, // Allow cookies and credentials
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
 }));
+
 
 app.use(express.json()); // ✅ For JSON payloads
 let connectDb = require("./db/connectDb");
@@ -64,3 +68,6 @@ process.on("unhandledRejection", (err) => {
         process.exit(1);
     });
 });
+
+
+
