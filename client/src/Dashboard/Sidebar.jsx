@@ -10,7 +10,7 @@ const Sidebar = () => {
     const isDragging = useRef(false);
     const dragStartX = useRef(0);
     let { admin } = useSelector(state => state.auth)
-    // 🖱️ Mouse event listeners for drag
+     
     useEffect(() => {
         const handleMouseMove = (e) => {
             if (!isDragging.current) return;
@@ -64,11 +64,10 @@ const Sidebar = () => {
                     </div>
 
                     <div className="space-y-4 mt-10">
-                         
+
                         {[
                             { path: "/dashboard", icon: '/img/dashboard.svg', text: 'Dashboard', exact: true },
                             { path: "/dashboard/users", icon: '/img/users.svg', text: 'Users' },
-                            // { path: "/dashboard/product", icon: '/img/newproduct.svg', text: 'Add New Product' },
                             { path: "/dashboard/products", icon: '/img/product.svg', text: 'Products' },
                             { path: "/dashboard/orders", icon: '/img/order.svg', text: 'Orders' },
                             admin.role && { path: "/dashboard/sub-admins", icon: '/img/subadmin.svg', text: 'Sub Admin' },

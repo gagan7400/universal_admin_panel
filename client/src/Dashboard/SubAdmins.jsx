@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import Loader from "../layout/Loader";
 
 const SubadminManager = () => {
+    const API = import.meta.env.VITE_API ;
+
     const [subadmins, setSubadmins] = useState([]);
     const [show, setShow] = useState(false);
     let [loading, setLoading] = useState(false)
@@ -19,7 +21,7 @@ const SubadminManager = () => {
     const fetchSubadmins = async () => {
         setLoading(true)
         try {
-            const { data } = await axios.get("http://srv918880.hstgr.cloud:4000/api/admin/subadmins", {
+            const { data } = await axios.get(`${API}/api/admin/subadmins`, {
                 withCredentials: true,
             });
             setSubadmins(data.data);
@@ -57,7 +59,7 @@ const SubadminManager = () => {
             setLoading(true)
             if (isEditMode) {
                 const { data } = await axios.put(
-                    `http://srv918880.hstgr.cloud:4000/api/admin/subadmin/${editId}`,
+                    `${API}/api/admin/subadmin/${editId}`,
                     formData,
                     { withCredentials: true }
                 );
@@ -65,7 +67,7 @@ const SubadminManager = () => {
 
             } else {
                 const { data } = await axios.post(
-                    "http://srv918880.hstgr.cloud:4000/api/admin/subadmin/new",
+                    `${API}/api/admin/subadmin/new`,
                     formData,
                     { withCredentials: true }
                 );
@@ -99,7 +101,7 @@ const SubadminManager = () => {
         if (!window.confirm("Are you sure you want to delete this subadmin?")) return;
         try {
             const { data } = await axios.delete(
-                `http://srv918880.hstgr.cloud:4000/api/admin/subadmin/${id}`,
+                `${API}/api/admin/subadmin/${id}`,
                 { withCredentials: true }
             );
             toast.success(data.message);

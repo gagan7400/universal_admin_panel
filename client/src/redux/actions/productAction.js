@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const API = import.meta.env.VITE_API || "http://srv918880.hstgr.cloud:4000";
+const API = import.meta.env.VITE_API 
 
 export const getAllProducts = () => async (dispatch) => {
     dispatch({ type: "GET_PRODUCT_REQUEST" });
     try {
         const { data } = await axios.get(
-            "http://srv918880.hstgr.cloud:4000/api/product/all",
+            `${API}/api/product/all`,
             { withCredentials: true }
         );
         if (data.success) {
@@ -24,7 +24,7 @@ export const countProducts = () => async (dispatch) => {
     dispatch({ type: "COUNT_PRODUCT_REQUEST" });
     try {
         const { data } = await axios.get(
-            "http://srv918880.hstgr.cloud:4000/api/product/count-products",
+            `${API}/api/product/count-products`,
             { withCredentials: true }
         );
         if (data.success) {

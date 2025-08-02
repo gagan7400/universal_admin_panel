@@ -1,6 +1,6 @@
 import axios from 'axios';
-// const API = import.meta.env.VITE_API || "http://srv918880.hstgr.cloud:4000";
-const API = 'http://srv918880.hstgr.cloud:4000';
+const API = import.meta.env.VITE_API ;
+
 
 export const setAuthLoading = () => ({ type: "LOGIN_ADMIN_REQUEST" });
 

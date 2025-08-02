@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { loginAdmin } from '../redux/actions/authActions';
 import { Bounce, toast } from 'react-toastify';
-import Loader from '../layout/Loader'
 import './loaderlogin.css'
 const Login = () => {
     const [email, setEmail] = useState("");

@@ -7,6 +7,8 @@ import OrderDialog from './OrderDialog';
 import Loader from '../layout/Loader';
 
 const Orders = () => {
+    const API = import.meta.env.VITE_API;
+
     const dispatch = useDispatch();
     const { allorders, loading, error } = useSelector(state => state.order);
     const [open, setOpen] = useState(false)
@@ -22,7 +24,7 @@ const Orders = () => {
 
     const handleStatusUpdate = async (orderId, newStatus) => {
         try {
-            let { data } = await axios.put(`http://srv918880.hstgr.cloud:4000/api/order/admin/order/${orderId}/`, { orderStatus: newStatus }, { withCredentials: true });
+            let { data } = await axios.put(`${API}/api/order/admin/order/${orderId}/`, { orderStatus: newStatus }, { withCredentials: true });
             dispatch(getAllOrders()); // Refresh after update
             toast.success(data.message, {
                 position: "top-right",

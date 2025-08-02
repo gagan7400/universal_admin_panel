@@ -1,10 +1,5 @@
 import Chart from "react-apexcharts";
-// import { ApexOptions } from "apexcharts";
-// import { Dropdown } from "../ui/dropdown/Dropdown";
-// import { DropdownItem } from "../ui/dropdown/DropdownItem";
-// import { MoreDotIcon } from "../../icons";
-import { useState } from "react";
-
+ 
 export default function MonthlySalesChart() {
   const options = {
     colors: ["#465fff"],
@@ -91,15 +86,7 @@ export default function MonthlySalesChart() {
       data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
     },
   ];
-  const [isOpen, setIsOpen] = useState(false);
-
-  function toggleDropdown() {
-    setIsOpen(!isOpen);
-  }
-
-  function closeDropdown() {
-    setIsOpen(false);
-  }
+ 
   return (
     <div className="no-scrollbar overflow-hidden rounded-2xl border border-gray-300 bg-white px-5 pt-5     sm:px-6 sm:pt-6">
       <div className="flex items-center justify-between">

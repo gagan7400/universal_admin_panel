@@ -6,6 +6,8 @@ import { useSelector } from "react-redux";
 import Loader from "../layout/Loader";
 
 export default function Products() {
+    const API = import.meta.env.VITE_API ;
+
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [search, setSearch] = useState("");
@@ -70,7 +72,7 @@ export default function Products() {
         // ✅ Update or Create Logic
         if (isUpdate && isUpdateId) {
             try {
-                const { data } = await axios.put(`http://srv918880.hstgr.cloud:4000/api/product/${isUpdateId}`, formData, {
+                const { data } = await axios.put(`${API}/api/product/${isUpdateId}`, formData, {
                     withCredentials: true,
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -93,7 +95,7 @@ export default function Products() {
         } else {
             // 👇 Add New Product Logic (already working)
             try {
-                const { data } = await axios.post("http://srv918880.hstgr.cloud:4000/api/product/new", formData, {
+                const { data } = await axios.post(`${API}/api/product/new`, formData, {
                     withCredentials: true,
                 });
                 if (data.success) {
@@ -138,7 +140,7 @@ export default function Products() {
     const getProducts = async () => {
         setLoading(true)
         try {
-            let { data } = await axios.get("http://srv918880.hstgr.cloud:4000/api/product/all");
+            let { data } = await axios.get(`${API}/api/product/all`);
             if (data.success) {
                 setProducts(data.data);
                 setFilteredProducts(data.data);
@@ -187,7 +189,7 @@ export default function Products() {
     const deleteHandler = async (id) => {
         if (confirm("Are you sure you want to delete this ")) {
             try {
-                let { data } = await axios.delete("http://srv918880.hstgr.cloud:4000/api/product/" + id, {
+                let { data } = await axios.delete(`${API}/api/product/${id}`, {
                     withCredentials: true,
                 });
                 if (data.success) {

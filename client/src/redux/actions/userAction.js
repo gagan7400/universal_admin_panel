@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const API = import.meta.env.VITE_API || "http://srv918880.hstgr.cloud:4000";
+const API = import.meta.env.VITE_API;
 
 export const getAllUsers = () => async (dispatch) => {
     dispatch({ type: "GET_USER_REQUEST" });
     try {
         const { data } = await axios.get(
-            "http://srv918880.hstgr.cloud:4000/api/user/getallusers",
+            `${API}/api/user/getallusers`,
             { withCredentials: true }
         );
         if (data.status) {
@@ -24,7 +24,7 @@ export const countUsers = () => async (dispatch) => {
     dispatch({ type: "COUNT_USER_REQUEST" });
     try {
         const { data } = await axios.get(
-            "http://srv918880.hstgr.cloud:4000/api/user/count-users",
+            `${API}/api/user/count-users`,
             { withCredentials: true }
         );
         if (data.status) {
