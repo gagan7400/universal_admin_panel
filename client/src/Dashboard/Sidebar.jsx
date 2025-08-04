@@ -10,7 +10,7 @@ const Sidebar = () => {
     const isDragging = useRef(false);
     const dragStartX = useRef(0);
     let { admin } = useSelector(state => state.auth)
-     
+
     useEffect(() => {
         const handleMouseMove = (e) => {
             if (!isDragging.current) return;
@@ -48,6 +48,11 @@ const Sidebar = () => {
             setIsCollapsed(true);
         }
     };
+    let isLogout = () => {
+        if (confirm("Are you sure you want to logout")) {
+            dispatch(logout())
+        }
+    }
 
     return (
         <div style={{ width: `${sidebarWidth}px`, background: 'var(--blue)', zIndex: "10" }} className="relative   transition-all duration-300 ease-in-out" >
@@ -79,7 +84,7 @@ const Sidebar = () => {
                                         key={index}
                                         end={item.exact}
                                         className={({ isActive }) =>
-                                            `flex items-center ${isCollapsed ? 'gap-0' : 'gap-3'} p-2 text-amber-50 rounded hover:bg-amber-900 cursor-pointer transition-all duration-300 ${isActive ? 'bg-amber-900' : ''}`
+                                            `flex items-center ${isCollapsed ? 'gap-0' : 'gap-3'} p-2 text-amber-50 rounded hover:bg-yellow-400 cursor-pointer transition-all duration-300 ${isActive ? 'bg-yellow-500' : ''}`
                                         }
                                     >
                                         <img src={item.icon} alt="" className="w-6 h-6" loading="lazy" />
@@ -94,7 +99,7 @@ const Sidebar = () => {
                                     key={index}
                                     end={item.exact}
                                     className={({ isActive }) =>
-                                        `flex items-center ${isCollapsed ? 'gap-0' : 'gap-3'} p-2 text-amber-50 rounded hover:bg-amber-900 cursor-pointer transition-all duration-300 ${isActive ? 'bg-amber-900' : ''}`
+                                        `flex items-center ${isCollapsed ? 'gap-0' : 'gap-3'} p-2 text-amber-50 rounded hover:bg-yellow-400 cursor-pointer transition-all duration-300 ${isActive ? 'bg-yellow-500' : ''}`
                                     }
                                 >
                                     <img src={item.icon} alt="" className="w-6 h-6" loading="lazy" />
@@ -111,9 +116,9 @@ const Sidebar = () => {
 
                 {/* Logout */}
                 <div className="space-y-4 mt-10">
-                    <div onClick={() => dispatch(logout())} className="flex items-center gap-3 p-2 rounded cursor-pointer transition-all duration-300 text-amber-50">
+                    <div onClick={isLogout} className="flex items-center gap-3 p-2 hover:bg-yellow-400 rounded cursor-pointer transition-all duration-300 text-amber-50">
                         <img src="/img/logout.svg" alt="" className="w-6 h-6" loading="lazy" />
-                        <span className={`text-lg transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
+                        <span className={`text-lg transition-all duration-300 overflow-hidden   whitespace-nowrap ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
                             Logout
                         </span>
                     </div>
@@ -126,7 +131,7 @@ const Sidebar = () => {
                 onClick={handleToggle}
                 title={isCollapsed ? "Open Sidebar" : "Close Sidebar"}
                 style={{ zIndex: "-1" }}
-                className="absolute top-9 -right-6 transform -translate-y-1/2 w-12 h-12 flex  justify-center bg-amber-300 text-amber-50  rotate-45 rounded-t-sm shadow"
+                className="absolute top-9 -right-6 transform -translate-y-1/2 w-12 h-12 flex  justify-center bg-yellow-500 text-amber-50  rotate-45 rounded-t-sm shadow"
             >
                 {/* Icon can be image or emoji */}
                 <span className='ms-7 text-2xl rotate-[-45deg]'>{isCollapsed ? '>' : '<'}</span>

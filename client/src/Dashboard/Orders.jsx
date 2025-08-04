@@ -135,11 +135,11 @@ const Orders = () => {
                 ))}
             </div>
 
-            <div className="flex flex-wrap gap-4 items-center justify-between">
+            <div className="flex flex-wrap gap-4 items-center md:justify-between justify-start">
                 <input
                     type="text"
                     placeholder="Search Orders..."
-                    className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 outline-none"
+                    className=" md:w-64  w-30 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 outline-none"
                     value={search}
                     onChange={(e) => {
                         setSearch(e.target.value);
@@ -148,7 +148,7 @@ const Orders = () => {
                 />
 
                 <select
-                    className="p-2 w-35 bg-amber-400 text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-amber-600 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
+                    className="p-2 w-35 bg-yellow-500 text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-yellow-400 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
                     value={statusFilter}
                     onChange={(e) => {
                         setStatusFilter(e.target.value);

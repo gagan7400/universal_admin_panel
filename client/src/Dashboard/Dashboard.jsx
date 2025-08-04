@@ -21,34 +21,33 @@ export default function Dashboard() {
                 {/* Top Navbar */}
                 <nav className="p-4 flex justify-end gap-4 items-center bg-amber-50">
                     {/* Profile Dropdown */}
-                    <p>{admin?.role}</p>
+                    <p className='flex items-center gap-3 p-2 bg-yellow-500 hover:bg-yellow-400 rounded cursor-pointer transition-all duration-300 text-amber-50 ' style={{ textTransform: "capitalize" }}>{admin?.name}</p>
 
                     <div className="flex justify-between gap-4 items-center min-w-fit">
                         <div className="relative me-4">
                             <div
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setIsOpen(!isOpen);
-                                }}
-                                className="group relative transition-all duration-700 flex items-center justify-center text-gray-500 bg-amber-300 hover:bg-amber-200 hover:text-blue-400 rounded-full h-11 w-11"
+                                // onClick={(e) => {
+                                //     e.stopPropagation();
+                                //     setIsOpen(!isOpen);
+                                // }}
+                                className="group relative transition-all duration-700 flex items-center justify-center text-gray-500 bg-yellow-500 hover:bg-yellow-400   rounded-full h-11 w-11"
                             >
-                                <i className="fa-regular fa-user text-xl text-white group-hover:text-blue-400"></i>
+                                <i className="fa-regular fa-user text-xl text-white  "></i>
 
-                                {isOpen && (
+                                {/* {isOpen && (
                                     <div className="absolute top-[37px] right-[-16px] z-20 mt-6 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5">
                                         <div className="py-1">
-                                            <NavLink className="block px-4 py-3 text-lg text-gray-700 hover:bg-gray-100">Profile</NavLink>
-                                            <NavLink className="block px-4 py-3 text-lg text-gray-700 hover:bg-gray-100">Support</NavLink>
+                                            <NavLink className="block px-4 py-3 text-lg text-gray-700 hover:bg-yellow-500">Profile</NavLink>
                                             <button
                                                 onClick={() => dispatch(logout())}
-                                                className="flex items-center gap-1 bg-amber-950 w-full text-left px-4 py-3 text-lg text-gray-100 hover:bg-gray-800"
+                                                className="flex items-center gap-1 bg-amber-950 w-full text-left px-4 py-3 text-lg text-gray-100 hover:bg-yellow-500"
                                             >
                                                 <img src="/img/logout.svg" alt="" className="w-6 h-6" />
                                                 <span>Logout</span>
                                             </button>
                                         </div>
                                     </div>
-                                )}
+                                )} */}
                             </div>
                         </div>
                     </div>

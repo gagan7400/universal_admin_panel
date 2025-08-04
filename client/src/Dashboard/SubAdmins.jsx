@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import Loader from "../layout/Loader";
 
 const SubadminManager = () => {
-    const API = import.meta.env.VITE_API ;
+    const API = import.meta.env.VITE_API;
 
     const [subadmins, setSubadmins] = useState([]);
     const [show, setShow] = useState(false);
@@ -111,15 +111,30 @@ const SubadminManager = () => {
         }
     };
 
+    let cancel = () => {
+        setIsEditMode(false);
+        setFormData({
+            name: "",
+            email: "",
+            password: "",
+            permissions: []
+        })
+        setEditId(null);
+        fetchSubadmins();
+        setLoading(false)
+        setShow(false)
+    }
     return (
         <div className="min-w-[800px] mx-auto   bg-white shadow-xl rounded-xl space-y-6 sm:p-6 p-3">
-            <div className="flex flex-wrap gap-4 justify-between items-center mb-6">
+            <div className="flex flex-wrap gap-4 md:justify-between justify-start items-center mb-6">
 
                 <h2 className="text-2xl font-bold text-gray-800">Subadmins Manager</h2>
-
-                <div className="w-1/5   min-w-fit flex  gap-4 justify-end items-center  ">
-                    <button className="bg-amber-400 text-white  min-w-fit hover:bg-amber-600 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(!show) }}>{show ? "View Subadmins" : "Add Subadmins"}</button>
+                <div className="flex flex-wrap gap-4 md:justify-between justify-start  items-center mb-6">
+                    <button className="bg-yellow-500 text-white  min-w-fit hover:bg-yellow-400 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(!show) }}>{show ? "View Subadmins" : "Add Subadmins"}</button>
                 </div>
+                {/* <div className="w-1/5 min-w-fit flex  gap-4 justify-end items-center  ">
+                    <button className="bg-yellow-500 text-white  min-w-fit hover:bg-yellow-400 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(!show) }}>{show ? "View Subadmins" : "Add Subadmins"}</button>
+                </div> */}
             </div>
             {show ?
                 <>
@@ -188,12 +203,21 @@ const SubadminManager = () => {
                                 </div>
                             </div>
                         </div>
-                        <button
-                            type="submit"
-                            className="bg-amber-400 text-white  min-w-fit hover:bg-amber-600 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex "
-                        >
-                            {isEditMode ? "Update Subadmin" : "Add Subadmin"}
-                        </button>
+                        <div className="flex justify-end gap-3 p-2 rounded">
+                            <button
+                                type="submit"
+                                className="bg-yellow-500 text-white  min-w-fit hover:bg-yellow-400 hover:text-blue-50  px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex "
+                            >
+                                {isEditMode ? "Update Subadmin" : "Add Subadmin"}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={cancel}
+                                className="bg-yellow-500 text-white min-w-fit hover:bg-yellow-400 hover:text-blue-50  px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex "
+                            >
+                                Cancel
+                            </button>
+                        </div>
                     </form>
                 </>
                 :
@@ -251,8 +275,6 @@ const SubadminManager = () => {
                     </div>
                 </>
             }
-
-
         </div>
     );
 };

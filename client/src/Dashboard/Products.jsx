@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import Loader from "../layout/Loader";
 
 export default function Products() {
-    const API = import.meta.env.VITE_API ;
+    const API = import.meta.env.VITE_API;
 
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -262,9 +262,7 @@ export default function Products() {
                     <div className="  mx-auto bg-white rounded-xl shadow-xl sm:p-6 p-3 ">
                         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Products</h2>
                         <div className="flex flex-wrap gap-4 justify-between items-center mb-6">
-
                             <h2 className="text-2xl font-bold   text-gray-800  ">🛒 Add New Product</h2>
-
                             <div className="w-1/5   min-w-fit flex  gap-4 justify-end items-center  ">
                                 <button className="bg-amber-400 text-white  min-w-fit hover:bg-amber-600 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(false) }}>View Products</button>
                             </div>
@@ -361,15 +359,15 @@ export default function Products() {
 
                         {/* Top controls */}
                         <div>
-                            <div className="flex flex-wrap gap-4 justify-between items-center mb-6">
+                            <div className="flex flex-wrap gap-4 md:justify-between justify-start items-center mb-6">
                                 <input
                                     type="text"
                                     placeholder="Search Products..."
-                                    className="w-64 p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 outline-none"
+                                    className="md:w-64  w-30 p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 outline-none"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                 />
-                                <div className="w-1/5   min-w-fit flex  gap-4 justify-end items-center  ">
+                                <div className={`w-1/5 min-w-fit flex gap-4  ${admin.role == "admin" ? "justify-end" : "justify-start md:justify-end"} items-center`}>
                                     {admin.role == "admin" && <button className="bg-amber-400 text-white  min-w-fit hover:bg-amber-600 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(true) }}>  Add New Product</button>}
                                     <select
                                         className="p-2 w-25 bg-amber-400 text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-amber-600 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"

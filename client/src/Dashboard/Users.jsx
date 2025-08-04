@@ -101,21 +101,21 @@ export default function Users() {
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Users</h2>
 
             {/* Top controls */}
-            <div className="flex flex-wrap gap-4 justify-between items-center mb-6">
+            <div className="flex flex-wrap gap-4 md:justify-between justify-start  items-center mb-6">
                 <input
                     type="text"
                     placeholder="Search Users..."
-                    className="w-64 p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 outline-none"
+                    className="md:w-64  w-30 p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 outline-none"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
                 <select
-                    className="p-2 w-2/12  min-w-fit border rounded-lg shadow-sm bg-gray-100 text-gray-700"
+                    className="p-2 md:w-2/12 w-20  min-w-fit  border-0 rounded-lg shadow-sm bg-yellow-500 hover:bg-yellow-400 text-blue-50"
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
                 >
                     {categories.map((cat, idx) => (
-                        <option key={idx} value={cat.category}>
+                        <option key={idx} value={cat.category} className="hover:bg-yellow-400">
                             {cat.category}
                         </option>
                     ))}

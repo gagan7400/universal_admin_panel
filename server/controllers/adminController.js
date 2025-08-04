@@ -28,7 +28,7 @@ const sendMail = async (to, subject, html) => {
 
 const register = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, name } = req.body;
         const existing = await Admin.findOne({ email });
         if (existing) return res.status(400).json({ success: false, message: "Admin already exists" });
 
