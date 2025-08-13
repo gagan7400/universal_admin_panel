@@ -4,6 +4,7 @@ import ProductImageUploader from "./ProductImageUploader";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import Loader from "../layout/Loader";
+import { useLocation } from "react-router-dom";
 
 export default function Products() {
     const API = import.meta.env.VITE_API;
@@ -37,7 +38,16 @@ export default function Products() {
     const [isUpdate, setIsUpdate] = useState(false)
     const [isUpdateId, setIsUpdateId] = useState(null)
     const [deletedImages, setDeletedImages] = useState([]);
-    let { admin } = useSelector(state => state.auth)
+    let { admin } = useSelector(state => state.auth);
+    let [pageloading, setpageLoading] = useState(true);
+    let location = useLocation()
+    useEffect(() => {
+        setTimeout(() => {
+            setpageLoading(false);
+        }, [500])
+    }, [location])
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -111,7 +121,6 @@ export default function Products() {
             }
         }
     };
-
 
     const refresh = () => {
         setName("");
@@ -256,246 +265,248 @@ export default function Products() {
     );
 
     return (
-        <div className="min-w-[800px] ">
-            {show ?
-                <>
-                    <div className="  mx-auto bg-white rounded-xl shadow-xl sm:p-6 p-3 ">
-                        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Products</h2>
-                        <div className="flex flex-wrap gap-4 justify-between items-center mb-6">
-                            <h2 className="text-2xl font-bold   text-gray-800  ">🛒 Add New Product</h2>
-                            <div className="w-1/5   min-w-fit flex  gap-4 justify-end items-center  ">
-                                <button className="bg-amber-400 text-white  min-w-fit hover:bg-amber-600 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(false) }}>View Products</button>
-                            </div>
-                        </div>
-                        <form onSubmit={handleSubmit} className="mx-auto ">
-
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                <div className="flex flex-col">
-                                    <label className="text-sm font-semibold text-gray-700 mb-1">Product Name</label>
-                                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter product name" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
-                                </div>
-
-                                <div className="flex flex-col">
-                                    <label className="text-sm font-semibold text-gray-700 mb-1">Price</label>
-                                    <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Enter price" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
-                                </div>
-
-                                <div className="flex flex-col">
-                                    <label className="text-sm font-semibold text-gray-700 mb-1">Ratings</label>
-                                    <input type="number" value={ratings} onChange={(e) => setRatings(e.target.value)} placeholder="Rating out of 5" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
-                                </div>
-
-                                <div className="flex flex-col">
-                                    <label className="text-sm font-semibold text-gray-700 mb-1">Stock</label>
-                                    <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} placeholder="Stock quantity" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
-                                </div>
-
-                                <div className="flex flex-col">
-                                    <label className="text-sm font-semibold text-gray-700 mb-1">Category</label>
-                                    <select value={category} onChange={(e) => setCategory(e.target.value)} className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400">
-                                        <option className="hover:bg-amber-400">Select category</option>
-                                        <option className="hover:bg-amber-400">Iron</option>
-                                        <option className="hover:bg-amber-400" >Bronze</option>
-                                        <option className="hover:bg-amber-400" >Silver</option>
-                                    </select>
-                                </div>
-
-                                <div className="flex flex-col">
-                                    <label className="text-sm font-semibold text-gray-700 mb-1">Dimensions (W × H)</label>
-                                    <div className="flex gap-2">
-                                        <input type="text" value={dimensions.width} onChange={(e) => setDimensions({ ...dimensions, width: e.target.value })} placeholder="Width" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
-                                        <input type="text" value={dimensions.height} onChange={(e) => setDimensions({ ...dimensions, height: e.target.value })} placeholder="Height" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+        <>
+            {pageloading ? <div className="w-full h-full flex justify-center items-center p-3"><Loader /></div> :
+                <div className="min-w-[800px] ">
+                    {show ?
+                        <>
+                            <div className="  mx-auto bg-white rounded-xl shadow-xl sm:p-6 p-3 ">
+                                <h2 className="text-2xl font-semibold text-gray-800 mb-4">Products</h2>
+                                <div className="flex flex-wrap gap-4 justify-start lg:justify-between items-center mb-6">
+                                    <h2 className="text-2xl font-bold   text-gray-800  ">🛒 Add New Product</h2>
+                                    <div className="w-1/5   min-w-fit flex  gap-4 justify-end items-center  ">
+                                        <button className="bg-amber-400 text-white  min-w-fit hover:bg-amber-600 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(false) }}>View Products</button>
                                     </div>
                                 </div>
+                                <form onSubmit={handleSubmit} className="mx-auto ">
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                        <div className="flex flex-col">
+                                            <label className="text-sm font-semibold text-gray-700 mb-1">Product Name</label>
+                                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter product name" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                        </div>
 
-                                <div className="flex flex-col">
-                                    <label className="text-sm font-semibold text-gray-700 mb-1">Size</label>
-                                    <input type="text" value={size} onChange={(e) => setSize(e.target.value)} placeholder="Enter size" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
-                                </div>
+                                        <div className="flex flex-col">
+                                            <label className="text-sm font-semibold text-gray-700 mb-1">Price</label>
+                                            <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Enter price" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                        </div>
 
-                                <div className="flex flex-col">
-                                    <label className="text-sm font-semibold text-gray-700 mb-1">Weight (kg)</label>
-                                    <input type="text" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Enter weight" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
-                                </div>
+                                        <div className="flex flex-col">
+                                            <label className="text-sm font-semibold text-gray-700 mb-1">Ratings</label>
+                                            <input type="number" value={ratings} onChange={(e) => setRatings(e.target.value)} placeholder="Rating out of 5" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                        </div>
 
-                                <div className="flex flex-col">
-                                    <label className="text-sm font-semibold text-gray-700 mb-1">Material</label>
-                                    <input type="text" value={material} onChange={(e) => setMaterial(e.target.value)} placeholder="Enter material" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
-                                </div>
+                                        <div className="flex flex-col">
+                                            <label className="text-sm font-semibold text-gray-700 mb-1">Stock</label>
+                                            <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} placeholder="Stock quantity" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                        </div>
 
-                                <div className="flex flex-col">
-                                    <label className="text-sm font-semibold text-gray-700 mb-1">Discount (%)</label>
-                                    <input type="number" value={discountPercentage} onChange={(e) => setDiscountPercentage(e.target.value)} placeholder="Enter discount" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
-                                </div>
-                            </div>
+                                        <div className="flex flex-col">
+                                            <label className="text-sm font-semibold text-gray-700 mb-1">Category</label>
+                                            <select value={category} onChange={(e) => setCategory(e.target.value)} className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400">
+                                                <option className="hover:bg-amber-400">Select category</option>
+                                                <option className="hover:bg-amber-400">Iron</option>
+                                                <option className="hover:bg-amber-400" >Bronze</option>
+                                                <option className="hover:bg-amber-400" >Silver</option>
+                                            </select>
+                                        </div>
 
-                            <div className="mt-6">
-                                <label className="text-sm font-semibold text-gray-700 mb-1 block">Description</label>
-                                <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Write product description..." rows={5} className="w-full border border-gray-300 p-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
-                            </div>
+                                        <div className="flex flex-col">
+                                            <label className="text-sm font-semibold text-gray-700 mb-1">Dimensions (W × H)</label>
+                                            <div className="flex gap-2">
+                                                <input type="text" value={dimensions.width} onChange={(e) => setDimensions({ ...dimensions, width: e.target.value })} placeholder="Width" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                                <input type="text" value={dimensions.height} onChange={(e) => setDimensions({ ...dimensions, height: e.target.value })} placeholder="Height" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                            </div>
+                                        </div>
 
-                            <div className="mt-6">
-                                <ProductImageUploader bannerImage={bannerImage} setBannerImage={setBannerImage} title="Banner Image" />
-                            </div>
-                            <div className="mt-6">
-                                <ProductImageUploader images={images} setImages={setImages} title="Product Images" setDeletedImages={setDeletedImages} />
-                            </div>
+                                        <div className="flex flex-col">
+                                            <label className="text-sm font-semibold text-gray-700 mb-1">Size</label>
+                                            <input type="text" value={size} onChange={(e) => setSize(e.target.value)} placeholder="Enter size" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                        </div>
 
-                            <div className="mt-6 text-right flex justify-end gap-2 items-center">
-                                <button type="button" onClick={cancel} className="bg-red-600 text-white  hover:bg-amber-600 hover:text-blue-50 px-6 py-2.5 rounded-md shadow-lg duration-75 transition-transform transform  ">
-                                    Cancel
-                                </button>
-                                <button type="submit" className=" bg-amber-400 text-white  hover:bg-amber-600 hover:text-blue-50 px-6 py-2.5 rounded-md shadow-lg duration-75 transition-transform transform  ">
-                                    {isUpdate ? "Update Product" : "Add Product"}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </>
-                :
-                <>
-                    <div className="mx-auto bg-white rounded-xl shadow-xl sm:p-6 p-3">
-                        <h2 className="text-2xl  font-semibold text-gray-800 mb-4">Products</h2>
+                                        <div className="flex flex-col">
+                                            <label className="text-sm font-semibold text-gray-700 mb-1">Weight (kg)</label>
+                                            <input type="text" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Enter weight" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                        </div>
 
-                        {/* Top controls */}
-                        <div>
-                            <div className="flex flex-wrap gap-4 md:justify-between justify-start items-center mb-6">
-                                <input
-                                    type="text"
-                                    placeholder="Search Products..."
-                                    className="md:w-64  w-30 p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 outline-none"
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                />
-                                <div className={`w-1/5 min-w-fit flex gap-4  ${admin.role == "admin" ? "justify-end" : "justify-start md:justify-end"} items-center`}>
-                                    {admin.role == "admin" && <button className="bg-amber-400 text-white  min-w-fit hover:bg-amber-600 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(true) }}>  Add New Product</button>}
-                                    <select
-                                        className="p-2 w-25 bg-amber-400 text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-amber-600 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
-                                        value={selectedCategory}
-                                        onChange={(e) => setSelectedCategory(e.target.value)}
-                                    >
-                                        {categories.map((cat, idx) => (
-                                            <option key={idx} value={cat}>
-                                                {cat}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
+                                        <div className="flex flex-col">
+                                            <label className="text-sm font-semibold text-gray-700 mb-1">Material</label>
+                                            <input type="text" value={material} onChange={(e) => setMaterial(e.target.value)} placeholder="Enter material" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                        </div>
 
-                            {/* Table */}
-                            <div className="overflow-x-auto">
-                                {loading ? <div className="flex justify-center items-center p-3"><Loader /></div> : <table className="w-full text-sm text-left border rounded-lg overflow-hidden">
-                                    <thead className="bg-blue-100 text-gray-700 text-xs uppercase">
-                                        <tr>
-                                            {["Banner", "name", "price", "description", "category", "stock", "size", "dimensions", "Images"].map((col) => (
-                                                <th
-                                                    key={col}
-                                                    className="px-6 py-3 cursor-pointer select-none"
-                                                    onClick={() => handleSort(col)}
-                                                >
-                                                    {["Banner", "Images"].includes(col) ? <div className="flex items-center gap-1">
-                                                        <span className="capitalize">{col}</span>
-                                                    </div> : <div className="flex items-center gap-1">
-                                                        <span className="capitalize">{col}</span>
-                                                        {sortField === col ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'}
-                                                    </div>}
-                                                </th>
-                                            ))}
+                                        <div className="flex flex-col">
+                                            <label className="text-sm font-semibold text-gray-700 mb-1">Discount (%)</label>
+                                            <input type="number" value={discountPercentage} onChange={(e) => setDiscountPercentage(e.target.value)} placeholder="Enter discount" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                        </div>
+                                    </div>
 
-                                            {admin.role == "admin" && <th className="px-6 py-3">Action </th>}
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
-                                        {paginatedData.map((v, i) => (
-                                            <tr key={v._id} className="hover:bg-blue-50">
-                                                <td className="px-6 py-3 flex justify-center flex-wrap items-center gap-3">
-                                                    <img src={v.bannerImage && v.bannerImage.url} alt="d" className="w-5 h-5" />
-                                                </td>
-                                                <td className="px-6 py-3 text-blue-900 font-medium">{v.name}</td>
+                                    <div className="mt-6">
+                                        <label className="text-sm font-semibold text-gray-700 mb-1 block">Description</label>
+                                        <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Write product description..." rows={5} className="w-full border border-gray-300 p-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                    </div>
 
-                                                <td className="px-6 py-3">₹{v.price}</td>
-                                                <td className="px-6 py-3">{v.description}</td>
-                                                <td className="px-6 py-3">{v.category}</td>
-                                                <td className="px-6 py-3">{v.stock}</td>
-                                                <td className="px-6 py-3">{v.size}</td>
-                                                <td className="px-6 py-3">
-                                                    {v.dimensions.width} x {v.dimensions.height}
-                                                </td>
+                                    <div className="mt-6">
+                                        <ProductImageUploader bannerImage={bannerImage} setBannerImage={setBannerImage} title="Banner Image" />
+                                    </div>
+                                    <div className="mt-6">
+                                        <ProductImageUploader images={images} setImages={setImages} title="Product Images" setDeletedImages={setDeletedImages} />
+                                    </div>
 
-                                                <td className="px-6 py-3 flex justify-center flex-wrap items-center gap-3">
-                                                    {v.images.map((img, ind) => {
-                                                        return (<img key={ind} src={img.url} alt="d" className="w-5 h-5" />
-                                                        )
-                                                    })}
-                                                </td>
-                                                {admin.role == "admin" && <td className="px-6 py-3 min-w-fit whitespace-nowrap">
-                                                    <button
-                                                        onClick={() => updateHandler(v._id, v)}
-                                                        className=" text-xs font-semibold   rounded-lg hover:scale-110"
-                                                    >
-                                                        <img src="/img/newedit.svg" alt="" />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => deleteHandler(v._id)}
-                                                        className=" text-xs font-semibold  ms-2  rounded-lg  hover:scale-110"
-                                                    >
-                                                        <img src="/img/delete-icon.svg" alt="" />
-                                                    </button>
-                                                </td>}
-                                            </tr>
-                                        ))}
-                                        {paginatedData.length === 0 && (
-                                            <tr>
-                                                <td colSpan="8" className="text-center py-6 text-gray-500">
-                                                    No products found.
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>}
-                            </div>
-
-                            {/* Pagination */}
-                            <div className="flex justify-between items-center mt-6 text-sm text-gray-600">
-                                <p>
-                                    Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-                                    {Math.min(currentPage * itemsPerPage, filteredProducts.length)} of{" "}
-                                    {filteredProducts.length} entries
-                                </p>
-                                <div className="flex space-x-1">
-                                    <button
-                                        onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                                        disabled={currentPage === 1}
-                                        className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-                                    >
-                                        Prev
-                                    </button>
-                                    {[...Array(totalPages)].map((_, i) => (
-                                        <button
-                                            key={i}
-                                            onClick={() => setCurrentPage(i + 1)}
-                                            className={`px-3 py-1 rounded ${currentPage === i + 1
-                                                ? "bg-blue-600 text-white"
-                                                : "bg-gray-200 hover:bg-gray-300"
-                                                }`}
-                                        >
-                                            {i + 1}
+                                    <div className="mt-6 text-right flex lg:justify-end justify-start gap-2 items-center">
+                                        <button type="button" onClick={cancel} className="bg-red-600 text-white  hover:bg-amber-600 hover:text-blue-50 px-6 py-2.5 rounded-md shadow-lg duration-75 transition-transform transform  ">
+                                            Cancel
                                         </button>
-                                    ))}
-                                    <button
-                                        onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-                                        disabled={currentPage === totalPages}
-                                        className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-                                    >
-                                        Next
-                                    </button>
+                                        <button type="submit" className=" bg-amber-400 text-white  hover:bg-amber-600 hover:text-blue-50 px-6 py-2.5 rounded-md shadow-lg duration-75 transition-transform transform  ">
+                                            {isUpdate ? "Update Product" : "Add Product"}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </>
+                        :
+                        <>
+                            <div className="mx-auto bg-white rounded-xl shadow-xl sm:p-6 p-3">
+                                <h2 className="text-2xl  font-semibold text-gray-800 mb-4">Products</h2>
+                                {/* Top controls */}
+                                <div>
+                                    <div className="flex flex-wrap gap-4 lg:justify-between justify-start items-center mb-6">
+                                        <input
+                                            type="text"
+                                            placeholder="Search Products..."
+                                            className="lg:w-64  w-30 p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 outline-none"
+                                            value={search}
+                                            onChange={(e) => setSearch(e.target.value)}
+                                        />
+                                        <div className={`w-1/5 min-w-fit flex gap-4  ${admin.role == "admin" ? "justify-end" : "justify-start md:justify-end"} items-center`}>
+                                            {admin.role == "admin" && <button className="bg-amber-400 text-white  min-w-fit hover:bg-amber-600 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(true) }}>  Add New Product</button>}
+                                            <select
+                                                className="p-2 w-25 bg-amber-400 text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-amber-600 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
+                                                value={selectedCategory}
+                                                onChange={(e) => setSelectedCategory(e.target.value)}
+                                            >
+                                                {categories.map((cat, idx) => (
+                                                    <option key={idx} value={cat}>
+                                                        {cat}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    {/* Table */}
+                                    <div className="overflow-x-auto">
+                                        {loading ? <div className="flex justify-center items-center p-3"><Loader /></div> : <table className="w-full text-sm text-left border rounded-lg overflow-hidden">
+                                            <thead className="bg-blue-100 text-gray-700 text-xs uppercase">
+                                                <tr>
+                                                    {["Banner", "name", "price", "description", "category", "stock", "size", "dimensions", "Images"].map((col) => (
+                                                        <th
+                                                            key={col}
+                                                            className="px-6 py-3 cursor-pointer select-none"
+                                                            onClick={() => handleSort(col)}
+                                                        >
+                                                            {["Banner", "Images"].includes(col) ? <div className="flex items-center gap-1">
+                                                                <span className="capitalize">{col}</span>
+                                                            </div> : <div className="flex items-center gap-1">
+                                                                <span className="capitalize">{col}</span>
+                                                                {sortField === col ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'}
+                                                            </div>}
+                                                        </th>
+                                                    ))}
+
+                                                    {admin.role == "admin" && <th className="px-6 py-3">Action </th>}
+                                                </tr>
+                                            </thead>
+                                            <tbody className="bg-white divide-y divide-gray-200">
+                                                {paginatedData.map((v, i) => (
+                                                    <tr key={v._id} className="hover:bg-blue-50">
+                                                        <td className="px-6 py-3 flex justify-center flex-wrap items-center gap-3">
+                                                            <img src={v.bannerImage && v.bannerImage.url} alt="d" className="w-5 h-5" />
+                                                        </td>
+                                                        <td className="px-6 py-3 text-blue-900 font-medium">{v.name}</td>
+
+                                                        <td className="px-6 py-3">₹{v.price}</td>
+                                                        <td className="px-6 py-3">{v.description}</td>
+                                                        <td className="px-6 py-3">{v.category}</td>
+                                                        <td className="px-6 py-3">{v.stock}</td>
+                                                        <td className="px-6 py-3">{v.size}</td>
+                                                        <td className="px-6 py-3">
+                                                            {v.dimensions.width} x {v.dimensions.height}
+                                                        </td>
+
+                                                        <td className="px-6 py-3 flex justify-center flex-wrap items-center gap-3">
+                                                            {v.images.map((img, ind) => {
+                                                                return (<img key={ind} src={img.url} alt="d" className="w-5 h-5" />
+                                                                )
+                                                            })}
+                                                        </td>
+                                                        {admin.role == "admin" && <td className="px-6 py-3 min-w-fit whitespace-nowrap">
+                                                            <button
+                                                                onClick={() => updateHandler(v._id, v)}
+                                                                className=" text-xs font-semibold   rounded-lg hover:scale-110"
+                                                            >
+                                                                <img src="/img/newedit.svg" alt="" />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => deleteHandler(v._id)}
+                                                                className=" text-xs font-semibold  ms-2  rounded-lg  hover:scale-110"
+                                                            >
+                                                                <img src="/img/delete-icon.svg" alt="" />
+                                                            </button>
+                                                        </td>}
+                                                    </tr>
+                                                ))}
+                                                {paginatedData.length === 0 && (
+                                                    <tr>
+                                                        <td colSpan="8" className="text-center py-6 text-gray-500">
+                                                            No products found.
+                                                        </td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>}
+                                    </div>
+
+                                    {/* Pagination */}
+                                    <div className="flex justify-between items-center mt-6 text-sm text-gray-600">
+                                        <p>
+                                            Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                                            {Math.min(currentPage * itemsPerPage, filteredProducts.length)} of{" "}
+                                            {filteredProducts.length} entries
+                                        </p>
+                                        <div className="flex space-x-1">
+                                            <button
+                                                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                                                disabled={currentPage === 1}
+                                                className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                                            >
+                                                Prev
+                                            </button>
+                                            {[...Array(totalPages)].map((_, i) => (
+                                                <button
+                                                    key={i}
+                                                    onClick={() => setCurrentPage(i + 1)}
+                                                    className={`px-3 py-1 rounded ${currentPage === i + 1
+                                                        ? "bg-blue-600 text-white"
+                                                        : "bg-gray-200 hover:bg-gray-300"
+                                                        }`}
+                                                >
+                                                    {i + 1}
+                                                </button>
+                                            ))}
+                                            <button
+                                                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                                                disabled={currentPage === totalPages}
+                                                className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                                            >
+                                                Next
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </>
+                        </>
+                    }
+                </div>
             }
-        </div>
+        </>
     );
 }

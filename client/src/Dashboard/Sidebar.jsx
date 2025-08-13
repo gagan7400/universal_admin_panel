@@ -134,7 +134,7 @@ const Sidebar = () => {
                 className="absolute top-9 -right-6 transform -translate-y-1/2 w-12 h-12 flex  justify-center bg-yellow-500 text-amber-50  rotate-45 rounded-t-sm shadow"
             >
                 {/* Icon can be image or emoji */}
-                <span className='ms-7 text-2xl rotate-[-45deg]'>{isCollapsed ? '>' : '<'}</span>
+                <span className='ms-7 text-2xl rotate-[-45deg] cursor-default'>{isCollapsed ? '>' : '<'}</span>
             </div>
         </div>
     );

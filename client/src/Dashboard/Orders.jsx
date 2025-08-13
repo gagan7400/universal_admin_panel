@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Bounce, toast } from 'react-toastify';
 import OrderDialog from './OrderDialog';
 import Loader from '../layout/Loader';
+import { useLocation } from 'react-router-dom';
 
 const Orders = () => {
     const API = import.meta.env.VITE_API;
@@ -18,6 +19,13 @@ const Orders = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [visibleColumns, setVisibleColumns] = useState(['orderId', 'user', 'email', 'status', 'totalPrice', 'quantity', 'paymentStatus']);
     const [statusFilter, setStatusFilter] = useState('');
+    let [pageloading, setpageLoading] = useState(true);
+    let location = useLocation()
+    useEffect(() => {
+        setTimeout(() => {
+            setpageLoading(false);
+        }, [500])
+    }, [location])
     useEffect(() => {
         dispatch(getAllOrders());
     }, [dispatch]);
@@ -119,137 +127,140 @@ const Orders = () => {
 
     const statusOptions = ["Processing", "Shipped", "Delivered", "Completed", "Cancelled"];
     return (
-        <div className="mx-auto min-w-[800px] bg-white rounded-xl shadow-xl sm:p-6 p-3 space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800">Orders</h2>
-            <div className="flex flex-wrap gap-4">
-                {['orderId', 'user', 'quantity', 'status', 'totalPrice', "paymentStatus"].map(col => (
-                    <label key={col} className="text-sm text-gray-700 flex items-center space-x-1">
+        <>
+
+            {pageloading ? <div className="w-full h-full flex justify-center items-center p-3"><Loader /></div> :
+                <div className="mx-auto min-w-[800px] bg-white rounded-xl shadow-xl sm:p-6 p-3 space-y-6">
+                    <h2 className="text-2xl font-bold text-gray-800">Orders</h2>
+                    <div className="flex flex-wrap gap-4">
+                        {['orderId', 'user', 'quantity', 'status', 'totalPrice', "paymentStatus"].map(col => (
+                            <label key={col} className="text-sm text-gray-700 flex items-center space-x-1">
+                                <input
+                                    type="checkbox"
+                                    checked={visibleColumns.includes(col)}
+                                    onChange={() => toggleColumn(col)}
+                                    className="accent-blue-600 rounded focus:ring-2"
+                                />
+                                <span>{col}</span>
+                            </label>
+                        ))}
+                    </div>
+
+                    <div className="flex flex-wrap gap-4 items-center lg:justify-between justify-start">
                         <input
-                            type="checkbox"
-                            checked={visibleColumns.includes(col)}
-                            onChange={() => toggleColumn(col)}
-                            className="accent-blue-600 rounded focus:ring-2"
+                            type="text"
+                            placeholder="Search Orders..."
+                            className=" lg:w-64  w-30 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 outline-none"
+                            value={search}
+                            onChange={(e) => {
+                                setSearch(e.target.value);
+                                setCurrentPage(1);
+                            }}
                         />
-                        <span>{col}</span>
-                    </label>
-                ))}
-            </div>
 
-            <div className="flex flex-wrap gap-4 items-center md:justify-between justify-start">
-                <input
-                    type="text"
-                    placeholder="Search Orders..."
-                    className=" md:w-64  w-30 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 outline-none"
-                    value={search}
-                    onChange={(e) => {
-                        setSearch(e.target.value);
-                        setCurrentPage(1);
-                    }}
-                />
-
-                <select
-                    className="p-2 w-35 bg-yellow-500 text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-yellow-400 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
-                    value={statusFilter}
-                    onChange={(e) => {
-                        setStatusFilter(e.target.value);
-                        setCurrentPage(1);
-                    }}
-                >
-                    <option value="">All Statuses</option>
-                    {statusOptions.map((status) => (
-                        <option key={status} value={status}>
-                            {status}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            <div className="overflow-x-auto rounded-lg shadow-sm">
-                {loading ? <div className="flex justify-center items-center p-3"><Loader /></div> : <table className="min-w-full border border-gray-200 text-sm text-left bg-white rounded-lg">
-                    <thead className="bg-blue-100 text-gray-700 uppercase text-xs">
-                        <tr>
-                            {visibleColumns.map(col => (
-                                <th key={col} onClick={() => handleSort(col)} className="px-4 py-3 cursor-pointer">
-                                    <div className="flex justify-left gap-2 items-center">
-                                        <span className="capitalize">{col}</span>
-                                        <span>{sortField === col ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'}</span>
-                                    </div>
-                                </th>
-                            ))}
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                        {paginatedData.map((row, index) => (
-                            <tr
-                                disabled={['Delivered', 'Completed'].includes(row.status)}
-                                key={row.orderId}
-                                className={`transition-all duration-150 ${['Delivered', 'Completed'].includes(row.status)
-                                    ? 'bg-green-50 text-green-700 font-semibold'
-                                    : 'hover:bg-blue-50'
-                                    }`}
-                            >
-                                {visibleColumns.map(col => (
-                                    <td key={col} className="px-4 py-3">
-                                        {col === 'status' ? (
-                                            <select
-                                                disabled={['Delivered', 'Completed'].includes(row.status)}
-                                                value={row.status}
-                                                onChange={(e) => handleStatusUpdate(row.orderId, e.target.value)}
-                                                className={`border rounded px-2 pe-6  py-1 text-sm ${['Delivered', 'Completed'].includes(row.status)
-                                                    ? 'bg-green-100 border-green-400 text-green-800 cursor-not-allowed'
-                                                    : 'bg-white border-gray-300'
-                                                    }`}
-                                            > {statusOptions.map((status) => (
-                                                <option key={status} value={status}>
-                                                    {status}
-                                                </option>
-                                            ))}
-                                            </select>
-
-                                        ) : col === 'user' ? (<div className='flex  gap-1'> <img src={row?.user?.image?.url} className='w-5 rounded-2xl' /> <p className='whitespace-pre'>{row.user.name}</p></div>) : (row[col])}
-                                    </td>
-                                ))}
-                                <OrderDialog order={row.order} />
-                            </tr>
-                        )).reverse()}
-                    </tbody>
-                </table>}
-            </div>
-
-            {/* Pagination Controls */}
-            <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
-                <p>
-                    Showing {(currentPage - 1) * rowsPerPage + 1} to{' '}
-                    {Math.min(currentPage * rowsPerPage, sortedData.length)} of {sortedData.length} results
-                </p>
-                <div className="space-x-1">
-                    <button
-                        onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
-                        disabled={currentPage === 1}
-                        className="px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-                    >
-                        Prev
-                    </button>
-                    {[...Array(totalPages)].map((_, i) => (
-                        <button
-                            key={i}
-                            onClick={() => setCurrentPage(i + 1)}
-                            className={`px-3 py-1 rounded-lg ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+                        <select
+                            className="p-2 w-35 bg-yellow-500 text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-yellow-400 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
+                            value={statusFilter}
+                            onChange={(e) => {
+                                setStatusFilter(e.target.value);
+                                setCurrentPage(1);
+                            }}
                         >
-                            {i + 1}
-                        </button>
-                    ))}
-                    <button
-                        onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
-                        disabled={currentPage === totalPages}
-                        className="px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-                    >
-                        Next
-                    </button>
-                </div>
-            </div>
-        </div>
+                            <option value="">All Statuses</option>
+                            {statusOptions.map((status) => (
+                                <option key={status} value={status}>
+                                    {status}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-lg shadow-sm">
+                        {loading ? <div className="flex justify-center items-center p-3"><Loader /></div> : <table className="min-w-full border border-gray-200 text-sm text-left bg-white rounded-lg">
+                            <thead className="bg-blue-100 text-gray-700 uppercase text-xs">
+                                <tr>
+                                    {visibleColumns.map(col => (
+                                        <th key={col} onClick={() => handleSort(col)} className="px-4 py-3 cursor-pointer">
+                                            <div className="flex justify-left gap-2 items-center">
+                                                <span className="capitalize">{col}</span>
+                                                <span>{sortField === col ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'}</span>
+                                            </div>
+                                        </th>
+                                    ))}
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                                {paginatedData.map((row, index) => (
+                                    <tr
+                                        disabled={['Delivered', 'Completed'].includes(row.status)}
+                                        key={row.orderId}
+                                        className={`transition-all duration-150 ${['Delivered', 'Completed'].includes(row.status)
+                                            ? 'bg-green-50 text-green-700 font-semibold'
+                                            : 'hover:bg-blue-50'
+                                            }`}
+                                    >
+                                        {visibleColumns.map(col => (
+                                            <td key={col} className="px-4 py-3">
+                                                {col === 'status' ? (
+                                                    <select
+                                                        disabled={['Delivered', 'Completed'].includes(row.status)}
+                                                        value={row.status}
+                                                        onChange={(e) => handleStatusUpdate(row.orderId, e.target.value)}
+                                                        className={`border rounded px-2 pe-6  py-1 text-sm ${['Delivered', 'Completed'].includes(row.status)
+                                                            ? 'bg-green-100 border-green-400 text-green-800 cursor-not-allowed'
+                                                            : 'bg-white border-gray-300'
+                                                            }`}
+                                                    > {statusOptions.map((status) => (
+                                                        <option key={status} value={status}>
+                                                            {status}
+                                                        </option>
+                                                    ))}
+                                                    </select>
+
+                                                ) : col === 'user' ? (<div className='flex  gap-1'> <img src={row?.user?.image?.url} className='w-5 rounded-2xl' /> <p className='whitespace-pre'>{row.user.name}</p></div>) : (row[col])}
+                                            </td>
+                                        ))}
+                                        <OrderDialog order={row.order} />
+                                    </tr>
+                                )).reverse()}
+                            </tbody>
+                        </table>}
+                    </div>
+
+                    {/* Pagination Controls */}
+                    <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
+                        <p>
+                            Showing {(currentPage - 1) * rowsPerPage + 1} to{' '}
+                            {Math.min(currentPage * rowsPerPage, sortedData.length)} of {sortedData.length} results
+                        </p>
+                        <div className="space-x-1">
+                            <button
+                                onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+                                disabled={currentPage === 1}
+                                className="px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+                            >
+                                Prev
+                            </button>
+                            {[...Array(totalPages)].map((_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setCurrentPage(i + 1)}
+                                    className={`px-3 py-1 rounded-lg ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                            <button
+                                onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+                                disabled={currentPage === totalPages}
+                                className="px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </div>}</>
     );
 };
 

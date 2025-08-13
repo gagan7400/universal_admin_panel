@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loader from "../layout/Loader";
+import { useLocation } from "react-router-dom";
 
 const SubadminManager = () => {
     const API = import.meta.env.VITE_API;
-
     const [subadmins, setSubadmins] = useState([]);
     const [show, setShow] = useState(false);
     let [loading, setLoading] = useState(false)
+    let [pageloading, setpageLoading] = useState(true)
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -17,7 +18,7 @@ const SubadminManager = () => {
     });
     const [isEditMode, setIsEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
-
+    let location = useLocation()
     const fetchSubadmins = async () => {
         setLoading(true)
         try {
@@ -34,6 +35,12 @@ const SubadminManager = () => {
     useEffect(() => {
         fetchSubadmins();
     }, []);
+    useEffect(() => {
+        setpageLoading(true)
+        setTimeout(() => {
+            setpageLoading(false)
+        }, 500);
+    }, [location])
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -125,157 +132,162 @@ const SubadminManager = () => {
         setShow(false)
     }
     return (
-        <div className="min-w-[800px] mx-auto   bg-white shadow-xl rounded-xl space-y-6 sm:p-6 p-3">
-            <div className="flex flex-wrap gap-4 md:justify-between justify-start items-center mb-6">
+        <>
 
-                <h2 className="text-2xl font-bold text-gray-800">Subadmins Manager</h2>
-                <div className="flex flex-wrap gap-4 md:justify-between justify-start  items-center mb-6">
-                    <button className="bg-yellow-500 text-white  min-w-fit hover:bg-yellow-400 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(!show) }}>{show ? "View Subadmins" : "Add Subadmins"}</button>
-                </div>
-                {/* <div className="w-1/5 min-w-fit flex  gap-4 justify-end items-center  ">
+            {pageloading ? <div className="w-full h-full flex justify-center items-center p-3"><Loader /></div> :
+                <div className="min-w-[800px] mx-auto   bg-white shadow-xl rounded-xl space-y-6 sm:p-6 p-3">
+                    <div className="flex flex-wrap gap-4 lg:justify-between justify-start items-center mb-6">
+
+                        <h2 className="text-2xl font-bold text-gray-800">Subadmins Manager</h2>
+                        <div className="flex flex-wrap gap-4 md:justify-between justify-start  items-center  ">
+                            <button className="bg-yellow-500 text-white  min-w-fit hover:bg-yellow-400 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(!show) }}>{show ? "View Subadmins" : "Add Subadmins"}</button>
+                        </div>
+                        {/* <div className="w-1/5 min-w-fit flex  gap-4 justify-end items-center  ">
                     <button className="bg-yellow-500 text-white  min-w-fit hover:bg-yellow-400 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(!show) }}>{show ? "View Subadmins" : "Add Subadmins"}</button>
                 </div> */}
-            </div>
-            {show ?
-                <>
-                    <form onSubmit={handleSubmit} className="space-y-6 mb-10">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                                <input
-                                    name="name"
-                                    type="text"
-                                    placeholder="Enter full name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                                <input
-                                    name="email"
-                                    type="email"
-                                    placeholder="Enter email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                                <input
-                                    name="password"
-                                    type="password"
-                                    placeholder="Enter password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Permissions</label>
-                                <div className="grid grid-cols-3 gap-4">
-                                    <div className="whitespace-nowrap">
-                                        <input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2 " name="permissions"
-                                            onChange={handleCheckboxChange}
-                                            checked={formData?.permissions?.includes("orders")}
-                                            value="orders" />
-                                        <label htmlFor=""> Orders </label>
+                    </div>
+                    {show ?
+                        <>
+                            <form onSubmit={handleSubmit} className="space-y-6 mb-10">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                        <input
+                                            name="name"
+                                            type="text"
+                                            placeholder="Enter full name"
+                                            value={formData.name}
+                                            onChange={handleChange}
+                                            required
+                                            className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                        />
                                     </div>
-                                    <div className="whitespace-nowrap">
-                                        <input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2 " name="permissions"
-                                            onChange={handleCheckboxChange}
-                                            checked={formData?.permissions?.includes("products")}
-                                            value="products" />
-                                        <label htmlFor=""> Products  </label>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                        <input
+                                            name="email"
+                                            type="email"
+                                            placeholder="Enter email"
+                                            value={formData.email}
+                                            onChange={handleChange}
+                                            required
+                                            className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                        />
                                     </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                        <input
+                                            name="password"
+                                            type="password"
+                                            placeholder="Enter password"
+                                            value={formData.password}
+                                            onChange={handleChange}
+                                            className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Permissions</label>
+                                        <div className="grid grid-cols-3 gap-4">
+                                            <div className="whitespace-nowrap">
+                                                <input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2 " name="permissions"
+                                                    onChange={handleCheckboxChange}
+                                                    checked={formData?.permissions?.includes("orders")}
+                                                    value="orders" />
+                                                <label htmlFor=""> Orders </label>
+                                            </div>
+                                            <div className="whitespace-nowrap">
+                                                <input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2 " name="permissions"
+                                                    onChange={handleCheckboxChange}
+                                                    checked={formData?.permissions?.includes("products")}
+                                                    value="products" />
+                                                <label htmlFor=""> Products  </label>
+                                            </div>
 
-                                    <div className="whitespace-nowrap">
-                                        <input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2 " name="permissions"
-                                            onChange={handleCheckboxChange}
-                                            checked={formData?.permissions?.includes("users")}
-                                            value="users" />
-                                        <label htmlFor=""> Users  </label>
+                                            <div className="whitespace-nowrap">
+                                                <input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2 " name="permissions"
+                                                    onChange={handleCheckboxChange}
+                                                    checked={formData?.permissions?.includes("users")}
+                                                    value="users" />
+                                                <label htmlFor=""> Users  </label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                                <div className="flex justify-end gap-3 p-2 rounded">
+                                    <button
+                                        type="submit"
+                                        className="bg-yellow-500 text-white  min-w-fit hover:bg-yellow-400 hover:text-blue-50  px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex "
+                                    >
+                                        {isEditMode ? "Update Subadmin" : "Add Subadmin"}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={cancel}
+                                        className="bg-yellow-500 text-white min-w-fit hover:bg-yellow-400 hover:text-blue-50  px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex "
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </>
+                        :
+                        <>
+                            {/* Subadmin Table */}
+                            <div className="overflow-x-auto">
+                                {loading ? <div className="flex justify-center items-center p-3"><Loader /></div> : <table className="min-w-full border border-gray-200 text-sm text-left rounded-lg overflow-hidden">
+                                    <thead className="bg-blue-100 text-gray-800 font-semibold">
+                                        <tr>
+                                            <th className="px-4 py-3">Name</th>
+                                            <th className="px-4 py-3">Email</th>
+                                            <th className="px-4 py-3">Role</th>
+                                            <th className="px-4 py-3">Permissions</th>
+                                            <th className="px-4 py-3">Active</th>
+                                            <th className="px-4 py-3">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100">
+                                        {subadmins.map((subadmin, index) => (
+                                            <tr key={subadmin._id} className="hover:bg-blue-50 transition">
+                                                <td className="px-4 py-2">{subadmin.name}</td>
+                                                <td className="px-4 py-2">{subadmin.email}</td>
+                                                <td className="px-4 py-2 capitalize">{subadmin.role}</td>
+                                                <td className="px-4 py-2 w-40 capitalize  flex justify-between flex-wrap items-center gap-1 ">{subadmin.permissions.map((v, i) => (
+                                                    <p key={i}> {v}</p>
+                                                ))}</td>
+
+                                                <td className="px-4 py-2 capitalize">{subadmin?.status?.toString()}</td>
+                                                <td className="px-6 py-3 min-w-fit whitespace-nowrap">
+                                                    <button
+                                                        onClick={() => handleEdit(subadmin)}
+                                                        className=" text-xs font-semibold   rounded-lg hover:scale-110"
+                                                    >
+                                                        <img src="/img/newedit.svg" alt="" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(subadmin._id)}
+                                                        className=" text-xs font-semibold  ms-2  rounded-lg  hover:scale-110"
+                                                    >
+                                                        <img src="/img/delete-icon.svg" alt="" />
+                                                    </button>
+                                                </td>
+
+                                            </tr>
+                                        ))}
+                                        {subadmins.length === 0 && (
+                                            <tr>
+                                                <td colSpan="4" className="text-center py-4 text-gray-500">
+                                                    No subadmins found.
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>}
                             </div>
-                        </div>
-                        <div className="flex justify-end gap-3 p-2 rounded">
-                            <button
-                                type="submit"
-                                className="bg-yellow-500 text-white  min-w-fit hover:bg-yellow-400 hover:text-blue-50  px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex "
-                            >
-                                {isEditMode ? "Update Subadmin" : "Add Subadmin"}
-                            </button>
-                            <button
-                                type="button"
-                                onClick={cancel}
-                                className="bg-yellow-500 text-white min-w-fit hover:bg-yellow-400 hover:text-blue-50  px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex "
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
-                </>
-                :
-                <>
-                    {/* Subadmin Table */}
-                    <div className="overflow-x-auto">
-                        {loading ? <div className="flex justify-center items-center p-3"><Loader /></div> : <table className="min-w-full border border-gray-200 text-sm text-left rounded-lg overflow-hidden">
-                            <thead className="bg-blue-100 text-gray-800 font-semibold">
-                                <tr>
-                                    <th className="px-4 py-3">Name</th>
-                                    <th className="px-4 py-3">Email</th>
-                                    <th className="px-4 py-3">Role</th>
-                                    <th className="px-4 py-3">Permissions</th>
-                                    <th className="px-4 py-3">Active</th>
-                                    <th className="px-4 py-3">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100">
-                                {subadmins.map((subadmin, index) => (
-                                    <tr key={subadmin._id} className="hover:bg-blue-50 transition">
-                                        <td className="px-4 py-2">{subadmin.name}</td>
-                                        <td className="px-4 py-2">{subadmin.email}</td>
-                                        <td className="px-4 py-2 capitalize">{subadmin.role}</td>
-                                        <td className="px-4 py-2 w-40 capitalize  flex justify-between flex-wrap items-center gap-1 ">{subadmin.permissions.map((v, i) => (
-                                            <p key={i}> {v}</p>
-                                        ))}</td>
+                        </>
+                    }
+                </div>}
+        </>
 
-                                        <td className="px-4 py-2 capitalize">{subadmin?.status?.toString()}</td>
-                                        <td className="px-6 py-3 min-w-fit whitespace-nowrap">
-                                            <button
-                                                onClick={() => handleEdit(subadmin)}
-                                                className=" text-xs font-semibold   rounded-lg hover:scale-110"
-                                            >
-                                                <img src="/img/newedit.svg" alt="" />
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(subadmin._id)}
-                                                className=" text-xs font-semibold  ms-2  rounded-lg  hover:scale-110"
-                                            >
-                                                <img src="/img/delete-icon.svg" alt="" />
-                                            </button>
-                                        </td>
-
-                                    </tr>
-                                ))}
-                                {subadmins.length === 0 && (
-                                    <tr>
-                                        <td colSpan="4" className="text-center py-4 text-gray-500">
-                                            No subadmins found.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>}
-                    </div>
-                </>
-            }
-        </div>
     );
 };
 

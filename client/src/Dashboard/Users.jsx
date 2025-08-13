@@ -3,7 +3,10 @@ import axios from "axios";
 import { useSelector, useDispatch } from 'react-redux'
 import { getAllUsers } from "../redux/actions/userAction";
 import Loader from "../layout/Loader";
+import { useLocation } from "react-router-dom";
 export default function Users() {
+    let [pageloading, setpageLoading] = useState(true);
+    let location = useLocation()
     const [filteredusers, setFilteredusers] = useState([]);
     const [search, setSearch] = useState("");
     const [sortField, setSortField] = useState("");
@@ -13,7 +16,11 @@ export default function Users() {
     const itemsPerPage = 5;
     let dispatch = useDispatch();
     let { loading, error, users } = useSelector(state => state.user);
-
+    useEffect(() => {
+        setTimeout(() => {
+            setpageLoading(false);
+        }, [500])
+    }, [location])
     useEffect(() => {
         dispatch(getAllUsers())
     }, []);
@@ -97,113 +104,115 @@ export default function Users() {
     );
 
     return (
-        <div className="min-w-[800px]  mx-auto bg-white rounded-xl shadow-xl sm:p-6 p-3">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Users</h2>
+        <>
+            {pageloading ? <div className="w-full h-full flex justify-center items-center p-3"><Loader /></div> :
+                <div className="min-w-[800px]  mx-auto bg-white rounded-xl shadow-xl sm:p-6 p-3">
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">Users</h2>
 
-            {/* Top controls */}
-            <div className="flex flex-wrap gap-4 md:justify-between justify-start  items-center mb-6">
-                <input
-                    type="text"
-                    placeholder="Search Users..."
-                    className="md:w-64  w-30 p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 outline-none"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                />
-                <select
-                    className="p-2 md:w-2/12 w-20  min-w-fit  border-0 rounded-lg shadow-sm bg-yellow-500 hover:bg-yellow-400 text-blue-50"
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                >
-                    {categories.map((cat, idx) => (
-                        <option key={idx} value={cat.category} className="hover:bg-yellow-400">
-                            {cat.category}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            {/* Table */}
-            <div className="overflow-x-auto">
-                {loading ? <div className="flex justify-center items-center p-3"><Loader /></div> : <><table className="w-full text-sm text-left border rounded-lg overflow-hidden">
-                    <thead className="bg-blue-100 text-gray-700 text-xs uppercase">
-                        <tr>
-                            {columns.map((col, index) => (
-                                <th
-                                    key={index}
-                                    className="px-6 py-3 cursor-pointer select-none"
-                                    onClick={() => handleSort(col.key)}
-                                >
-                                    <div className="flex items-center gap-1 whitespace-nowrap">
-                                        <span className="text-sm capitalize">{col.label}</span>
-                                        {col.key && (
-                                            sortField === col.key ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'
-                                        )}
-                                    </div>
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {paginatedData.map((v, i) => (
-                            <tr key={v._id} className="hover:bg-blue-50">
-                                <td className="px-6 py-3">{i + 1}</td>
-                                <td className="px-6 py-3"> {v.image && v.image?.filename ? <img className="size-8 rounded-2xl" src={v.image.url} alt="d" /> : <img src="/img/user.svg" />}</td>
-                                <td className="px-6 py-3  text-blue-900 font-medium">{v.firstName} {v.lastName}</td>
-                                <td className="px-6 py-3">{v.email}</td>
-                                <td className="px-6 py-3">{v.phone}</td>
-                                <td className="px-6 py-3">{v.isActive.toString()}</td>
-                                <td className="px-6 py-3">{v.isVerified.toString()}</td>
-                                <td className="px-6 py-3">{new Date(v.createdAt).toLocaleDateString()}</td>
-                            </tr>
-                        ))}
-                        {paginatedData.length === 0 && (
-                            <tr>
-                                <td colSpan="8" className="text-center py-6 text-gray-500">
-                                    No users found.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table></>}
-            </div>
-
-            {/* Pagination */}
-            <div className="flex justify-between items-center mt-6 text-sm text-gray-600">
-                <p>
-                    Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-                    {Math.min(currentPage * itemsPerPage, filteredusers.length)} of{" "}
-                    {filteredusers.length} entries
-                </p>
-                <div className="flex space-x-1">
-                    <button
-                        onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                        disabled={currentPage === 1}
-                        className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-                    >
-                        Prev
-                    </button>
-                    {[...Array(totalPages)].map((_, i) => (
-                        <button
-                            key={i}
-                            onClick={() => setCurrentPage(i + 1)}
-                            className={`px-3 py-1 rounded ${currentPage === i + 1
-                                ? "bg-blue-600 text-white"
-                                : "bg-gray-200 hover:bg-gray-300"
-                                }`}
+                    {/* Top controls */}
+                    <div className="flex flex-wrap gap-4 lg:justify-between justify-start  items-center mb-6">
+                        <input
+                            type="text"
+                            placeholder="Search Users..."
+                            className="lg:w-64  w-30 p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 outline-none"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                        <select
+                            className="p-2 md:w-2/12 w-20  min-w-fit  border-0 rounded-lg shadow-sm bg-yellow-500 hover:bg-yellow-400 text-blue-50"
+                            value={selectedCategory}
+                            onChange={(e) => setSelectedCategory(e.target.value)}
                         >
-                            {i + 1}
-                        </button>
-                    ))}
-                    <button
-                        onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-                        disabled={currentPage === totalPages}
-                        className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-                    >
-                        Next
-                    </button>
-                </div>
-            </div>
-        </div>
+                            {categories.map((cat, idx) => (
+                                <option key={idx} value={cat.category} className="hover:bg-yellow-400">
+                                    {cat.category}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Table */}
+                    <div className="overflow-x-auto">
+                        {loading ? <div className="flex justify-center items-center p-3"><Loader /></div> : <><table className="w-full text-sm text-left border rounded-lg overflow-hidden">
+                            <thead className="bg-blue-100 text-gray-700 text-xs uppercase">
+                                <tr>
+                                    {columns.map((col, index) => (
+                                        <th
+                                            key={index}
+                                            className="px-6 py-3 cursor-pointer select-none"
+                                            onClick={() => handleSort(col.key)}
+                                        >
+                                            <div className="flex items-center gap-1 whitespace-nowrap">
+                                                <span className="text-sm capitalize">{col.label}</span>
+                                                {col.key && (
+                                                    sortField === col.key ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'
+                                                )}
+                                            </div>
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {paginatedData.map((v, i) => (
+                                    <tr key={v._id} className="hover:bg-blue-50">
+                                        <td className="px-6 py-3">{i + 1}</td>
+                                        <td className="px-6 py-3"> {v.image && v.image?.filename ? <img className="size-8 rounded-2xl" src={v.image.url} alt="d" /> : <img src="/img/user.svg" />}</td>
+                                        <td className="px-6 py-3  text-blue-900 font-medium">{v.firstName} {v.lastName}</td>
+                                        <td className="px-6 py-3">{v.email}</td>
+                                        <td className="px-6 py-3">{v.phone}</td>
+                                        <td className="px-6 py-3">{v.isActive.toString()}</td>
+                                        <td className="px-6 py-3">{v.isVerified.toString()}</td>
+                                        <td className="px-6 py-3">{new Date(v.createdAt).toLocaleDateString()}</td>
+                                    </tr>
+                                ))}
+                                {paginatedData.length === 0 && (
+                                    <tr>
+                                        <td colSpan="8" className="text-center py-6 text-gray-500">
+                                            No users found.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table></>}
+                    </div>
+
+                    {/* Pagination */}
+                    <div className="flex justify-between items-center mt-6 text-sm text-gray-600">
+                        <p>
+                            Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                            {Math.min(currentPage * itemsPerPage, filteredusers.length)} of{" "}
+                            {filteredusers.length} entries
+                        </p>
+                        <div className="flex space-x-1">
+                            <button
+                                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                                disabled={currentPage === 1}
+                                className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                            >
+                                Prev
+                            </button>
+                            {[...Array(totalPages)].map((_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setCurrentPage(i + 1)}
+                                    className={`px-3 py-1 rounded ${currentPage === i + 1
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-gray-200 hover:bg-gray-300"
+                                        }`}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                            <button
+                                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                                disabled={currentPage === totalPages}
+                                className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </div>}</>
     );
 }
 

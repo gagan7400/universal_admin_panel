@@ -1,25 +1,35 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import MonthlySalesChart from './MonthlySalesChart'
 import Badge from "../ui/badge/Badge";
 import { ArrowDownIcon, ArrowUpIcon, BoxIconLine, GroupIcon, } from "../icons/index.js";
 import RecentOrders from './RecentOrders.jsx';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { countOrders } from '../redux/actions/orderAction.js';
 import { countUsers } from '../redux/actions/userAction.js';
 import { countProducts } from '../redux/actions/productAction.js';
+import Loader from '../layout/Loader.jsx';
 export default function DashboardComp() {
     let { ordercount } = useSelector(state => state.order);
     let { usercount } = useSelector(state => state.user);
     let { productcount } = useSelector(state => state.product);
     let dispatch = useDispatch();
+    let [pageloading, setpageLoading] = useState(true);
+    let location = useLocation()
+    useEffect(() => {
+        setTimeout(() => {
+            setpageLoading(false);
+        }, [500])
+    }, [location])
     useEffect(() => {
         dispatch(countOrders())
         dispatch(countUsers())
         dispatch(countProducts())
     }, [])
     return (
-        <div className='sm:p-6 p-3'>
+        <>
+        {pageloading ? <div className="w-full h-full flex justify-center items-center p-3"><Loader /></div> :
+        <div className='sm:p-6 p-3 '>
             <div className="grid grid-cols-1 gap-4  lg:grid-cols-3 md:gap-6  ">
                 <NavLink to="/dashboard/users" className="rounded-2xl border border-gray-200 bg-white p-5 not-[]:md:p-6">
                     <div className="group flex items-center justify-center w-12 h-12 bg-yellow-500  transition-all duration-700  hover:bg-yellow-400 hover:text-blue-400 rounded-xl  ">
@@ -89,6 +99,6 @@ export default function DashboardComp() {
                     <RecentOrders />
                 </div>
             </div>
-        </div>
+        </div>}</>
     )
 }
