@@ -1,5 +1,5 @@
 const Cart = require('../models/cart');
-const Product = require('../models/productModel');
+const { Product } = require('../models/productModel');
 
 // Add to cart
 const addToCart = async (req, res) => {
@@ -36,7 +36,6 @@ const addToCart = async (req, res) => {
                 cart.items.push({ productId, quantity });
             }
         }
-
         await cart.save();
         res.status(200).json({ success: true, message: "Item Add To Cart Successfully" });
     } catch (error) {

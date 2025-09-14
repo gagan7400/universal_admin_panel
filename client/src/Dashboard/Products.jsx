@@ -5,11 +5,13 @@ import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import Loader from "../layout/Loader";
 import { useLocation } from "react-router-dom";
+import CreatableSelect from "react-select/creatable";
 
 export default function Products() {
     const API = import.meta.env.VITE_API;
 
     const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [search, setSearch] = useState("");
     const [sortField, setSortField] = useState("");
@@ -41,12 +43,34 @@ export default function Products() {
     let { admin } = useSelector(state => state.auth);
     let [pageloading, setpageLoading] = useState(true);
     let location = useLocation()
+    const [options, setOptions] = useState([])
     useEffect(() => {
         setTimeout(() => {
             setpageLoading(false);
         }, [500])
     }, [location])
-
+    const getAllCategories = async () => {
+        try {
+            let { data } = await axios.get(`${API}/api/product/categories`);
+            if (data.success) {
+                console.log(data.data)
+                setCategories(data.data);
+                setOptions(data.data.map((v, i) => {
+                    return { value: v, label: v }
+                }))
+            } else {
+                setCategories([]);
+                toast.error(data.message || "Error occured");
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Error occured");
+        }
+    }
+    const handleCreate = (inputValue) => {
+        const newOption = { value: inputValue, label: inputValue };
+        setOptions([...options, newOption]);
+        setCategory(newOption.value);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -71,7 +95,7 @@ export default function Products() {
         formData.append("description", description);
         formData.append("price", price);
         formData.append("ratings", ratings);
-        formData.append("category", category);
+        formData.append("category", category.value);
         formData.append("stock", stock);
         formData.append("weight", weight);
         formData.append("size", size);
@@ -165,6 +189,7 @@ export default function Products() {
     };
 
     useEffect(() => {
+        getAllCategories()
         getProducts();
     }, [show]);
 
@@ -257,7 +282,7 @@ export default function Products() {
         }
     };
 
-    const categories = ["All", ...new Set(products.map((item) => item.category))];
+    // const categories = ["All", ...new Set(products.map((item) => item.category))];
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
     const paginatedData = filteredProducts.slice(
         (currentPage - 1) * itemsPerPage,
@@ -302,12 +327,24 @@ export default function Products() {
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Category</label>
-                                            <select value={category} onChange={(e) => setCategory(e.target.value)} className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400">
-                                                <option className="hover:bg-amber-400">Select category</option>
+                                            {/*<select value={category} onChange={(e) => setCategory(e.target.value)} className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400">
+                                                {categories.map((cat, idx) => (
+                                                    <option className="hover:bg-amber-400" key={idx} value={cat}>
+                                                        {cat}
+                                                    </option>
+                                                ))}
+                                                 <option className="hover:bg-amber-400">Select category</option>
                                                 <option className="hover:bg-amber-400">Iron</option>
                                                 <option className="hover:bg-amber-400" >Bronze</option>
                                                 <option className="hover:bg-amber-400" >Silver</option>
-                                            </select>
+                                            </select> */}
+                                            <CreatableSelect
+                                                isClearable
+                                                onChange={setCategory}
+                                                onCreateOption={handleCreate}
+                                                options={options}
+                                                value={category}
+                                            />
                                         </div>
 
                                         <div className="flex flex-col">

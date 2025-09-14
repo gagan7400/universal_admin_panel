@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const {Product} = require("./productModel")
 const userSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
@@ -15,6 +15,11 @@ const userSchema = new mongoose.Schema({
     forgotPasswordOtpDateTime: String,
     role: { type: String, default: 'user' },
     image: { filename: String, url: String },
+    wishlist: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "products",
+        },],
     address: [{
         fullName: { type: String, required: true },
         mobileNumber: { type: Number, required: true },

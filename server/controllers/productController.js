@@ -1,4 +1,5 @@
-const Product = require("../models/productModel");
+// const Product = require("../models/productModel");
+const { bannermodel, Product } = require("../models/productModel");
 let catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../utils/errorHandler");
 const path = require("path")
@@ -140,7 +141,6 @@ const deleteProduct = catchAsyncErrors(async (req, res, next) => {
     });
 });
 
-
 const updateProduct = catchAsyncErrors(async (req, res, next) => {
     const product = await Product.findById(req.params.id);
     if (!product) return next(new ErrorHandler("Product not found", 404));
@@ -222,8 +222,89 @@ const updateProduct = catchAsyncErrors(async (req, res, next) => {
     });
 });
 
+let addBanners = catchAsyncErrors(async (req, res, next) => {
+    let files = req.files || []
+
+    let bannerimages = []
+    files?.bannerImages?.map((v, i) => {
+        bannerimages.push({ fileName: v.filename, url: `${base_url}/uploads/${v.filename}` })
+    })
+
+    let data = await bannermodel.insertMany(bannerimages);
+
+    res.send({ success: true, message: "files uploaded successfully", bannerimages })
+})
+let getBanners = catchAsyncErrors(async (req, res, next) => {
+
+    let data = await bannermodel.find({});
+    res.send({ success: true, message: "files uploaded successfully", data })
+})
+let deleteBannerImage = async (req, res) => {
+    try {
+        const { bannerid } = req.params;
+
+        // ✅ Find the product
+        const bannerimage = await bannermodel.findById(bannerid);
+        if (!bannerimage) {
+            return res.status(404).json({ success: false, message: "Banner not found" });
+        }
+
+        // ✅ Build the local file path
+        const filePath = path.join(__dirname, "..", "uploads", bannerimage.fileName);
+
+        // ✅ Delete the file from uploads folder (if exists)
+        fs.unlink(filePath, (err) => {
+            if (err && err.code !== "ENOENT") {
+                console.error("Error deleting file:", err);
+            }
+        });
+
+        await bannermodel.findByIdAndDelete(bannerid)
+
+        res.status(200).json({ success: true, message: "Banner image deleted successfully" });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+// ✅ Get all unique product categories
+const getAllCategories = async (req, res) => {
+    try {
+        const categories = await Product.distinct("category");
+        res.status(200).json({
+            success: true,
+            data: categories,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch categories",
+            error: error.message,
+        });
+    }
+};
+
+// ✅ Get products by category
+const getProductsByCategory = async (req, res) => {
+    try {
+        const { category } = req.params;
+        const products = await Product.find({ category: { $regex: category, $options: "i" } });
+        res.status(200).json({
+            success: true,
+            category,
+            data: products,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch products for this category",
+            error: error.message,
+        });
+    }
+};
+
 
 module.exports = { updateProduct };
 
 
-module.exports = { createProductController, getAllProducts, getProductDetails, deleteProduct, updateProduct, countProduct }
+module.exports = { getAllCategories, getProductsByCategory, createProductController, getAllProducts, getProductDetails, deleteProduct, updateProduct, countProduct, addBanners, getBanners, deleteBannerImage }

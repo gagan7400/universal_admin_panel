@@ -35,13 +35,12 @@ let productRoute = require("./routes/productRoute");
 let cartRoute = require("./routes/cartRoute");
 let paymentRoute = require("./routes/paymentRoute");
 let errorMiddleware = require("./middlewares/error");
-
+const wishlistRoutes = require("./routes/wishlistRoutes");
 
 let uploadpath = path.join(__dirname, "/uploads");
 app.use("/uploads/", express.static(uploadpath))
 // Handling Uncaught Exception
 process.on("uncaughtException", (err) => {
-
     console.log(`Shutting down the server due to Uncaught Exception`);
     process.exit(1);
 });
@@ -55,6 +54,7 @@ app.use("/api/order", orderRoute);
 app.use("/api/product", productRoute);
 app.use('/api/cart', cartRoute);
 app.use('/api/payment', paymentRoute);
+app.use("/api/wishlist", wishlistRoutes);
 app.use(errorMiddleware);
 
 app.listen(port, () => {

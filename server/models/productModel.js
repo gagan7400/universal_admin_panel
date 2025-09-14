@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const productSchema = mongoose.Schema({
+const productSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "Please Enter product Name"],
@@ -74,10 +74,23 @@ const productSchema = mongoose.Schema({
     size: String,
     discountPercentage: String,
     material: String,
+
     createdAt: {
         type: Date,
         default: Date.now,
     },
 });
-
-module.exports = mongoose.model("products", productSchema);
+const bannerimages = new mongoose.Schema({
+    fileName: {
+        type: String,
+        required: true,
+    },
+    url: {
+        type: String,
+        required: true,
+    }
+})
+const bannermodel = mongoose.model("bannerimages", bannerimages);
+module.exports.bannermodel = bannermodel;
+let Product = mongoose.model("products", productSchema);
+module.exports.Product = Product;

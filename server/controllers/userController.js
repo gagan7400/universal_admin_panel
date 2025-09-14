@@ -11,7 +11,6 @@ const base_url = process.env.NODE_ENV == "production" ? process.env.BASE_URL_LIV
  
 
 const registration = async (req, res) => {
-
     try {
         const addressSchema = Joi.object({
             fullName: Joi.string().required(),
