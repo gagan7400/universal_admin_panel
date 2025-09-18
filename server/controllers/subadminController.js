@@ -60,7 +60,7 @@ const loginSubadmin = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "Production",
+            secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
             maxAge: 24 * 60 * 60 * 1000 // 1 day
         }).status(200).json({
