@@ -28,77 +28,77 @@ export default function DashboardComp() {
     }, [])
     return (
         <>
-        {pageloading ? <div className="w-full h-full flex justify-center items-center p-3"><Loader /></div> :
-        <div className='sm:p-6 p-3 '>
-            <div className="grid grid-cols-1 gap-4  lg:grid-cols-3 md:gap-6  ">
-                <NavLink to="/dashboard/users" className="rounded-2xl border border-gray-200 bg-white p-5 not-[]:md:p-6">
-                    <div className="group flex items-center justify-center w-12 h-12 bg-yellow-500  transition-all duration-700  hover:bg-yellow-400 hover:text-blue-400 rounded-xl  ">
-                        <GroupIcon className="transition-all duration-700 text-2xl text-gray-50 group-hover:text-blue-400    " />
-                    </div>
-                    <div className="flex items-end justify-between mt-5">
-                        <div>
-                            <span className="text-sm text-gray-800  ">
-                                Customers
-                            </span>
-                            <h4 className="mt-2 font-bold text-gray-800 text-title-sm  ">
-                                {usercount && usercount}
-                            </h4>
-                        </div>
-                        <Badge color="success">
-                            <ArrowUpIcon />
-                            11.01%
-                        </Badge>
-                    </div>
-                </NavLink>
-                <NavLink to="/dashboard/orders" className="rounded-2xl border border-gray-200 bg-white p-5     md:p-6">
-                    <div className="group flex items-center justify-center w-12 h-12  text-gray-500 bg-yellow-500 hover:bg-yellow-400  hover:text-blue-400 rounded-xl  ">
-                        <BoxIconLine className=" 0  transition-all duration-700 text-2xl text-gray-50 group-hover:text-blue-400 " />
-                    </div>
-                    <div className="flex items-end justify-between mt-5">
-                        <div>
-                            <span className="text-sm text-gray-800  ">
-                                Orders
-                            </span>
-                            <h4 className="mt-2 font-bold text-gray-800 text-title-sm  ">
-                                {ordercount && ordercount}
-                            </h4>
-                        </div>
+            {pageloading ? <div className="w-full h-full flex justify-center items-center p-3"><Loader /></div> :
+                <div className='sm:p-6 p-3 '>
+                    <div className="grid grid-cols-1 gap-4  lg:grid-cols-3 md:gap-6  ">
+                        <NavLink to="/dashboard/users" className="rounded-2xl border border-gray-200 bg-white p-5 not-[]:md:p-6">
+                            <div className="group flex items-center justify-center w-12 h-12 bg-yellow-500  transition-all duration-700  hover:bg-yellow-400 hover:text-blue-400 rounded-xl  ">
+                                <GroupIcon className="transition-all duration-700 text-2xl text-gray-50 group-hover:text-blue-400    " />
+                            </div>
+                            <div className="flex items-end justify-between mt-5">
+                                <div>
+                                    <span className="text-sm text-gray-800  ">
+                                        Customers
+                                    </span>
+                                    <h4 className="mt-2 font-bold text-gray-800 text-title-sm  ">
+                                        {usercount && usercount}
+                                    </h4>
+                                </div>
+                                <Badge color="success">
+                                    <ArrowUpIcon />
+                                    11.01%
+                                </Badge>
+                            </div>
+                        </NavLink>
+                        <NavLink to="/dashboard/orders" className="rounded-2xl border border-gray-200 bg-white p-5     md:p-6">
+                            <div className="group flex items-center justify-center w-12 h-12  text-gray-500 bg-yellow-500 hover:bg-yellow-400  hover:text-blue-400 rounded-xl  ">
+                                <BoxIconLine className=" 0  transition-all duration-700 text-2xl text-gray-50 group-hover:text-blue-400 " />
+                            </div>
+                            <div className="flex items-end justify-between mt-5">
+                                <div>
+                                    <span className="text-sm text-gray-800  ">
+                                        Orders
+                                    </span>
+                                    <h4 className="mt-2 font-bold text-gray-800 text-title-sm  ">
+                                        {ordercount && ordercount}
+                                    </h4>
+                                </div>
 
-                        <Badge color="error">
-                            <ArrowDownIcon />
-                            9.05%
-                        </Badge>
-                    </div>
-                </NavLink>
-                <NavLink to="/dashboard/products" className="rounded-2xl border border-gray-200 bg-white p-5     md:p-6">
-                    <div className="group flex items-center justify-center w-12 h-12 text-gray-500 bg-yellow-500 hover:bg-yellow-400  hover:text-blue-400 rounded-xl  ">
-                        <BoxIconLine className="transition-all duration-700 text-2xl text-gray-50 group-hover:text-blue-400" />
-                    </div>
-                    <div className="flex items-end justify-between mt-5">
-                        <div>
-                            <span className="text-sm text-gray-800  ">
-                                Total Products
-                            </span>
-                            <h4 className="mt-2 font-bold text-gray-800 text-title-sm  ">
-                                {productcount && productcount}
-                            </h4>
-                        </div>
+                                <Badge color="error">
+                                    <ArrowDownIcon />
+                                    9.05%
+                                </Badge>
+                            </div>
+                        </NavLink>
+                        <NavLink to="/dashboard/products" className="rounded-2xl border border-gray-200 bg-white p-5     md:p-6">
+                            <div className="group flex items-center justify-center w-12 h-12 text-gray-500 bg-yellow-500 hover:bg-yellow-400  hover:text-blue-400 rounded-xl  ">
+                                <BoxIconLine className="transition-all duration-700 text-2xl text-gray-50 group-hover:text-blue-400" />
+                            </div>
+                            <div className="flex items-end justify-between mt-5">
+                                <div>
+                                    <span className="text-sm text-gray-800  ">
+                                        Total Products
+                                    </span>
+                                    <h4 className="mt-2 font-bold text-gray-800 text-title-sm  ">
+                                        {productcount && productcount}
+                                    </h4>
+                                </div>
 
-                        <Badge color="error">
-                            <ArrowDownIcon />
-                            9.05%
-                        </Badge>
+                                <Badge color="error">
+                                    <ArrowDownIcon />
+                                    9.05%
+                                </Badge>
+                            </div>
+                        </NavLink>
                     </div>
-                </NavLink>
-            </div>
-            <div className="grid grid-cols-1 gap-4">
-                <div className=' mt-4'>
-                    <MonthlySalesChart />
-                </div>
-                <div className=' mt-4'>
-                    <RecentOrders />
-                </div>
-            </div>
-        </div>}</>
+                    <div className="grid grid-cols-1 gap-4">
+                        <div className=' mt-4'>
+                            <MonthlySalesChart />
+                        </div>
+                        <div className=' mt-4'>
+                            <RecentOrders />
+                        </div>
+                    </div>
+                </div>}</>
     )
 }

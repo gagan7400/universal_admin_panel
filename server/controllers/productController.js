@@ -1,4 +1,8 @@
 // const Product = require("../models/productModel");
+
+const User = require("../models/usermodel.js");
+const Order = require("../models/orderModel");
+const Cart = require('../models/cart');
 const { bannermodel, Product } = require("../models/productModel");
 let catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../utils/errorHandler");
@@ -9,7 +13,7 @@ var url = require('url');
 
 const base_url = process.env.NODE_ENV == "production" ? process.env.BASE_URL_LIVE : process.env.BASE_URL;
 // const base_url = "http://srv918880.hstgr.cloud:4000";
-
+ 
 
 const createProductController = catchAsyncErrors(async (req, res, next) => {
 
@@ -307,4 +311,4 @@ const getProductsByCategory = async (req, res) => {
 module.exports = { updateProduct };
 
 
-module.exports = { getAllCategories, getProductsByCategory, createProductController, getAllProducts, getProductDetails, deleteProduct, updateProduct, countProduct, addBanners, getBanners, deleteBannerImage }
+module.exports = {    getAllCategories, getProductsByCategory, createProductController, getAllProducts, getProductDetails, deleteProduct, updateProduct, countProduct, addBanners, getBanners, deleteBannerImage }

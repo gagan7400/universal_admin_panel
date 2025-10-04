@@ -8,7 +8,7 @@ const UserSession = require("../models/userSessionmodel.js"); // Session model
 const { generateToken } = require("../utils/token.js"); // Your custom token function
 const base_url = process.env.NODE_ENV == "production" ? process.env.BASE_URL_LIVE : process.env.BASE_URL;
 // const base_url = "http://srv918880.hstgr.cloud:4000"
- 
+
 
 const registration = async (req, res) => {
     try {
@@ -108,7 +108,7 @@ const registration = async (req, res) => {
             message: "User registered successfully.",
         });
     } catch (error) {
-     
+
         return res.status(400).json({
             code: 400,
             status: false,
@@ -314,7 +314,7 @@ const verifyOTP = async (req, res) => {
             },
         });
     } catch (err) {
-         
+
         return res.status(400).json({
             code: 400,
             status: false,
@@ -655,7 +655,7 @@ const updateUser = async (req, res) => {
         return res.status(200).json({ code: 200, status: true, message: "User updated successfully." });
 
     } catch (err) {
-     
+
         return res.status(500).json({ code: 500, status: false, message: "Something went wrong" });
     }
 };

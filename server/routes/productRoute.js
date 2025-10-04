@@ -7,11 +7,8 @@ let upload = require("../middlewares/upload.js");
 //banner image for products
 router.get("/bannerimages", getBanners);
 router.post("/bannerimages", upload.fields([{ name: "bannerImages", maxCount: 10 }]), addBanners);
-router.delete("/banner/:bannerid",
-    isAuthenticatedAdmin,
-    authorizeRoles("admin"),
-    deleteBannerImage
-);
+router.delete("/banner/:bannerid", isAuthenticatedAdmin, authorizeRoles("admin"), deleteBannerImage);
+
 router.get("/categories", getAllCategories);
 router.get("/category/:category", getProductsByCategory);
 
@@ -21,5 +18,6 @@ router.get("/all", getAllProducts);
 router.get("/:id", getProductDetails);
 router.delete("/:id", isAuthenticatedAdmin, authorizeRoles('admin'), deleteProduct);
 router.put("/:id", isAuthenticatedAdmin, authorizeRoles('admin'), upload.fields([{ name: "bannerImage", maxCount: 1 }, { name: "images", maxCount: 10 },]), updateProduct);
+
 
 module.exports = router;
