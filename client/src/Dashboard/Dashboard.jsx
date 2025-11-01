@@ -11,11 +11,11 @@ export default function Dashboard() {
     let { admin } = useSelector(state => state.auth);
     return (
         <div className="flex h-screen overflow-hidden min-h-[500px] font-[Poppins]" onClick={offset}>
-            {/* Sidebar fixed at 260px */}
+             
             <Sidebar />
-            {/* Main Content Area */}
+             
             <div className="flex-1 flex flex-col bg-red-100 overflow-hidden" >
-                {/* Top Navbar */}
+                 
                 <nav className="p-4 flex justify-end gap-4 items-center bg-amber-50">
                     {/* Profile Dropdown */}
                     <p className='flex items-center gap-3 p-2 bg-yellow-500 hover:bg-yellow-400 rounded cursor-pointer transition-all duration-300 text-amber-50 ' style={{ textTransform: "capitalize" }}>{admin?.name}</p>
@@ -46,7 +46,7 @@ export default function Dashboard() {
                         </div>
                     </div>
                 </nav>
-                {/* Main Content Body */}
+                 
                 <div className="main_content flex-1   overflow-x-auto overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
                     <Outlet />
                 </div>

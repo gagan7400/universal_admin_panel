@@ -81,7 +81,6 @@ const login = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000,
         }).status(200).json({
             code: 200,
-            nn: process.env.NODE_ENV,
             success: true,
             message: "Admin logged in successfully...",
             token,
