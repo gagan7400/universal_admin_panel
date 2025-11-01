@@ -16,7 +16,7 @@ const createOrder = async (req, res) => {
         });
         const options = {
             amount: req.body.price,
-            currency: req.body.currency, receipt: receipt || `receipt_order_${Date.now()}`,
+            currency: req.body.currency, receipt: `receipt_order_${Date.now()}`,
         };
 
         const order = await razorpayInstatance.orders.create(options);

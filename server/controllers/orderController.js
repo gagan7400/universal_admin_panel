@@ -1,5 +1,5 @@
 const Order = require("../models/orderModel");
-const {Product} = require("../models/productModel");
+const { Product } = require("../models/productModel");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const mongoose = require("mongoose");
@@ -146,7 +146,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
 });
 
 async function updateStock(id, quantity) {
- 
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
         console.log("❌ Invalid product ID");
         return;
