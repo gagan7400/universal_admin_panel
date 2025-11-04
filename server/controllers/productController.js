@@ -86,7 +86,7 @@ let getAllProducts = catchAsyncErrors(async (req, res, next) => {
     res.status(200).json({
         success: true,
         data: products,
-        message: "Products Find Successfully.........."
+        message: "Products Find Successfully............"
     })
 })
 
