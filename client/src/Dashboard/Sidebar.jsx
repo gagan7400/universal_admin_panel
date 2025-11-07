@@ -75,7 +75,7 @@ const Sidebar = () => {
                             { path: "/dashboard/users", icon: '/img/users.svg', text: 'Users' },
                             { path: "/dashboard/products", icon: '/img/product.svg', text: 'Products' },
                             { path: "/dashboard/orders", icon: '/img/order.svg', text: 'Orders' },
-                            admin.role && { path: "/dashboard/sub-admins", icon: '/img/subadmin.svg', text: 'Sub Admins' },
+                            admin.role && { path: "/dashboard/sub-admins", icon: '/img/subadmin.svg', text: 'Sub Admin' },
                         ].map((item, index) => {
                             if (admin.role == 'subadmin') {
                                 if (item.text !== 'Sub Admin') {
