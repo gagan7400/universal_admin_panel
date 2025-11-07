@@ -8,23 +8,6 @@ const generateToken = ({ adminId, role }) => {
     return jwt.sign({ id: adminId, role }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
-const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-});
-
-const sendMail = async (to, subject, html) => {
-    await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to,
-        subject,
-        html,
-    });
-};
-
 
 const register = async (req, res) => {
     try {
@@ -33,7 +16,7 @@ const register = async (req, res) => {
         if (existing) return res.status(400).json({ success: false, message: "Admin already exists" });
 
         const hashed = await bcrypt.hash(password, 12);
-        const admin = await Admin.create({ email, password: hashed,name, role: "admin" });
+        const admin = await Admin.create({ email, password: hashed, name, role: "admin" });
 
         res.status(200).json({ success: true, message: "Admin Registered Successfully" });
     } catch (error) {
