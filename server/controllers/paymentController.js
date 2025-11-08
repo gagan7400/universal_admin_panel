@@ -15,7 +15,7 @@ const createOrder = async (req, res) => {
             key_secret: process.env.RAZORPAY_KEY_SECRET,
         });
         const options = {
-            amount: req.body.price,
+            amount:   Math.round(Number(req.body.price) * 100) ,
             currency: req.body.currency, receipt: `receipt_order_${Date.now()}`,
         };
 
