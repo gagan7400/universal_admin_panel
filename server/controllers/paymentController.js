@@ -37,7 +37,6 @@ const paymentVerification = async (req, res) => {
             razorpay_signature,
             orderData, // custom order info (shipping, items, user, prices)
         } = req.body;
-
         const body = razorpay_order_id + "|" + razorpay_payment_id;
 
         const expectedSignature = crypto
@@ -50,7 +49,13 @@ const paymentVerification = async (req, res) => {
             const newOrder = new Order({
                 shippingInfo: orderData.shippingInfo,
                 orderItems: orderData.orderItems,
-                user: orderData.user,
+                user: {
+                    id: req.user._id,
+                    name: req.user.name,
+                    email: req.user.email,
+                    phone: req.user.phone,
+                    image: req.user.image
+                },
                 paymentInfo: {
                     id: razorpay_payment_id,
                     status: "Paid",
@@ -75,8 +80,8 @@ const paymentVerification = async (req, res) => {
             res.status(400).json({ success: false, message: "Invalid signature" });
         }
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, error: "Verification failed" ,error});
+        // console.error(error);
+        res.status(500).json({ success: false, error: "Verification failed", error });
     }
 };
 const paymentComplete = async (req, res) => {
