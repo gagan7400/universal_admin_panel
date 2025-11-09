@@ -15,7 +15,7 @@ const createOrder = async (req, res) => {
             key_secret: process.env.RAZORPAY_KEY_SECRET,
         });
         const options = {
-            amount:   Math.round(Number(req.body.price) * 100) ,
+            amount: Math.round(Number(req.body.price) * 100),
             currency: req.body.currency, receipt: `receipt_order_${Date.now()}`,
         };
 
@@ -76,7 +76,7 @@ const paymentVerification = async (req, res) => {
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ success: false, error: "Verification failed" });
+        res.status(500).json({ success: false, error: "Verification failed" ,error});
     }
 };
 const paymentComplete = async (req, res) => {
