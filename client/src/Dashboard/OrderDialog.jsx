@@ -30,7 +30,7 @@ export default function OrderDialog({ order }) {
                                     <h3 className="font-semibold text-gray-800 mb-4">User</h3>
                                     <div className="flex items-center justify-between py-3 border-b last:border-none">
                                         <div className="flex items-center gap-4">
-                                            <img src={order?.user?.image?.url} alt={"image"} className="w-16 h-16 object-cover rounded-md border" />
+                                            <img src={order?.user?.image?.url} alt={"image"} className="w-16 h-16 object-cover rounded-md  " />
                                             <div>
                                                 <p className="font-medium">{order?.user?.name}</p>
                                                 <p className="text-sm text-gray-500">Email: {order?.user?.email}</p>
@@ -45,7 +45,7 @@ export default function OrderDialog({ order }) {
                                     {order?.orderItems?.map((item, idx) => (
                                         <div key={idx} className="flex items-center justify-between py-3 border-b last:border-none">
                                             <div className="flex items-center gap-4">
-                                                <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-md border" />
+                                                <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-md  " />
                                                 <div>
                                                     <p className="font-medium">{item.name}</p>
                                                     <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>

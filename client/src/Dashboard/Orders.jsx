@@ -218,7 +218,15 @@ const Orders = () => {
                                                     ))}
                                                     </select>
 
-                                                ) : col === 'user' ? (<div className='flex  gap-1'> <img src={row?.user?.image?.url} className='w-5 rounded-2xl' /> <p className='whitespace-pre'>{row.user.name}</p></div>) : (row[col])}
+                                                ) : col === 'user' ? (
+                                                    <div className='flex items-center  gap-1'>
+
+                                                        <img src={row?.user?.image?.url} className='w-16 h-16 object-cover rounded-md  ' />
+
+                                                        <p className='whitespace-pre'> {row.user.name}</p>
+                                                    </div>)
+                                                    :
+                                                    (row[col])}
                                             </td>
                                         ))}
                                         <OrderDialog order={row.order} />
