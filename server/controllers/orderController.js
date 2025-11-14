@@ -5,69 +5,7 @@ const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const mongoose = require("mongoose");
 
 
-// Create new Order
-exports.newOrder = catchAsyncErrors(async (req, res, next) => {
-    const {
-        shippingInfo,
-        orderItems,
-        paymentInfo,
-        itemsPrice,
-        taxPrice,
-        shippingPrice,
-        totalPrice,
-    } = req.body;
 
-    // 1. 🔍 Check stock availability for each product
-    for (let item of orderItems) {
-        const product = await Product.findById(item.product);
-
-        if (!product) {
-            return res.status(404).json({
-                success: false,
-                message: `Product with ID ${item.product} not found`,
-            });
-        }
-
-        if (product.stock < item.quantity) {
-            return res.status(400).json({
-                success: false,
-                message: `Insufficient stock for product: ${product.name}. Available: ${product.stock}, Required: ${item.quantity}`,
-            });
-        }
-    }
-
-    // 2. 🛒 If all items are valid, create the order
-    const order = await Order.create({
-        shippingInfo,
-        orderItems,
-        paymentInfo,
-        itemsPrice,
-        taxPrice,
-        shippingPrice,
-        totalPrice: Number(itemsPrice) + Number(taxPrice) + Number(shippingPrice),
-        paidAt: Date.now(),
-        user: {
-            id: req.user._id,
-            name: req.user.firstName + " " + req.user.lastName,
-            email: req.user.email,
-            phone: req.user.phone,
-            image: req.user.image,
-        }
-    });
-
-    // 3. 🔻 Reduce stock for each product
-    for (let item of orderItems) {
-        const product = await Product.findById(item.product);
-        product.stock -= item.quantity;
-        await product.save({ validateBeforeSave: false });
-    }
-
-    res.status(200).json({
-        success: true,
-        message: "Order placed successfully",
-        data: order,
-    });
-});
 
 
 // get Single Order

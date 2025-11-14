@@ -1,7 +1,7 @@
 const Subadmin = require("../models/admin");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
+// here all the subadmins also created in the admin collection with role subadmin
 const createSubadmin = async (req, res) => {
     try {
         const { name, email, password, permissions } = req.body;

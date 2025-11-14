@@ -1,4 +1,4 @@
-const {  paymentHistory, createOrder, paymentVerification } = require('../controllers/paymentController');
+const { paymentHistory, createOrder, paymentVerification } = require('../controllers/paymentController');
 const { isAuthenticatedUser } = require('../middlewares/auth');
 
 const router = require('express').Router();
@@ -10,5 +10,3 @@ router.post("/create-order", isAuthenticatedUser, createOrder)
 router.post("/verify-payment", isAuthenticatedUser, paymentVerification)
 router.get("/history", isAuthenticatedUser, paymentHistory)
 module.exports = router;
-// payment-completion
-// 2. payment-history

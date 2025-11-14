@@ -1,13 +1,8 @@
 const express = require("express");
-const { newOrder, getSingleOrder, myOrders, getAllOrders, updateOrder, deleteOrder, totalOrders } = require("../controllers/orderController");
+const {  getSingleOrder, myOrders, getAllOrders, updateOrder, deleteOrder, totalOrders } = require("../controllers/orderController");
 const router = express.Router();
 
-// const { isSubadmin, checkSubadminPermission } = require("../middlewares/subadminAuth");
-// const { processOrder } = require("../controllers/orderController");
-
 const { isAuthenticatedUser, isAuthenticatedAdmin, checkPermission, authorizeRoles } = require("../middlewares/auth");
-
-router.route("/new").post(isAuthenticatedUser, newOrder);
 
 router.route("/:id").get(isAuthenticatedUser, getSingleOrder);
 

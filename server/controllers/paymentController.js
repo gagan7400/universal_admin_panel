@@ -52,7 +52,7 @@ const paymentVerification = async (req, res) => {
                 orderItems: orderData.orderItems,
                 user: {
                     id: req.user._id,
-                    name: req.user.name,
+                    name: req.user.firstName + " " + req.user.lastName,
                     email: req.user.email,
                     phone: req.user.phone,
                     image: req.user.image
