@@ -16,7 +16,8 @@ const createOrder = async (req, res) => {
         });
         const options = {
             amount: Math.round(Number(req.body.price) * 100),
-            currency: req.body.currency, receipt: `receipt_order_${Date.now()}`,
+            currency: req.body.currency,
+            receipt: `receipt_order_${Date.now()}`,
         };
 
         const order = await razorpayInstatance.orders.create(options);
@@ -71,6 +72,16 @@ const paymentVerification = async (req, res) => {
 
             await newOrder.save();
 
+            await Payment.create({
+                userId: req.user._id,
+                orderId: razorpay_order_id,
+                paymentId: razorpay_payment_id,
+                amount: orderData.totalPrice,
+                paymentMethod: "Razorpay",
+                status: "Success",
+                paidAt: Date.now(),
+            });
+
             res.json({
                 success: true,
                 message: "Payment verified & order created successfully",
@@ -84,27 +95,7 @@ const paymentVerification = async (req, res) => {
         res.status(500).json({ success: false, error: "Verification failed", error });
     }
 };
-const paymentComplete = async (req, res) => {
-    const { orderId, amount, paymentMethod, status, paymentId } = req.body;
 
-    try {
-        const payment = new Payment({
-            userId: req.user._id,
-            orderId,
-            amount,
-            paymentMethod,
-            status,
-            paymentId,
-            paidAt: new Date(),
-        });
-
-        await payment.save();
-
-        res.status(200).json({ success: true, message: 'Payment recorded successfully' });
-    } catch (err) {
-        res.status(500).json({ success: false, message: 'Payment failed', error: err.message });
-    }
-};
 let paymentHistory = async (req, res) => {
     try {
         const payments = await Payment.find({ userId: req.user._id }).sort({ paidAt: -1 });
@@ -114,4 +105,4 @@ let paymentHistory = async (req, res) => {
     }
 };
 
-module.exports = { paymentVerification, paymentComplete, paymentHistory, createOrder }
+module.exports = { paymentVerification, paymentHistory, createOrder }
