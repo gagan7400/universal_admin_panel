@@ -28,7 +28,7 @@ export default function Dashboard() {
                             // }}
                             className="group relative transition-all duration-700 flex items-center justify-center text-gray-500 bg-yellow-500 hover:bg-yellow-400   rounded-full h-11 w-11"
                         >
-                            <i className="fa-regular fa-user text-xl text-white  "></i>
+                            <i className="fa-regular cursor-pointer fa-user text-xl text-white  "></i>
                             {/* {isOpen && (
                                     <div className="absolute top-[37px] right-[-16px] z-20 mt-6 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5">
                                         <div className="py-1">

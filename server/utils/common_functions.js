@@ -6,13 +6,13 @@ exports.sendEmail = async (to, subject, html) => {
         port: 465,
         service: 'gmail',
         auth: {
-            user: 'gagan.engineersahabedu@gmail.com',
-            pass: 'obzgfddcwzkgtfpl',
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
         },
     });
 
     await transporter.sendMail({
-        from: 'gagan.engineersahabedu@gmail.com',
+        from: process.env.EMAIL_USER,
         to,
         subject,
         html,

@@ -1,5 +1,4 @@
 // const Product = require("../models/productModel");
-
 const User = require("../models/usermodel.js");
 const Order = require("../models/orderModel");
 const Cart = require('../models/cart');
@@ -48,6 +47,8 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
         discountPercentage,
         material,
         dimensions,
+        gstRate,
+        HSN
     } = req.body;
 
     if (typeof dimensions === "string") {
@@ -69,6 +70,8 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
         discountPercentage,
         material,
         dimensions,
+        gstRate,
+        HSN
     };
 
     const product = new Product(newProduct);

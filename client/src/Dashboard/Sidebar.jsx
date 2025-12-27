@@ -69,7 +69,6 @@ const Sidebar = () => {
                     </div>
 
                     <div className="space-y-4 mt-10">
-
                         {[
                             { path: "/dashboard", icon: '/img/dashboard.svg', text: 'Dashboard', exact: true },
                             { path: "/dashboard/users", icon: '/img/users.svg', text: 'Users' },
@@ -131,10 +130,10 @@ const Sidebar = () => {
                 onClick={handleToggle}
                 title={isCollapsed ? "Open Sidebar" : "Close Sidebar"}
                 style={{ zIndex: "-1" }}
-                className="absolute top-9 -right-6 transform -translate-y-1/2 w-12 h-12 flex  justify-center bg-yellow-500 text-amber-50  rotate-45 rounded-t-sm shadow"
+                className="absolute cursor-pointer top-9 -right-6 transform -translate-y-1/2 w-12 h-12 flex  justify-center bg-yellow-500 text-amber-50  rotate-45 rounded-t-sm shadow"
             >
                 {/* Icon can be image or emoji */}
-                <span className='ms-7 text-2xl rotate-[-45deg] cursor-default'>{isCollapsed ? '>' : '<'}</span>
+                <span className='slide-icon ms-7 text-2xl rotate-[-45deg] cursor-pointer'>{isCollapsed ? '>' : '<'}</span>
             </div>
         </div>
     );

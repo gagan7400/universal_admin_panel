@@ -30,10 +30,12 @@ export default function Products() {
     const [ratings, setRatings] = useState("");
     const [category, setCategory] = useState("");
     const [stock, setStock] = useState("");
-    const [dimensions, setDimensions] = useState({ width: "", height: "" });
+    const [dimensions, setDimensions] = useState({ width: "", height: "",length:"" });
     const [weight, setWeight] = useState("");
     const [size, setSize] = useState("");
     const [discountPercentage, setDiscountPercentage] = useState("");
+    const [gstRate, setGstRate] = useState("");
+    const [HSN, setHSN] = useState("");
     const [material, setMaterial] = useState("");
     const [images, setImages] = useState([]);
     const [bannerImage, setBannerImage] = useState([]);
@@ -100,6 +102,8 @@ export default function Products() {
         formData.append("weight", weight);
         formData.append("size", size);
         formData.append("discountPercentage", discountPercentage);
+        formData.append("gstRate", gstRate);
+        formData.append("HSN", HSN);
         formData.append("material", material);
         formData.append("dimensions", JSON.stringify(dimensions));
 
@@ -151,13 +155,15 @@ export default function Products() {
         setDescription("");
         setCategory("");
         setPrice("");
-        setDimensions({ width: "", height: "" });
+        setDimensions({ width: "", height: "",length:"" });
         setSize("");
         setMaterial("");
         setRatings("");
         setStock("");
         setWeight("");
         setDiscountPercentage("");
+        setGstRate("");
+        setHSN("");
         setImages([]);
         setBannerImage([]);
     };
@@ -244,13 +250,15 @@ export default function Products() {
         setDescription(data.description);
         setCategory(data.category);
         setPrice(data.price);
-        setDimensions({ width: data.dimensions.width, height: data.dimensions.height });
+        setDimensions({ width: data.dimensions.width, length: data.dimensions.length ,height: data.dimensions.height });
         setSize(data.size);
         setMaterial(data.material);
         setRatings(data.ratings);
         setStock(data.stock);
         setWeight(data.weight);
         setDiscountPercentage(data.discountPercentage);
+        setGstRate(data.gstRate);
+        setHSN(data.HSN);
 
         // Wrap existing images into fake File-like objects
         const existingImages = data.images.map(img => ({
@@ -298,7 +306,7 @@ export default function Products() {
                             <div className="  mx-auto bg-white rounded-xl shadow-xl sm:p-6 p-3 ">
                                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">Products</h2>
                                 <div className="flex flex-wrap gap-4 justify-start lg:justify-between items-center mb-6">
-                                    <h2 className="text-2xl font-bold   text-gray-800  ">🛒 Add New Product</h2>
+                                    <h2 className="text-2xl font-bold   text-gray-800 cursor-pointer ">🛒 Add New Product</h2>
                                     <div className="w-1/5   min-w-fit flex  gap-4 justify-end items-center  ">
                                         <button className="bg-amber-400 text-white  min-w-fit hover:bg-amber-600 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(false) }}>View Products</button>
                                     </div>
@@ -348,10 +356,11 @@ export default function Products() {
                                         </div>
 
                                         <div className="flex flex-col">
-                                            <label className="text-sm font-semibold text-gray-700 mb-1">Dimensions (W × H)</label>
+                                            <label className="text-sm font-semibold text-gray-700 mb-1">Dimensions (L x W × H ) in cm</label>
                                             <div className="flex gap-2">
                                                 <input type="text" value={dimensions.width} onChange={(e) => setDimensions({ ...dimensions, width: e.target.value })} placeholder="Width" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
                                                 <input type="text" value={dimensions.height} onChange={(e) => setDimensions({ ...dimensions, height: e.target.value })} placeholder="Height" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                                <input type="text" value={dimensions.length} onChange={(e) => setDimensions({ ...dimensions, length: e.target.value })} placeholder="Length" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
                                             </div>
                                         </div>
 
@@ -373,6 +382,14 @@ export default function Products() {
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Discount (%)</label>
                                             <input type="number" value={discountPercentage} onChange={(e) => setDiscountPercentage(e.target.value)} placeholder="Enter discount" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <label className="text-sm font-semibold text-gray-700 mb-1">GST Rate (%)</label>
+                                            <input type="number" value={gstRate} onChange={(e) => setGstRate(e.target.value)} placeholder="Enter gstRate" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <label className="text-sm font-semibold text-gray-700 mb-1"> HSN </label>
+                                            <input type="text" value={HSN} onChange={(e) => setHSN(e.target.value)} placeholder="Enter HSN" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
                                         </div>
                                     </div>
 

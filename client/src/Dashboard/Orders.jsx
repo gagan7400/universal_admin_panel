@@ -139,7 +139,7 @@ const Orders = () => {
                                     type="checkbox"
                                     checked={visibleColumns.includes(col)}
                                     onChange={() => toggleColumn(col)}
-                                    className="accent-blue-600 rounded focus:ring-2"
+                                    className="accent-blue-600 rounded cursor-pointer focus:ring-2"
                                 />
                                 <span>{col}</span>
                             </label>
@@ -150,7 +150,7 @@ const Orders = () => {
                         <input
                             type="text"
                             placeholder="Search Orders..."
-                            className=" lg:w-64  w-30 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 outline-none"
+                            className=" lg:w-64 cursor-pointer  w-30 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 outline-none"
                             value={search}
                             onChange={(e) => {
                                 setSearch(e.target.value);
@@ -159,16 +159,16 @@ const Orders = () => {
                         />
 
                         <select
-                            className="p-2 w-35 bg-yellow-500 text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-yellow-400 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
+                            className="p-2 w-35 cursor-pointer bg-yellow-500 text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-yellow-400 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
                             value={statusFilter}
                             onChange={(e) => {
                                 setStatusFilter(e.target.value);
                                 setCurrentPage(1);
                             }}
                         >
-                            <option value="">All Statuses</option>
+                            <option value="" className='name'>All Statuses</option>
                             {statusOptions.map((status) => (
-                                <option key={status} value={status}>
+                                <option className='cursor-pointer' key={status} value={status}>
                                     {status}
                                 </option>
                             ))}

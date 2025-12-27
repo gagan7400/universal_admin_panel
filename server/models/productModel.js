@@ -68,13 +68,14 @@ const productSchema = new mongoose.Schema({
         },
     ],
     dimensions: {
-        width: String, height: String, _id: false
+        width: String, height: String, length: String, _id: false
     },
     weight: String,
     size: String,
+    HSN: String,
+    gstRate: String,
     discountPercentage: String,
     material: String,
-
     createdAt: {
         type: Date,
         default: Date.now,
