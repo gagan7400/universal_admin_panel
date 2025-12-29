@@ -32,7 +32,7 @@ export default function DashboardComp() {
                 <div className='sm:p-6 p-3 '>
                     <div className="grid grid-cols-1 gap-4  lg:grid-cols-3 md:gap-6  ">
                         <NavLink to="/dashboard/users" className="rounded-2xl border border-gray-200 bg-white p-5 not-[]:md:p-6">
-                            <div className="group flex items-center justify-center w-12 h-12 bg-yellow-500  transition-all duration-700  hover:bg-yellow-400 hover:text-blue-400 rounded-xl  ">
+                            <div className="group flex items-center justify-center w-12 h-12 bg-[var(--blue)]  transition-all duration-700  hover:bg-blue-900 hover:text-blue-400 rounded-xl  ">
                                 <GroupIcon className="transition-all duration-700 text-2xl text-gray-50 group-hover:text-blue-400    " />
                             </div>
                             <div className="flex items-end justify-between mt-5">
@@ -51,7 +51,7 @@ export default function DashboardComp() {
                             </div>
                         </NavLink>
                         <NavLink to="/dashboard/orders" className="rounded-2xl border border-gray-200 bg-white p-5     md:p-6">
-                            <div className="group flex items-center justify-center w-12 h-12  text-gray-500 bg-yellow-500 hover:bg-yellow-400  hover:text-blue-400 rounded-xl  ">
+                            <div className="group flex items-center justify-center w-12 h-12  text-gray-500 bg-[var(--blue)] hover:bg-blue-900  hover:text-blue-400 rounded-xl  ">
                                 <BoxIconLine className=" 0  transition-all duration-700 text-2xl text-gray-50 group-hover:text-blue-400 " />
                             </div>
                             <div className="flex items-end justify-between mt-5">
@@ -71,7 +71,7 @@ export default function DashboardComp() {
                             </div>
                         </NavLink>
                         <NavLink to="/dashboard/products" className="rounded-2xl border border-gray-200 bg-white p-5     md:p-6">
-                            <div className="group flex items-center justify-center w-12 h-12 text-gray-500 bg-yellow-500 hover:bg-yellow-400  hover:text-blue-400 rounded-xl  ">
+                            <div className="group flex items-center justify-center w-12 h-12 text-gray-500 bg-[var(--blue)] hover:bg-blue-900  hover:text-blue-400 rounded-xl  ">
                                 <BoxIconLine className="transition-all duration-700 text-2xl text-gray-50 group-hover:text-blue-400" />
                             </div>
                             <div className="flex items-end justify-between mt-5">

@@ -30,7 +30,7 @@ export default function Products() {
     const [ratings, setRatings] = useState("");
     const [category, setCategory] = useState("");
     const [stock, setStock] = useState("");
-    const [dimensions, setDimensions] = useState({ width: "", height: "",length:"" });
+    const [dimensions, setDimensions] = useState({ width: "", height: "", length: "" });
     const [weight, setWeight] = useState("");
     const [size, setSize] = useState("");
     const [discountPercentage, setDiscountPercentage] = useState("");
@@ -97,7 +97,8 @@ export default function Products() {
         formData.append("description", description);
         formData.append("price", price);
         formData.append("ratings", ratings);
-        formData.append("category", category.value);
+        console.log("cat", category)
+        formData.append("category", category?.value || category);
         formData.append("stock", stock);
         formData.append("weight", weight);
         formData.append("size", size);
@@ -153,9 +154,12 @@ export default function Products() {
     const refresh = () => {
         setName("");
         setDescription("");
-        setCategory("");
+        setCategory({
+            value: data.category,
+            label: data.category
+        });
         setPrice("");
-        setDimensions({ width: "", height: "",length:"" });
+        setDimensions({ width: "", height: "", length: "" });
         setSize("");
         setMaterial("");
         setRatings("");
@@ -248,9 +252,9 @@ export default function Products() {
     const updateHandler = (id, data) => {
         setName(data.name);
         setDescription(data.description);
-        setCategory(data.category);
+        setCategory({ label: data.category, value: data.category });
         setPrice(data.price);
-        setDimensions({ width: data.dimensions.width, length: data.dimensions.length ,height: data.dimensions.height });
+        setDimensions({ width: data.dimensions.width, length: data.dimensions.length, height: data.dimensions.height });
         setSize(data.size);
         setMaterial(data.material);
         setRatings(data.ratings);
@@ -308,7 +312,7 @@ export default function Products() {
                                 <div className="flex flex-wrap gap-4 justify-start lg:justify-between items-center mb-6">
                                     <h2 className="text-2xl font-bold   text-gray-800 cursor-pointer ">🛒 Add New Product</h2>
                                     <div className="w-1/5   min-w-fit flex  gap-4 justify-end items-center  ">
-                                        <button className="bg-amber-400 text-white  min-w-fit hover:bg-amber-600 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(false) }}>View Products</button>
+                                        <button className="bg-[var(--blue)] text-white  min-w-fit hover:bg-blue-900 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(false) }}>View Products</button>
                                     </div>
                                 </div>
                                 <form onSubmit={handleSubmit} className="mx-auto ">
@@ -337,14 +341,14 @@ export default function Products() {
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Category</label>
                                             {/*<select value={category} onChange={(e) => setCategory(e.target.value)} className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400">
                                                 {categories.map((cat, idx) => (
-                                                    <option className="hover:bg-amber-400" key={idx} value={cat}>
+                                                    <option className="hover:bg-[var(--blue)]" key={idx} value={cat}>
                                                         {cat}
                                                     </option>
                                                 ))}
-                                                 <option className="hover:bg-amber-400">Select category</option>
-                                                <option className="hover:bg-amber-400">Iron</option>
-                                                <option className="hover:bg-amber-400" >Bronze</option>
-                                                <option className="hover:bg-amber-400" >Silver</option>
+                                                 <option className="hover:bg-[var(--blue)]">Select category</option>
+                                                <option className="hover:bg-[var(--blue)]">Iron</option>
+                                                <option className="hover:bg-[var(--blue)]" >Bronze</option>
+                                                <option className="hover:bg-[var(--blue)]" >Silver</option>
                                             </select> */}
                                             <CreatableSelect
                                                 isClearable
@@ -358,6 +362,7 @@ export default function Products() {
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Dimensions (L x W × H ) in cm</label>
                                             <div className="flex gap-2">
+                                                {console.log(dimensions)}
                                                 <input type="text" value={dimensions.width} onChange={(e) => setDimensions({ ...dimensions, width: e.target.value })} placeholder="Width" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
                                                 <input type="text" value={dimensions.height} onChange={(e) => setDimensions({ ...dimensions, height: e.target.value })} placeholder="Height" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
                                                 <input type="text" value={dimensions.length} onChange={(e) => setDimensions({ ...dimensions, length: e.target.value })} placeholder="Length" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
@@ -406,10 +411,10 @@ export default function Products() {
                                     </div>
 
                                     <div className="mt-6 text-right flex lg:justify-end justify-start gap-2 items-center">
-                                        <button type="button" onClick={cancel} className="bg-red-600 text-white  hover:bg-amber-600 hover:text-blue-50 px-6 py-2.5 rounded-md shadow-lg duration-75 transition-transform transform  ">
+                                        <button type="button" onClick={cancel} className="bg-red-600 text-white  hover:bg-blue-900 hover:text-blue-50 px-6 py-2.5 rounded-md shadow-lg duration-75 transition-transform transform  ">
                                             Cancel
                                         </button>
-                                        <button type="submit" className=" bg-amber-400 text-white  hover:bg-amber-600 hover:text-blue-50 px-6 py-2.5 rounded-md shadow-lg duration-75 transition-transform transform  ">
+                                        <button type="submit" className=" bg-[var(--blue)] text-white  hover:bg-blue-900 hover:text-blue-50 px-6 py-2.5 rounded-md shadow-lg duration-75 transition-transform transform  ">
                                             {isUpdate ? "Update Product" : "Add Product"}
                                         </button>
                                     </div>
@@ -431,13 +436,15 @@ export default function Products() {
                                             onChange={(e) => setSearch(e.target.value)}
                                         />
                                         <div className={`w-1/5 min-w-fit flex gap-4  ${admin.role == "admin" ? "justify-end" : "justify-start md:justify-end"} items-center`}>
-                                            {admin.role == "admin" && <button className="bg-amber-400 text-white  min-w-fit hover:bg-amber-600 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(true) }}>  Add New Product</button>}
+                                            {admin.role == "admin" && <button className="bg-[var(--blue)] text-white  min-w-fit hover:bg-blue-900 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(true) }}>  Add New Product</button>}
                                             <select
-                                                className="p-2 w-25 bg-amber-400 text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-amber-600 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
+                                                className="p-2 w-25 bg-[var(--blue)] text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-blue-900 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
                                                 value={selectedCategory}
                                                 onChange={(e) => setSelectedCategory(e.target.value)}
                                             >
+                                                <option value="All">All</option>
                                                 {categories.map((cat, idx) => (
+
                                                     <option key={idx} value={cat}>
                                                         {cat}
                                                     </option>
@@ -483,7 +490,7 @@ export default function Products() {
                                                         <td className="px-6 py-3">{v.stock}</td>
                                                         <td className="px-6 py-3">{v.size}</td>
                                                         <td className="px-6 py-3">
-                                                            {v.dimensions.width} x {v.dimensions.height}
+                                                            {v.dimensions.width} x {v.dimensions.height} x {v.dimensions.length} cm
                                                         </td>
 
                                                         <td className="px-6 py-3 flex justify-center flex-wrap items-center gap-3">

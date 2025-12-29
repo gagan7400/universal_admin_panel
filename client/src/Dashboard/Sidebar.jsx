@@ -55,8 +55,8 @@ const Sidebar = () => {
     }
 
     return (
-        <div style={{ width: `${sidebarWidth}px`, background: 'var(--blue)', zIndex: "10" }} className="relative   transition-all duration-300 ease-in-out" >
-            <div style={{ width: `${sidebarWidth}px`, background: 'var(--blue)' }} className="h-full p-4 py-6 flex flex-col justify-between transition-all duration-300">
+        <div style={{ width: `${sidebarWidth}px`, zIndex: "10" }} className=" bg_blue relative   transition-all duration-300 ease-in-out" >
+            <div style={{ width: `${sidebarWidth}px`, }} className=" bg_blue h-full p-4 py-6 flex flex-col justify-between transition-all duration-300">
                 {/* Logo and Nav */}
                 <div>
                     <div className="flex items-center justify-center">
@@ -83,7 +83,7 @@ const Sidebar = () => {
                                         key={index}
                                         end={item.exact}
                                         className={({ isActive }) =>
-                                            `flex items-center ${isCollapsed ? 'gap-0' : 'gap-3'} p-2 text-amber-50 rounded hover:bg-yellow-400 cursor-pointer transition-all duration-300 ${isActive ? 'bg-yellow-500' : ''}`
+                                            `flex items-center ${isCollapsed ? 'gap-0' : 'gap-3'} p-2 text-amber-50 rounded  cursor-pointer transition-all duration-300 ${isActive ? 'bg-blue-200' : ''}`
                                         }
                                     >
                                         <img src={item.icon} alt="" className="w-6 h-6" loading="lazy" />
@@ -98,7 +98,7 @@ const Sidebar = () => {
                                     key={index}
                                     end={item.exact}
                                     className={({ isActive }) =>
-                                        `flex items-center ${isCollapsed ? 'gap-0' : 'gap-3'} p-2 text-amber-50 rounded hover:bg-yellow-400 cursor-pointer transition-all duration-300 ${isActive ? 'bg-yellow-500' : ''}`
+                                        `flex items-center ${isCollapsed ? 'gap-0' : 'gap-3'} p-2 text-amber-50 rounded hover:bg-blue-900  cursor-pointer transition-all duration-300 ${isActive ? 'bg-blue-500' : ''}`
                                     }
                                 >
                                     <img src={item.icon} alt="" className="w-6 h-6" loading="lazy" />
@@ -115,7 +115,7 @@ const Sidebar = () => {
 
                 {/* Logout */}
                 <div className="space-y-4 mt-10">
-                    <div onClick={isLogout} className="flex items-center gap-3 p-2 hover:bg-yellow-400 rounded cursor-pointer transition-all duration-300 text-amber-50">
+                    <div onClick={isLogout} className="flex items-center gap-3 p-2 hover:bg-blue-900 rounded cursor-pointer transition-all duration-300 text-amber-50">
                         <img src="/img/logout.svg" alt="" className="w-6 h-6" loading="lazy" />
                         <span className={`text-lg transition-all duration-300 overflow-hidden   whitespace-nowrap ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
                             Logout
@@ -130,7 +130,7 @@ const Sidebar = () => {
                 onClick={handleToggle}
                 title={isCollapsed ? "Open Sidebar" : "Close Sidebar"}
                 style={{ zIndex: "-1" }}
-                className="absolute cursor-pointer top-9 -right-6 transform -translate-y-1/2 w-12 h-12 flex  justify-center bg-yellow-500 text-amber-50  rotate-45 rounded-t-sm shadow"
+                className="absolute cursor-pointer top-9 -right-6 transform -translate-y-1/2 w-12 h-12 flex  justify-center bg-[var(--blue)] text-amber-50  rotate-45 rounded-tr-sm shadow"
             >
                 {/* Icon can be image or emoji */}
                 <span className='slide-icon ms-7 text-2xl rotate-[-45deg] cursor-pointer'>{isCollapsed ? '>' : '<'}</span>

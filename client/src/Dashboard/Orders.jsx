@@ -159,7 +159,7 @@ const Orders = () => {
                         />
 
                         <select
-                            className="p-2 w-35 cursor-pointer bg-yellow-500 text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-yellow-400 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
+                            className="p-2 w-35 cursor-pointer bg-[var(--blue)] text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-blue-900 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
                             value={statusFilter}
                             onChange={(e) => {
                                 setStatusFilter(e.target.value);

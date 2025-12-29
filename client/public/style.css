@@ -2,6 +2,13 @@
     --primarycl: #e6a311;
     --textcl: #fda80b ;
     --secondarycl: #6ec1e4;
-    --blue:#1c4366;
-    --newcolor  :#ffffff
+    --blue:#120933;
+    --bluecolor :RGBA(18, 9, 51, 1)
+    --newcolor  :#ffffffl;
+    
+}
+.bg_blue{
+    background: #120933;
+    background:  linear-gradient(180deg,rgba(18, 9, 51, 1) 0%, rgba(47, 51, 138, 1) 50%, rgba(9, 3, 36, 1) 100%);
+
 }

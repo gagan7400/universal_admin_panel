@@ -140,10 +140,10 @@ const SubadminManager = () => {
 
                         <h2 className="text-2xl font-bold text-gray-800">Subadmins Manager</h2>
                         <div className="flex flex-wrap gap-4 md:justify-between justify-start  items-center  ">
-                            <button className="bg-yellow-500 text-white  min-w-fit hover:bg-yellow-400 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(!show) }}>{show ? "View Subadmins" : "Add Subadmins"}</button>
+                            <button className="bg-[var(--blue)] text-white  min-w-fit hover:bg-blue-900 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(!show) }}>{show ? "View Subadmins" : "Add Subadmins"}</button>
                         </div>
                         {/* <div className="w-1/5 min-w-fit flex  gap-4 justify-end items-center  ">
-                    <button className="bg-yellow-500 text-white  min-w-fit hover:bg-yellow-400 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(!show) }}>{show ? "View Subadmins" : "Add Subadmins"}</button>
+                    <button className="bg-[var(--blue)] text-white  min-w-fit hover:bg-blue-900 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(!show) }}>{show ? "View Subadmins" : "Add Subadmins"}</button>
                 </div> */}
                     </div>
                     {show ?
@@ -216,14 +216,14 @@ const SubadminManager = () => {
                                 <div className="flex justify-end gap-3 p-2 rounded">
                                     <button
                                         type="submit"
-                                        className="bg-yellow-500 text-white  min-w-fit hover:bg-yellow-400 hover:text-blue-50  px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex "
+                                        className="bg-[var(--blue)] text-white  min-w-fit hover:bg-blue-900 hover:text-blue-50  px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex "
                                     >
                                         {isEditMode ? "Update Subadmin" : "Add Subadmin"}
                                     </button>
                                     <button
                                         type="button"
                                         onClick={cancel}
-                                        className="bg-yellow-500 text-white min-w-fit hover:bg-yellow-400 hover:text-blue-50  px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex "
+                                        className="bg-[var(--blue)] text-white min-w-fit hover:bg-blue-900 hover:text-blue-50  px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex "
                                     >
                                         Cancel
                                     </button>

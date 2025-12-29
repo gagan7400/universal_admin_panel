@@ -24,7 +24,7 @@ export default function RecentOrders() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <NavLink to="/dashboard/orders" className="inline-flex items-center gap-2 rounded-lg  bg-yellow-500 px-4 py-2.5 text-theme-sm font-medium text-gray-50 shadow-theme-xs hover:bg-yellow-400 hover:text-gray-50  ">
+                    <NavLink to="/dashboard/orders" className="inline-flex items-center gap-2 rounded-lg  bg-[var(--blue)] px-4 py-2.5 text-theme-sm font-medium text-gray-50 shadow-theme-xs hover:bg-blue-900 hover:text-gray-50  ">
                         See all
                     </NavLink>
                 </div>

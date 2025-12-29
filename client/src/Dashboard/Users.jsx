@@ -119,12 +119,12 @@ export default function Users() {
                             onChange={(e) => setSearch(e.target.value)}
                         />
                         <select
-                            className="p-2 md:w-2/12 w-20  min-w-fit  border-0 rounded-lg shadow-sm bg-yellow-500 hover:bg-yellow-400 text-blue-50"
+                            className="p-2 md:w-2/12 w-20  min-w-fit  border-0 rounded-lg shadow-sm bg-[var(--blue)] hover:bg-blue-900 text-blue-50"
                             value={selectedCategory}
                             onChange={(e) => setSelectedCategory(e.target.value)}
                         >
                             {categories.map((cat, idx) => (
-                                <option key={idx} value={cat.category} className="hover:bg-yellow-400">
+                                <option key={idx} value={cat.category} className="hover:bg-blue-900">
                                     {cat.category}
                                 </option>
                             ))}
