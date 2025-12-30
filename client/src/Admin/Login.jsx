@@ -59,14 +59,14 @@ const Login = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="••••••••"
-                                autocomplete="new-password"
+                                autoComplete='off'
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                             />
                         </div>
 
                         <button
                             type="submit"
-                            className="w-full flex justify-center items-center gap-3 bg-gradient-to-r bg-amber-400 text-white   hover:bg-amber-600 hover:text-blue-50 text-lg font-semibold py-2 rounded-lg shadow-md hover:shadow-lg transition duration-300"
+                            className="w-full flex justify-center items-center gap-3 bg-gradient-to-r bg-[var(--blue)] text-white   hover:bg-blue-900 hover:text-blue-50 text-lg font-semibold py-2 rounded-lg shadow-md hover:shadow-lg transition duration-300"
                         >
                             {loading && <div className="loaderlogin "></div>}
                             Login

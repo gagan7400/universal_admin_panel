@@ -55,7 +55,7 @@ export default function Products() {
         try {
             let { data } = await axios.get(`${API}/api/product/categories`);
             if (data.success) {
-                console.log(data.data)
+             
                 setCategories(data.data);
                 setOptions(data.data.map((v, i) => {
                     return { value: v, label: v }
@@ -97,7 +97,6 @@ export default function Products() {
         formData.append("description", description);
         formData.append("price", price);
         formData.append("ratings", ratings);
-        console.log("cat", category)
         formData.append("category", category?.value || category);
         formData.append("stock", stock);
         formData.append("weight", weight);
@@ -155,8 +154,8 @@ export default function Products() {
         setName("");
         setDescription("");
         setCategory({
-            value: data.category,
-            label: data.category
+            value: "",
+            label: ""
         });
         setPrice("");
         setDimensions({ width: "", height: "", length: "" });
@@ -177,6 +176,7 @@ export default function Products() {
         setIsUpdate(false)
         setIsUpdateId(null)
         setShow(false)
+         
     }
     // new product statess end 
 
@@ -362,7 +362,7 @@ export default function Products() {
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Dimensions (L x W × H ) in cm</label>
                                             <div className="flex gap-2">
-                                                {console.log(dimensions)}
+                                                 
                                                 <input type="text" value={dimensions.width} onChange={(e) => setDimensions({ ...dimensions, width: e.target.value })} placeholder="Width" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
                                                 <input type="text" value={dimensions.height} onChange={(e) => setDimensions({ ...dimensions, height: e.target.value })} placeholder="Height" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
                                                 <input type="text" value={dimensions.length} onChange={(e) => setDimensions({ ...dimensions, length: e.target.value })} placeholder="Length" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
