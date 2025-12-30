@@ -53,7 +53,7 @@ const ProductImageUploader = ({ images, setImages, bannerImage, setBannerImage, 
         <div>
             <label className="text-sm font-semibold text-gray-700 mb-1 block">{title}</label>
             <div
-                className={`border-2 border-dashed rounded-md h-48 flex flex-col justify-center items-center cursor-pointer transition-colors duration-300 hover:border-amber-400 ${dragging
+                className={`border-2 border-dashed rounded-md h-48 flex flex-col justify-center items-center cursor-pointer transition-colors duration-300 hover:border-blue-400 ${dragging
                     ? "border-blue-400 bg-blue-50 text-blue-600"
                     : "border-gray-300 text-gray-500 bg-white"
                     }`}

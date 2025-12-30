@@ -47,9 +47,19 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
         material,
         dimensions,
         gstRate,
-        HSN
+        HSN,
+        pricePerLot,
+        shippingPricePerKM
     } = req.body;
 
+
+    if (pricePerLot) {
+        pricePerLot = JSON.parse(pricePerLot);
+    }
+
+    if (shippingPricePerKM) {
+        shippingPricePerKM = JSON.parse(shippingPricePerKM);
+    }
     if (typeof dimensions === "string") {
         dimensions = JSON.parse(dimensions);
     }
@@ -70,7 +80,9 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
         material,
         dimensions,
         gstRate,
-        HSN
+        HSN,
+        shippingPricePerKM,
+        pricePerLot
     };
 
     const product = new Product(newProduct);
@@ -150,7 +162,14 @@ const deleteProduct = catchAsyncErrors(async (req, res, next) => {
 const updateProduct = catchAsyncErrors(async (req, res, next) => {
     const product = await Product.findById(req.params.id);
     if (!product) return next(new ErrorHandler("Product not found", 404));
+            
+    if (req.body.pricePerLot) {
+        req.body.pricePerLot = JSON.parse(req.body.pricePerLot);
+    }
 
+    if (req.body.shippingPricePerKM) {
+        req.body.shippingPricePerKM = JSON.parse(req.body.shippingPricePerKM);
+    }
     const files = req.files || {};
     const bannerFile = files.bannerImage?.[0];
     const galleryFiles = files.images || [];

@@ -76,6 +76,14 @@ const productSchema = new mongoose.Schema({
     gstRate: String,
     discountPercentage: String,
     material: String,
+    pricePerLot: [
+        { min: String, max: String, price: String, typeofProduct: String, _id: false }
+    ],
+    shippingPricePerKM: [
+        {
+            min: String, max: String, shippingPrice: String, packagingFee: String, _id: false
+        }
+    ],
     createdAt: {
         type: Date,
         default: Date.now,

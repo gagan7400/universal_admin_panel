@@ -39,6 +39,13 @@ export default function Products() {
     const [material, setMaterial] = useState("");
     const [images, setImages] = useState([]);
     const [bannerImage, setBannerImage] = useState([]);
+    const [pricePerLot, setPricePerLot] = useState([
+        { min: "", max: "", price: "", typeofProduct: "" }
+    ]);
+
+    const [shippingPricePerKM, setShippingPricePerKM] = useState([
+        { min: "", max: "", shippingPrice: "", packagingFee: "" }
+    ]);
     const [isUpdate, setIsUpdate] = useState(false)
     const [isUpdateId, setIsUpdateId] = useState(null)
     const [deletedImages, setDeletedImages] = useState([]);
@@ -55,7 +62,7 @@ export default function Products() {
         try {
             let { data } = await axios.get(`${API}/api/product/categories`);
             if (data.success) {
-             
+
                 setCategories(data.data);
                 setOptions(data.data.map((v, i) => {
                     return { value: v, label: v }
@@ -106,7 +113,8 @@ export default function Products() {
         formData.append("HSN", HSN);
         formData.append("material", material);
         formData.append("dimensions", JSON.stringify(dimensions));
-
+        formData.append("pricePerLot", JSON.stringify(pricePerLot));
+        formData.append("shippingPricePerKM", JSON.stringify(shippingPricePerKM));
         // ✅ Update or Create Logic
         if (isUpdate && isUpdateId) {
             try {
@@ -169,6 +177,8 @@ export default function Products() {
         setHSN("");
         setImages([]);
         setBannerImage([]);
+        setPricePerLot([]);
+        setShippingPricePerKM([]);
     };
 
     let cancel = () => {
@@ -176,7 +186,7 @@ export default function Products() {
         setIsUpdate(false)
         setIsUpdateId(null)
         setShow(false)
-         
+
     }
     // new product statess end 
 
@@ -263,6 +273,8 @@ export default function Products() {
         setDiscountPercentage(data.discountPercentage);
         setGstRate(data.gstRate);
         setHSN(data.HSN);
+        setPricePerLot(data.pricePerLot || []);
+        setShippingPricePerKM(data.shippingPricePerKM || []);
 
         // Wrap existing images into fake File-like objects
         const existingImages = data.images.map(img => ({
@@ -319,27 +331,27 @@ export default function Products() {
                                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Product Name</label>
-                                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter product name" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter product name" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Price</label>
-                                            <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Enter price" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                            <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Enter price" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Ratings</label>
-                                            <input type="number" value={ratings} onChange={(e) => setRatings(e.target.value)} placeholder="Rating out of 5" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                            <input type="number" value={ratings} onChange={(e) => setRatings(e.target.value)} placeholder="Rating out of 5" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Stock</label>
-                                            <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} placeholder="Stock quantity" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                            <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} placeholder="Stock quantity" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Category</label>
-                                            {/*<select value={category} onChange={(e) => setCategory(e.target.value)} className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400">
+                                            {/*<select value={category} onChange={(e) => setCategory(e.target.value)} className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400">
                                                 {categories.map((cat, idx) => (
                                                     <option className="hover:bg-[var(--blue)]" key={idx} value={cat}>
                                                         {cat}
@@ -362,47 +374,163 @@ export default function Products() {
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Dimensions (L x W × H ) in cm</label>
                                             <div className="flex gap-2">
-                                                 
-                                                <input type="text" value={dimensions.width} onChange={(e) => setDimensions({ ...dimensions, width: e.target.value })} placeholder="Width" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
-                                                <input type="text" value={dimensions.height} onChange={(e) => setDimensions({ ...dimensions, height: e.target.value })} placeholder="Height" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
-                                                <input type="text" value={dimensions.length} onChange={(e) => setDimensions({ ...dimensions, length: e.target.value })} placeholder="Length" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+
+                                                <input type="text" value={dimensions.width} onChange={(e) => setDimensions({ ...dimensions, width: e.target.value })} placeholder="Width" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                                <input type="text" value={dimensions.height} onChange={(e) => setDimensions({ ...dimensions, height: e.target.value })} placeholder="Height" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                                <input type="text" value={dimensions.length} onChange={(e) => setDimensions({ ...dimensions, length: e.target.value })} placeholder="Length" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                             </div>
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Size</label>
-                                            <input type="text" value={size} onChange={(e) => setSize(e.target.value)} placeholder="Enter size" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                            <input type="text" value={size} onChange={(e) => setSize(e.target.value)} placeholder="Enter size" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Weight (kg)</label>
-                                            <input type="text" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Enter weight" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                            <input type="text" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Enter weight" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Material</label>
-                                            <input type="text" value={material} onChange={(e) => setMaterial(e.target.value)} placeholder="Enter material" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                            <input type="text" value={material} onChange={(e) => setMaterial(e.target.value)} placeholder="Enter material" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Discount (%)</label>
-                                            <input type="number" value={discountPercentage} onChange={(e) => setDiscountPercentage(e.target.value)} placeholder="Enter discount" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                            <input type="number" value={discountPercentage} onChange={(e) => setDiscountPercentage(e.target.value)} placeholder="Enter discount" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">GST Rate (%)</label>
-                                            <input type="number" value={gstRate} onChange={(e) => setGstRate(e.target.value)} placeholder="Enter gstRate" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                            <input type="number" value={gstRate} onChange={(e) => setGstRate(e.target.value)} placeholder="Enter gstRate" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1"> HSN </label>
-                                            <input type="text" value={HSN} onChange={(e) => setHSN(e.target.value)} placeholder="Enter HSN" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                            <input type="text" value={HSN} onChange={(e) => setHSN(e.target.value)} placeholder="Enter HSN" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
                                     </div>
 
                                     <div className="mt-6">
                                         <label className="text-sm font-semibold text-gray-700 mb-1 block">Description</label>
-                                        <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Write product description..." rows={5} className="w-full border border-gray-300 p-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 hover:border-amber-400" />
+                                        <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Write product description..." rows={5} className="w-full border border-gray-300 p-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                     </div>
+                                    <div className="mt-6">
+                                        <h3 className="font-semibold text-gray-700 mb-2">Price Per Lot</h3>
 
+                                        {pricePerLot.map((lot, index) => (
+                                            <div key={index} className="flex gap-2 mb-2">
+                                                <input placeholder="Min"
+                                                    value={lot.min}
+                                                    onChange={e => {
+                                                        const arr = [...pricePerLot];
+                                                        arr[index].min = e.target.value;
+                                                        setPricePerLot(arr);
+                                                    }}
+                                                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                />
+
+                                                <input placeholder="Max"
+                                                    value={lot.max}
+                                                    onChange={e => {
+                                                        const arr = [...pricePerLot];
+                                                        arr[index].max = e.target.value;
+                                                        setPricePerLot(arr);
+                                                    }}
+                                                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                />
+
+                                                <input placeholder="Price"
+                                                    value={lot.price}
+                                                    onChange={e => {
+                                                        const arr = [...pricePerLot];
+                                                        arr[index].price = e.target.value;
+                                                        setPricePerLot(arr);
+                                                    }}
+                                                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                />
+
+                                                <input placeholder="Type"
+                                                    value={lot.typeofProduct}
+                                                    onChange={e => {
+                                                        const arr = [...pricePerLot];
+                                                        arr[index].typeofProduct = e.target.value;
+                                                        setPricePerLot(arr);
+                                                    }}
+                                                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                />
+                                            </div>
+                                        ))}
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setPricePerLot([...pricePerLot, { min: "", max: "", price: "", typeofProduct: "" }])
+                                            }
+                                            className="text-sm text-blue-600"
+                                        >
+                                            + Add Lot
+                                        </button>
+                                    </div>
+                                    <div className="mt-6">
+                                        <h3 className="font-semibold text-gray-700 mb-2">Shipping Price Per KM</h3>
+
+                                        {shippingPricePerKM.map((ship, index) => (
+                                            <div key={index} className="flex gap-2 mb-2">
+                                                <input placeholder="Min KM"
+                                                    value={ship.min}
+                                                    onChange={e => {
+                                                        const arr = [...shippingPricePerKM];
+                                                        arr[index].min = e.target.value;
+                                                        setShippingPricePerKM(arr);
+                                                    }}
+                                                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                />
+
+                                                <input placeholder="Max KM"
+                                                    value={ship.max}
+                                                    onChange={e => {
+                                                        const arr = [...shippingPricePerKM];
+                                                        arr[index].max = e.target.value;
+                                                        setShippingPricePerKM(arr);
+                                                    }}
+                                                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                />
+
+                                                <input placeholder="Shipping Price"
+                                                    value={ship.shippingPrice}
+                                                    onChange={e => {
+                                                        const arr = [...shippingPricePerKM];
+                                                        arr[index].shippingPrice = e.target.value;
+                                                        setShippingPricePerKM(arr);
+                                                    }}
+                                                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                />
+
+                                                <input placeholder="Packaging Fee"
+                                                    value={ship.packagingFee}
+                                                    onChange={e => {
+                                                        const arr = [...shippingPricePerKM];
+                                                        arr[index].packagingFee = e.target.value;
+                                                        setShippingPricePerKM(arr);
+                                                    }}
+                                                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                />
+                                            </div>
+                                        ))}
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setShippingPricePerKM([
+                                                    ...shippingPricePerKM,
+                                                    { min: "", max: "", shippingPrice: "", packagingFee: "" }
+                                                ])
+                                            }
+                                            className="text-sm text-blue-600"
+                                        >
+                                            + Add Shipping Slab
+                                        </button>
+                                    </div>
                                     <div className="mt-6">
                                         <ProductImageUploader bannerImage={bannerImage} setBannerImage={setBannerImage} title="Banner Image" />
                                     </div>
