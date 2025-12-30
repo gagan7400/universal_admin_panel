@@ -162,7 +162,7 @@ const deleteProduct = catchAsyncErrors(async (req, res, next) => {
 const updateProduct = catchAsyncErrors(async (req, res, next) => {
     const product = await Product.findById(req.params.id);
     if (!product) return next(new ErrorHandler("Product not found", 404));
-            
+
     if (req.body.pricePerLot) {
         req.body.pricePerLot = JSON.parse(req.body.pricePerLot);
     }

@@ -418,46 +418,51 @@ export default function Products() {
                                         <h3 className="font-semibold text-gray-700 mb-2">Price Per Lot</h3>
 
                                         {pricePerLot.map((lot, index) => (
-                                            <div key={index} className="flex gap-2 mb-2">
-                                                <input placeholder="Min"
-                                                    value={lot.min}
-                                                    onChange={e => {
-                                                        const arr = [...pricePerLot];
-                                                        arr[index].min = e.target.value;
-                                                        setPricePerLot(arr);
-                                                    }}
-                                                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
-                                                />
-
-                                                <input placeholder="Max"
-                                                    value={lot.max}
-                                                    onChange={e => {
-                                                        const arr = [...pricePerLot];
-                                                        arr[index].max = e.target.value;
-                                                        setPricePerLot(arr);
-                                                    }}
-                                                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
-                                                />
-
-                                                <input placeholder="Price"
-                                                    value={lot.price}
-                                                    onChange={e => {
-                                                        const arr = [...pricePerLot];
-                                                        arr[index].price = e.target.value;
-                                                        setPricePerLot(arr);
-                                                    }}
-                                                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
-                                                />
-
-                                                <input placeholder="Type"
-                                                    value={lot.typeofProduct}
-                                                    onChange={e => {
-                                                        const arr = [...pricePerLot];
-                                                        arr[index].typeofProduct = e.target.value;
-                                                        setPricePerLot(arr);
-                                                    }}
-                                                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
-                                                />
+                                            <div key={index} className="flex gap-2 mb-2 flex-wrap">
+                                                <div className="flex flex-col">
+                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="Min">Min</label>
+                                                    <input placeholder="Min"
+                                                        value={lot.min}
+                                                        onChange={e => {
+                                                            const arr = [...pricePerLot];
+                                                            arr[index].min = e.target.value;
+                                                            setPricePerLot(arr);
+                                                        }}
+                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                    /></div>
+                                                <div className="flex flex-col">
+                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="Max">Max</label>
+                                                    <input placeholder="Max"
+                                                        value={lot.max}
+                                                        onChange={e => {
+                                                            const arr = [...pricePerLot];
+                                                            arr[index].max = e.target.value;
+                                                            setPricePerLot(arr);
+                                                        }}
+                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                    /></div>
+                                                <div className="flex flex-col">
+                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="Price"> Price Per </label>
+                                                    <input placeholder="Price"
+                                                        value={lot.price}
+                                                        onChange={e => {
+                                                            const arr = [...pricePerLot];
+                                                            arr[index].price = e.target.value;
+                                                            setPricePerLot(arr);
+                                                        }}
+                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                    /></div>
+                                                <div className="flex flex-col">
+                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="typeofProduct">typeofProduct</label>
+                                                    <input placeholder="Type"
+                                                        value={lot.typeofProduct}
+                                                        onChange={e => {
+                                                            const arr = [...pricePerLot];
+                                                            arr[index].typeofProduct = e.target.value;
+                                                            setPricePerLot(arr);
+                                                        }}
+                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                    /></div>
                                             </div>
                                         ))}
 
@@ -475,46 +480,56 @@ export default function Products() {
                                         <h3 className="font-semibold text-gray-700 mb-2">Shipping Price Per KM</h3>
 
                                         {shippingPricePerKM.map((ship, index) => (
-                                            <div key={index} className="flex gap-2 mb-2">
-                                                <input placeholder="Min KM"
-                                                    value={ship.min}
-                                                    onChange={e => {
-                                                        const arr = [...shippingPricePerKM];
-                                                        arr[index].min = e.target.value;
-                                                        setShippingPricePerKM(arr);
-                                                    }}
-                                                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
-                                                />
+                                            <div key={index} className="flex gap-2 mb-2 flex-wrap">
+                                                <div className="flex flex-col">
+                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="Min km">Min KM</label>
+                                                    <input placeholder="Min KM"
+                                                        value={ship.min}
+                                                        onChange={e => {
+                                                            const arr = [...shippingPricePerKM];
+                                                            arr[index].min = e.target.value;
+                                                            setShippingPricePerKM(arr);
+                                                        }}
+                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="Max km">Max KM</label>
+                                                    <input placeholder="Max KM"
+                                                        value={ship.max}
+                                                        onChange={e => {
+                                                            const arr = [...shippingPricePerKM];
+                                                            arr[index].max = e.target.value;
+                                                            setShippingPricePerKM(arr);
+                                                        }}
+                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                    /></div>
 
-                                                <input placeholder="Max KM"
-                                                    value={ship.max}
-                                                    onChange={e => {
-                                                        const arr = [...shippingPricePerKM];
-                                                        arr[index].max = e.target.value;
-                                                        setShippingPricePerKM(arr);
-                                                    }}
-                                                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
-                                                />
+                                                <div className="flex flex-col">
+                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="ShippingPrice">Shipping Price</label>
+                                                    <input placeholder="Shipping Price"
+                                                        value={ship.shippingPrice}
+                                                        onChange={e => {
+                                                            const arr = [...shippingPricePerKM];
+                                                            arr[index].shippingPrice = e.target.value;
+                                                            setShippingPricePerKM(arr);
+                                                        }}
+                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                    /></div>
 
-                                                <input placeholder="Shipping Price"
-                                                    value={ship.shippingPrice}
-                                                    onChange={e => {
-                                                        const arr = [...shippingPricePerKM];
-                                                        arr[index].shippingPrice = e.target.value;
-                                                        setShippingPricePerKM(arr);
-                                                    }}
-                                                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
-                                                />
 
-                                                <input placeholder="Packaging Fee"
-                                                    value={ship.packagingFee}
-                                                    onChange={e => {
-                                                        const arr = [...shippingPricePerKM];
-                                                        arr[index].packagingFee = e.target.value;
-                                                        setShippingPricePerKM(arr);
-                                                    }}
-                                                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
-                                                />
+                                                <div className="flex flex-col">
+                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="Packaging Fee">Packaging Fee</label>
+                                                    <input placeholder="Packaging Fee"
+                                                        value={ship.packagingFee}
+                                                        onChange={e => {
+                                                            const arr = [...shippingPricePerKM];
+                                                            arr[index].packagingFee = e.target.value;
+                                                            setShippingPricePerKM(arr);
+                                                        }}
+                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                    />
+                                                </div>
                                             </div>
                                         ))}
 
