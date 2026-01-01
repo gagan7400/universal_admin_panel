@@ -442,7 +442,7 @@ export default function Products() {
                                                         className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
                                                     /></div>
                                                 <div className="flex flex-col">
-                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="Price"> Price Per </label>
+                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="Price"> Price Per Item </label>
                                                     <input placeholder="Price"
                                                         value={lot.price}
                                                         onChange={e => {

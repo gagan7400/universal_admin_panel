@@ -221,9 +221,7 @@ const Orders = () => {
                                                 ) : col === 'user' ? (
                                                     <div className='flex items-center  gap-1'>
 
-                                                        <img src={row?.user?.image?.url} className='w-16 h-16 object-cover rounded-md  ' />
-
-                                                        <p className='whitespace-pre'> {row.user.name}</p>
+                                                         <p className='whitespace-pre'> {row.user.name}</p>
                                                     </div>)
                                                     :
                                                     (row[col])}
