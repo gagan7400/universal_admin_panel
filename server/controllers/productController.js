@@ -42,7 +42,6 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
         stock,
         numOfReviews = 0,
         weight,
-        size,
         discountPercentage,
         material,
         dimensions,
@@ -75,7 +74,7 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
         stock,
         numOfReviews,
         weight,
-        size,
+
         discountPercentage,
         material,
         dimensions,

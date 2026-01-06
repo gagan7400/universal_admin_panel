@@ -32,7 +32,7 @@ export default function Products() {
     const [stock, setStock] = useState("");
     const [dimensions, setDimensions] = useState({ width: "", height: "", length: "" });
     const [weight, setWeight] = useState("");
-    const [size, setSize] = useState("");
+
     const [discountPercentage, setDiscountPercentage] = useState("");
     const [gstRate, setGstRate] = useState("");
     const [HSN, setHSN] = useState("");
@@ -107,7 +107,7 @@ export default function Products() {
         formData.append("category", category?.value || category);
         formData.append("stock", stock);
         formData.append("weight", weight);
-        formData.append("size", size);
+
         formData.append("discountPercentage", discountPercentage);
         formData.append("gstRate", gstRate);
         formData.append("HSN", HSN);
@@ -167,7 +167,7 @@ export default function Products() {
         });
         setPrice("");
         setDimensions({ width: "", height: "", length: "" });
-        setSize("");
+
         setMaterial("");
         setRatings("");
         setStock("");
@@ -219,7 +219,7 @@ export default function Products() {
         if (search) {
             const keyword = search.toLowerCase();
             temp = temp.filter((item) =>
-                `${item.name} ${item.category} ${item.price} ${item.size} ${item.stock}`
+                `${item.name} ${item.category} ${item.price}   ${item.stock}`
                     .toLowerCase()
                     .includes(keyword)
             );
@@ -265,7 +265,7 @@ export default function Products() {
         setCategory({ label: data.category, value: data.category });
         setPrice(data.price);
         setDimensions({ width: data.dimensions.width, length: data.dimensions.length, height: data.dimensions.height });
-        setSize(data.size);
+
         setMaterial(data.material);
         setRatings(data.ratings);
         setStock(data.stock);
@@ -331,37 +331,26 @@ export default function Products() {
                                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Product Name</label>
-                                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter product name" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter Product Name" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
-                                            <label className="text-sm font-semibold text-gray-700 mb-1">Price</label>
-                                            <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Enter price" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <label className="text-sm font-semibold text-gray-700 mb-1">Base Price</label>
+                                            <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Enter Base Price" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
-                                            <label className="text-sm font-semibold text-gray-700 mb-1">Ratings</label>
-                                            <input type="number" value={ratings} onChange={(e) => setRatings(e.target.value)} placeholder="Rating out of 5" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <label className="text-sm font-semibold text-gray-700 mb-1">Ratings (Out of 5)</label>
+                                            <input type="number" min="0" max="5" value={ratings} onChange={(e) => setRatings(e.target.value)} placeholder="Rating Out Of 5" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
-                                            <label className="text-sm font-semibold text-gray-700 mb-1">Stock</label>
-                                            <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} placeholder="Stock quantity" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <label className="text-sm font-semibold text-gray-700 mb-1">Stock (Min 1 quantity)</label>
+                                            <input type="number" min={1} value={stock} onChange={(e) => setStock(e.target.value)} placeholder="Stock Quantity" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Category</label>
-                                            {/*<select value={category} onChange={(e) => setCategory(e.target.value)} className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400">
-                                                {categories.map((cat, idx) => (
-                                                    <option className="hover:bg-[var(--blue)]" key={idx} value={cat}>
-                                                        {cat}
-                                                    </option>
-                                                ))}
-                                                 <option className="hover:bg-[var(--blue)]">Select category</option>
-                                                <option className="hover:bg-[var(--blue)]">Iron</option>
-                                                <option className="hover:bg-[var(--blue)]" >Bronze</option>
-                                                <option className="hover:bg-[var(--blue)]" >Silver</option>
-                                            </select> */}
                                             <CreatableSelect
                                                 isClearable
                                                 onChange={setCategory}
@@ -381,28 +370,25 @@ export default function Products() {
                                             </div>
                                         </div>
 
-                                        <div className="flex flex-col">
-                                            <label className="text-sm font-semibold text-gray-700 mb-1">Size</label>
-                                            <input type="text" value={size} onChange={(e) => setSize(e.target.value)} placeholder="Enter size" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
-                                        </div>
+
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Weight (kg)</label>
-                                            <input type="text" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Enter weight" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <input type="text" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Enter Weight" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Material</label>
-                                            <input type="text" value={material} onChange={(e) => setMaterial(e.target.value)} placeholder="Enter material" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <input type="text" value={material} onChange={(e) => setMaterial(e.target.value)} placeholder="Enter Material" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Discount (%)</label>
-                                            <input type="number" value={discountPercentage} onChange={(e) => setDiscountPercentage(e.target.value)} placeholder="Enter discount" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <input type="number" value={discountPercentage} onChange={(e) => setDiscountPercentage(e.target.value)} placeholder="Enter Discount" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">GST Rate (%)</label>
-                                            <input type="number" value={gstRate} onChange={(e) => setGstRate(e.target.value)} placeholder="Enter gstRate" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <input type="number" value={gstRate} onChange={(e) => setGstRate(e.target.value)} placeholder="Enter GST Rate" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1"> HSN </label>
@@ -412,7 +398,7 @@ export default function Products() {
 
                                     <div className="mt-6">
                                         <label className="text-sm font-semibold text-gray-700 mb-1 block">Description</label>
-                                        <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Write product description..." rows={5} className="w-full border border-gray-300 p-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                        <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Write Product Description..." rows={5} className="w-full border border-gray-300 p-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                     </div>
                                     <div className="mt-6">
                                         <h3 className="font-semibold text-gray-700 mb-2">Price Per Lot</h3>
@@ -601,13 +587,13 @@ export default function Products() {
                                         {loading ? <div className="flex justify-center items-center p-3"><Loader /></div> : <table className="w-full text-sm text-left border rounded-lg overflow-hidden">
                                             <thead className="bg-blue-100 text-gray-700 text-xs uppercase">
                                                 <tr>
-                                                    {["Banner", "name", "price", "description", "category", "stock", "size", "dimensions", "Images"].map((col) => (
+                                                    {["Banner", "name", "price", "category", "stock", "dimensions"].map((col) => (
                                                         <th
                                                             key={col}
                                                             className="px-6 py-3 cursor-pointer select-none"
                                                             onClick={() => handleSort(col)}
                                                         >
-                                                            {["Banner", "Images"].includes(col) ? <div className="flex items-center gap-1">
+                                                            {["Banner"].includes(col) ? <div className="flex items-center gap-1">
                                                                 <span className="capitalize">{col}</span>
                                                             </div> : <div className="flex items-center gap-1">
                                                                 <span className="capitalize">{col}</span>
@@ -622,26 +608,21 @@ export default function Products() {
                                             <tbody className="bg-white divide-y divide-gray-200">
                                                 {paginatedData.map((v, i) => (
                                                     <tr key={v._id} className="hover:bg-blue-50">
-                                                        <td className="px-6 py-3 flex justify-center flex-wrap items-center gap-3">
+                                                        <td className="px-6 py-3 flex justify-start flex-wrap items-center gap-3">
                                                             <img src={v.bannerImage && v.bannerImage.url} alt="d" className="w-5 h-5" />
                                                         </td>
                                                         <td className="px-6 py-3 text-blue-900 font-medium">{v.name}</td>
 
                                                         <td className="px-6 py-3">₹{v.price}</td>
-                                                        <td className="px-6 py-3">{v.description}</td>
+
                                                         <td className="px-6 py-3">{v.category}</td>
                                                         <td className="px-6 py-3">{v.stock}</td>
-                                                        <td className="px-6 py-3">{v.size}</td>
+
                                                         <td className="px-6 py-3">
                                                             {v.dimensions.width} x {v.dimensions.height} x {v.dimensions.length} cm
                                                         </td>
 
-                                                        <td className="px-6 py-3 flex justify-center flex-wrap items-center gap-3">
-                                                            {v.images.map((img, ind) => {
-                                                                return (<img key={ind} src={img.url} alt="d" className="w-5 h-5" />
-                                                                )
-                                                            })}
-                                                        </td>
+
                                                         {admin.role == "admin" && <td className="px-6 py-3 min-w-fit whitespace-nowrap">
                                                             <button
                                                                 onClick={() => updateHandler(v._id, v)}

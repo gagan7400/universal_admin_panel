@@ -68,20 +68,29 @@ const productSchema = new mongoose.Schema({
         },
     ],
     dimensions: {
-        width: String, height: String, length: String, _id: false
+        width: Number, height: Number, length: Number, _id: false
     },
-    weight: String,
-    size: String,
+    weight: { type: Number },
     HSN: String,
-    gstRate: String,
-    discountPercentage: String,
+    gstRate: { type: Number },
+    discountPercentage: { type: Number },
     material: String,
     pricePerLot: [
-        { min: String, max: String, price: String, typeofProduct: String, _id: false }
+        {
+            minQty: { type: Number, required: true },
+            maxQty: { type: Number, required: true },
+            pricePerUnit: { type: Number, required: true },
+            productType: { type: String }, // optional
+            _id: false
+        }
     ],
     shippingPricePerKM: [
         {
-            min: String, max: String, shippingPrice: String, packagingFee: String, _id: false
+            minKM: { type: Number, required: true },
+            maxKM: { type: Number, required: true },
+            pricePerKM: { type: Number, required: true },
+            packagingFee: { type: Number, default: 0 },
+            _id: false
         }
     ],
     createdAt: {
