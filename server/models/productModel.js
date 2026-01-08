@@ -80,16 +80,24 @@ const productSchema = new mongoose.Schema({
             minQty: { type: Number, required: true },
             maxQty: { type: Number, required: true },
             pricePerUnit: { type: Number, required: true },
-            productType: { type: String }, // optional
             _id: false
         }
     ],
+
+    packagingOptions: [
+        {
+            type: { type: String, required: true }, // Box, Bag, Crate
+            maxWeight: { type: Number, required: true },
+            fee: { type: Number, required: true },
+            _id: false
+        }
+    ],
+
     shippingPricePerKM: [
         {
             minKM: { type: Number, required: true },
             maxKM: { type: Number, required: true },
             pricePerKM: { type: Number, required: true },
-            packagingFee: { type: Number, default: 0 },
             _id: false
         }
     ],

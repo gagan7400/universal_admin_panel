@@ -1,18 +1,9 @@
-// const Product = require("../models/productModel");
-const User = require("../models/usermodel.js");
-const Order = require("../models/orderModel");
-const Cart = require('../models/cart');
 const { bannermodel, Product } = require("../models/productModel");
 let catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../utils/errorHandler");
 const path = require("path")
 const fs = require("fs");
-var http = require('http');
-var url = require('url');
-
 const base_url = process.env.NODE_ENV == "production" ? process.env.BASE_URL_LIVE : process.env.BASE_URL;
-// const base_url = "http://srv918880.hstgr.cloud:4000";
-
 
 const createProductController = catchAsyncErrors(async (req, res, next) => {
     const files = req.files;
@@ -48,20 +39,37 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
         gstRate,
         HSN,
         pricePerLot,
-        shippingPricePerKM
+        shippingPricePerKM,
+        packagingOptions
     } = req.body;
 
 
-    if (pricePerLot) {
-        pricePerLot = JSON.parse(pricePerLot);
-    }
+    // JSON parse
+    if (typeof pricePerLot === "string") pricePerLot = JSON.parse(pricePerLot);
+    if (typeof shippingPricePerKM === "string") shippingPricePerKM = JSON.parse(shippingPricePerKM);
+    if (typeof packagingOptions === "string") packagingOptions = JSON.parse(packagingOptions);
+    if (typeof dimensions === "string") dimensions = JSON.parse(dimensions);
 
-    if (shippingPricePerKM) {
-        shippingPricePerKM = JSON.parse(shippingPricePerKM);
-    }
-    if (typeof dimensions === "string") {
-        dimensions = JSON.parse(dimensions);
-    }
+    // LOT normalize
+    const normalizedLotPricing = pricePerLot.map(lot => ({
+        minQty: Number(lot.minQty),
+        maxQty: Number(lot.maxQty),
+        pricePerUnit: Number(lot.pricePerUnit),
+    }));
+
+    // SHIPPING normalize
+    const normalizedShipping = shippingPricePerKM.map(s => ({
+        minKM: Number(s.minKM),
+        maxKM: Number(s.maxKM),
+        pricePerKM: Number(s.pricePerKM),
+    }));
+
+    // ✅ PACKAGING normalize
+    const normalizedPackaging = packagingOptions.map(p => ({
+        type: p.type,
+        maxWeight: Number(p.maxWeight),
+        fee: Number(p.fee)
+    }));
 
     const newProduct = {
         name,
@@ -74,14 +82,14 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
         stock,
         numOfReviews,
         weight,
-
         discountPercentage,
         material,
         dimensions,
         gstRate,
         HSN,
-        shippingPricePerKM,
-        pricePerLot
+        pricePerLot: normalizedLotPricing,
+        shippingPricePerKM: normalizedShipping,
+        packagingOptions: normalizedPackaging
     };
 
     const product = new Product(newProduct);
@@ -258,77 +266,59 @@ let addBanners = catchAsyncErrors(async (req, res, next) => {
 
     res.send({ success: true, message: "files uploaded successfully", bannerimages })
 })
-let getBanners = catchAsyncErrors(async (req, res, next) => {
 
+let getBanners = catchAsyncErrors(async (req, res, next) => {
     let data = await bannermodel.find({});
     res.send({ success: true, message: "files uploaded successfully", data })
 })
-let deleteBannerImage = async (req, res) => {
-    try {
-        const { bannerid } = req.params;
 
-        // ✅ Find the product
-        const bannerimage = await bannermodel.findById(bannerid);
-        if (!bannerimage) {
-            return res.status(404).json({ success: false, message: "Banner not found" });
-        }
+let deleteBannerImage = catchAsyncErrors(async (req, res, next) => {
 
-        // ✅ Build the local file path
-        const filePath = path.join(__dirname, "..", "uploads", bannerimage.fileName);
+    const { bannerid } = req.params;
 
-        // ✅ Delete the file from uploads folder (if exists)
-        fs.unlink(filePath, (err) => {
-            if (err && err.code !== "ENOENT") {
-                console.error("Error deleting file:", err);
-            }
-        });
-
-        await bannermodel.findByIdAndDelete(bannerid)
-
-        res.status(200).json({ success: true, message: "Banner image deleted successfully" });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
+    // ✅ Find the product
+    const bannerimage = await bannermodel.findById(bannerid);
+    if (!bannerimage) {
+        return res.status(404).json({ success: false, message: "Banner not found" });
     }
-};
+
+    // ✅ Build the local file path
+    const filePath = path.join(__dirname, "..", "uploads", bannerimage.fileName);
+
+    // ✅ Delete the file from uploads folder (if exists)
+    fs.unlink(filePath, (err) => {
+        if (err && err.code !== "ENOENT") {
+            console.error("Error deleting file:", err);
+        }
+    });
+
+    await bannermodel.findByIdAndDelete(bannerid)
+
+    res.status(200).json({ success: true, message: "Banner image deleted successfully" });
+
+});
 
 // ✅ Get all unique product categories
-const getAllCategories = async (req, res) => {
-    try {
-        const categories = await Product.distinct("category");
-        res.status(200).json({
-            success: true,
-            data: categories,
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch categories",
-            error: error.message,
-        });
-    }
-};
+const getAllCategories = catchAsyncErrors(async (req, res, next) => {
+    const categories = await Product.distinct("category");
+    res.status(200).json({
+        success: true,
+        data: categories,
+    });
+
+});
 
 // ✅ Get products by category
-const getProductsByCategory = async (req, res) => {
-    try {
-        const { category } = req.params;
-        const products = await Product.find({ category: { $regex: category, $options: "i" } });
-        res.status(200).json({
-            success: true,
-            category,
-            data: products,
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch products for this category",
-            error: error.message,
-        });
-    }
-};
-
-
-module.exports = { updateProduct };
-
+const getProductsByCategory = catchAsyncErrors(async (req, res, next) => {
+    const { category } = req.params;
+    const products = await Product.find({ category: { $regex: category, $options: "i" } });
+    res.status(200).json({
+        success: true,
+        category,
+        data: products,
+    });
+})
 
 module.exports = { getAllCategories, getProductsByCategory, createProductController, getAllProducts, getProductDetails, deleteProduct, updateProduct, countProduct, addBanners, getBanners, deleteBannerImage }
+
+
