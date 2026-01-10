@@ -89,6 +89,7 @@ const productSchema = new mongoose.Schema({
             type: { type: String, required: true }, // Box, Bag, Crate
             maxWeight: { type: Number, required: true },
             fee: { type: Number, required: true },
+
             _id: false
         }
     ],
@@ -120,3 +121,5 @@ const bannermodel = mongoose.model("bannerimages", bannerimages);
 module.exports.bannermodel = bannermodel;
 let Product = mongoose.model("products", productSchema);
 module.exports.Product = Product;
+
+

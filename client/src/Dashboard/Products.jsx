@@ -181,9 +181,15 @@ export default function Products() {
         setHSN("");
         setImages([]);
         setBannerImage([]);
-        setPricePerLot([]);
-        setShippingPricePerKM([]);
-        setPackagingOptions([]);
+        setPricePerLot([
+            { minQty: "", maxQty: "", pricePerUnit: "", }
+        ]);
+        setShippingPricePerKM([
+            { minKM: "", maxKM: "", pricePerKM: "", }
+        ]);
+        setPackagingOptions([
+            { type: "", maxWeight: "", fee: "" }
+        ]);
     };
 
     let cancel = () => {
@@ -466,7 +472,7 @@ export default function Products() {
                                                         className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
                                                     /></div>
                                                 <div className="flex flex-col">
-                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="typeofProduct">Product Type</label>
+                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="typeofProduct">Measurement Type (kg,unit)</label>
                                                     <input placeholder="Type"
                                                         value={lot.productType}
                                                         onChange={e => {
@@ -649,7 +655,10 @@ export default function Products() {
                                             onChange={(e) => setSearch(e.target.value)}
                                         />
                                         <div className={`w-1/5 min-w-fit flex gap-4  ${admin.role == "admin" ? "justify-end" : "justify-start md:justify-end"} items-center`}>
-                                            {admin.role == "admin" && <button className="bg-[var(--blue)] text-white  min-w-fit hover:bg-blue-900 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => { setShow(true) }}>  Add New Product</button>}
+                                            {admin.role == "admin" && <button className="bg-[var(--blue)] text-white  min-w-fit hover:bg-blue-900 hover:text-blue-50 px-2 py-2.5 rounded-md shadow-lg duration-75 transition-all whitespace-nowrap flex " onClick={() => {
+                                                setShow(true);
+                                                refresh()
+                                            }}>  Add New Product</button>}
                                             <select
                                                 className="p-2 w-25 bg-[var(--blue)] text-white border-0 focus:outline-0 focus:border-0 focus:ring-0 hover:bg-blue-900 hover:text-blue-50 px-3 py-2.5 rounded-md shadow-lg transition-all duration-75"
                                                 value={selectedCategory}
