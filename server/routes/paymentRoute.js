@@ -6,6 +6,7 @@ const router = require('express').Router();
 router.get('/get-razorpay-key', (req, res) => {
     res.send({ key: process.env.RAZORPAY_KEY_ID });
 });
+ 
 router.post("/create-order", isAuthenticatedUser, createOrder)
 router.post("/verify-payment", isAuthenticatedUser, paymentVerification)
 router.get("/history", isAuthenticatedUser, paymentHistory)

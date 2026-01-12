@@ -55,6 +55,7 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
         minQty: Number(lot.minQty),
         maxQty: Number(lot.maxQty),
         pricePerUnit: Number(lot.pricePerUnit),
+        productType: lot.productType,
     }));
 
     // SHIPPING normalize
@@ -67,10 +68,15 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
     // ✅ PACKAGING normalize
     const normalizedPackaging = packagingOptions.map(p => ({
         type: p.type,
-        maxWeight: Number(p.maxWeight),
-        fee: Number(p.fee)
+        maxWeightPerPackage: Number(p.maxWeightPerPackage),
+        maxItemsPerPackage: Number(p.maxItemsPerPackage),
+        feePerPackage: Number(p.feePerPackage)
     }));
-
+    console.log({
+        pricePerLot: normalizedLotPricing,
+        shippingPricePerKM: normalizedShipping,
+        packagingOptions: normalizedPackaging
+    })
     const newProduct = {
         name,
         description,
@@ -101,6 +107,9 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
         data: product,
     });
 });
+
+
+
 
 let getAllProducts = catchAsyncErrors(async (req, res, next) => {
     let products = await Product.find();
@@ -173,9 +182,12 @@ const updateProduct = catchAsyncErrors(async (req, res, next) => {
     if (req.body.pricePerLot) {
         req.body.pricePerLot = JSON.parse(req.body.pricePerLot);
     }
-
+    console.log(req.body.pricePerLot)
     if (req.body.shippingPricePerKM) {
         req.body.shippingPricePerKM = JSON.parse(req.body.shippingPricePerKM);
+    }
+    if (req.body.packagingOptions) {
+        req.body.packagingOptions = JSON.parse(req.body.packagingOptions);
     }
     const files = req.files || {};
     const bannerFile = files.bannerImage?.[0];
@@ -214,6 +226,7 @@ const updateProduct = catchAsyncErrors(async (req, res, next) => {
     let retainedImages = [];
 
     if (req.body.imagesData) {
+
         try {
             let dataImage = JSON.parse(req.body.imagesData);
 

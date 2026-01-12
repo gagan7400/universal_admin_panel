@@ -35,7 +35,7 @@ exports.checkPermission = (permissionKey) => {
     };
 };
 exports.isAuthenticatedUser = async (req, res, next) => {
-
+ 
     let bearerHeader = req.header("authorization");
 
     if (bearerHeader !== undefined) {
@@ -56,11 +56,13 @@ exports.isAuthenticatedUser = async (req, res, next) => {
                 let user = await User.findById(decoded.id);
 
                 if (!user) {
+                    console.log("e")
                     return next(new ErrorHandler("User Not Found", 401));
                 }
                 req.user = user;
                 next();
             } else {
+                console.log("invl")
                 return res.status(401).json({
                     code: 401,
                     status: false,

@@ -14,18 +14,23 @@ const createOrder = async (req, res) => {
             key_id: process.env.RAZORPAY_KEY_ID,
             key_secret: process.env.RAZORPAY_KEY_SECRET,
         });
+
+        // ✅ crypto-based unique receipt id
+        const receiptId = `rcpt_${crypto.randomBytes(8).toString("hex")}`;
+
         const options = {
             amount: Math.round(Number(req.body.price) * 100),
             currency: req.body.currency,
-            receipt: `receipt_order_${Date.now()}`,
+            receipt: receiptId,
         };
 
         const order = await razorpayInstatance.orders.create(options);
-        console.log(order)
+
         if (!order) res.status(500).json({ success: false, message: "Some error occured" });
         // res.send(order);
         res.status(200).json({ success: true, message: 'Order Created successfully', data: order });
     } catch (error) {
+        console.log(error)
         res.status(500).json({ success: false, message: error.message });
     }
 };

@@ -68,9 +68,9 @@ const productSchema = new mongoose.Schema({
         },
     ],
     dimensions: {
-        width: Number, height: Number, length: Number, _id: false
+        width: Number, height: Number, length: Number
     },
-    weight: { type: Number },
+    weight: { type: Number ,required:true},
     HSN: String,
     gstRate: { type: Number },
     discountPercentage: { type: Number },
@@ -80,19 +80,37 @@ const productSchema = new mongoose.Schema({
             minQty: { type: Number, required: true },
             maxQty: { type: Number, required: true },
             pricePerUnit: { type: Number, required: true },
+            productType: { type: String, required: true }, 
             _id: false
         }
     ],
+
 
     packagingOptions: [
         {
-            type: { type: String, required: true }, // Box, Bag, Crate
-            maxWeight: { type: Number, required: true },
-            fee: { type: Number, required: true },
+            type: {
+                type: String,
+                required: true, // Box, Bag, Crate
+            },
+
+            maxWeightPerPackage: {
+                type: Number,
+                required: true, // kg
+            },
+
+            maxItemsPerPackage: {
+                type: Number, // optional (Box: 10 items etc.)
+            },
+
+            feePerPackage: {
+                type: Number,
+                required: true, // cost of 1 box/bag/crate
+            },
 
             _id: false
         }
-    ],
+    ]
+    ,
 
     shippingPricePerKM: [
         {

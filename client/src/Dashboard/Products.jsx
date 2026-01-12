@@ -39,14 +39,19 @@ export default function Products() {
     const [images, setImages] = useState([]);
     const [bannerImage, setBannerImage] = useState([]);
     const [pricePerLot, setPricePerLot] = useState([
-        { minQty: "", maxQty: "", pricePerUnit: "", }
+        { minQty: "", maxQty: "", pricePerUnit: "", productType: "" }
     ]);
 
     const [shippingPricePerKM, setShippingPricePerKM] = useState([
         { minKM: "", maxKM: "", pricePerKM: "", }
     ]);
     const [packagingOptions, setPackagingOptions] = useState([
-        { type: "", maxWeight: "", fee: "" }
+        {
+            type: "",
+            maxWeightPerPackage: "",
+            maxItemsPerPackage: "",
+            feePerPackage: ""
+        }
     ]);
 
     const [isUpdate, setIsUpdate] = useState(false)
@@ -88,7 +93,7 @@ export default function Products() {
         e.preventDefault();
 
         const formData = new FormData();
-
+  console.log(packagingOptions ,shippingPricePerKM,pricePerLot)
         // ✅ Fix: Always send retained + newly uploaded images
         const retainedImages = images.filter((img) => !img.file);
         formData.append("imagesData", JSON.stringify(retainedImages));
@@ -182,13 +187,18 @@ export default function Products() {
         setImages([]);
         setBannerImage([]);
         setPricePerLot([
-            { minQty: "", maxQty: "", pricePerUnit: "", }
+            { minQty: "", maxQty: "", pricePerUnit: "", productType: "" }
         ]);
         setShippingPricePerKM([
             { minKM: "", maxKM: "", pricePerKM: "", }
         ]);
         setPackagingOptions([
-            { type: "", maxWeight: "", fee: "" }
+            {
+                type: "",
+                maxWeightPerPackage: "",
+                maxItemsPerPackage: "",
+                feePerPackage: ""
+            }
         ]);
     };
 
@@ -289,15 +299,16 @@ export default function Products() {
                 minQty: lot.minQty,
                 maxQty: lot.maxQty,
                 pricePerUnit: lot.pricePerUnit,
-                productType: lot.productType || ""
+                productType: lot.productType  
             }))
         );
 
         setPackagingOptions(
             data.packagingOptions.map(p => ({
                 type: p.type,
-                maxWeight: p.maxWeight,
-                fee: p.fee
+                maxWeightPerPackage: p.maxWeightPerPackage,
+                maxItemsPerPackage: p.maxItemsPerPackage,
+                feePerPackage: p.feePerPackage
             }))
         );
 
@@ -364,22 +375,22 @@ export default function Products() {
                                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Product Name</label>
-                                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter Product Name" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter Product Name" className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Base Price</label>
-                                            <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Enter Base Price" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Enter Base Price" className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Ratings (Out of 5)</label>
-                                            <input type="number" min="0" max="5" value={ratings} onChange={(e) => setRatings(e.target.value)} placeholder="Rating Out Of 5" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <input type="number" min="0" max="5" value={ratings} onChange={(e) => setRatings(e.target.value)} placeholder="Rating Out Of 5" className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Stock (Min 1 quantity)</label>
-                                            <input type="number" min={1} value={stock} onChange={(e) => setStock(e.target.value)} placeholder="Stock Quantity" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <input type="number" min={1} value={stock} onChange={(e) => setStock(e.target.value)} placeholder="Stock Quantity" className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
@@ -397,9 +408,9 @@ export default function Products() {
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Dimensions (L x W × H ) in cm</label>
                                             <div className="flex gap-2">
 
-                                                <input type="text" value={dimensions.width} onChange={(e) => setDimensions({ ...dimensions, width: e.target.value })} placeholder="Width" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
-                                                <input type="text" value={dimensions.height} onChange={(e) => setDimensions({ ...dimensions, height: e.target.value })} placeholder="Height" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
-                                                <input type="text" value={dimensions.length} onChange={(e) => setDimensions({ ...dimensions, length: e.target.value })} placeholder="Length" className="w-1/2 border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                                <input type="text" value={dimensions.width} onChange={(e) => setDimensions({ ...dimensions, width: e.target.value })} placeholder="Width" className="w-1/2 border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                                <input type="text" value={dimensions.height} onChange={(e) => setDimensions({ ...dimensions, height: e.target.value })} placeholder="Height" className="w-1/2 border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                                <input type="text" value={dimensions.length} onChange={(e) => setDimensions({ ...dimensions, length: e.target.value })} placeholder="Length" className="w-1/2 border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                             </div>
                                         </div>
 
@@ -407,25 +418,25 @@ export default function Products() {
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Weight (kg)</label>
-                                            <input type="text" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Enter Weight" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <input type="text" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Enter Weight" className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Material</label>
-                                            <input type="text" value={material} onChange={(e) => setMaterial(e.target.value)} placeholder="Enter Material" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <input type="text" value={material} onChange={(e) => setMaterial(e.target.value)} placeholder="Enter Material" className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Discount (%)</label>
-                                            <input type="number" value={discountPercentage} onChange={(e) => setDiscountPercentage(e.target.value)} placeholder="Enter Discount" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <input type="number" value={discountPercentage} onChange={(e) => setDiscountPercentage(e.target.value)} placeholder="Enter Discount" className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">GST Rate (%)</label>
-                                            <input type="number" value={gstRate} onChange={(e) => setGstRate(e.target.value)} placeholder="Enter GST Rate" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <input type="number" value={gstRate} onChange={(e) => setGstRate(e.target.value)} placeholder="Enter GST Rate" className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1"> HSN </label>
-                                            <input type="text" value={HSN} onChange={(e) => setHSN(e.target.value)} placeholder="Enter HSN" className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
+                                            <input type="text" value={HSN} onChange={(e) => setHSN(e.target.value)} placeholder="Enter HSN" className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                         </div>
                                     </div>
 
@@ -447,7 +458,7 @@ export default function Products() {
                                                             arr[index].minQty = e.target.value;
                                                             setPricePerLot(arr);
                                                         }}
-                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                        className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
                                                     /></div>
                                                 <div className="flex flex-col">
                                                     <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="Max">Max Qty</label>
@@ -458,7 +469,7 @@ export default function Products() {
                                                             arr[index].maxQty = e.target.value;
                                                             setPricePerLot(arr);
                                                         }}
-                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                        className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
                                                     /></div>
                                                 <div className="flex flex-col">
                                                     <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="Price"> Price Per Unit </label>
@@ -469,7 +480,7 @@ export default function Products() {
                                                             arr[index].pricePerUnit = e.target.value;
                                                             setPricePerLot(arr);
                                                         }}
-                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                        className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
                                                     /></div>
                                                 <div className="flex flex-col">
                                                     <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="typeofProduct">Measurement Type (kg,unit)</label>
@@ -480,7 +491,7 @@ export default function Products() {
                                                             arr[index].productType = e.target.value;
                                                             setPricePerLot(arr);
                                                         }}
-                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                        className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
                                                     /></div>
                                                 <div className="flex justify-end flex-col">
                                                     <button className="btn px-2 py-1 block rounded-md text-white  bg-red-700" onClick={() => {
@@ -514,7 +525,7 @@ export default function Products() {
                                                             arr[index].minKM = e.target.value;
                                                             setShippingPricePerKM(arr);
                                                         }}
-                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                        className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col">
@@ -526,11 +537,11 @@ export default function Products() {
                                                             arr[index].maxKM = e.target.value;
                                                             setShippingPricePerKM(arr);
                                                         }}
-                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                        className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
                                                     /></div>
 
                                                 <div className="flex flex-col">
-                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="ShippingPrice">Shipping Price</label>
+                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="ShippingPrice">Shipping Price (Per KM)</label>
                                                     <input placeholder="Shipping Price"
                                                         value={ship.pricePerKM}
                                                         onChange={e => {
@@ -538,7 +549,7 @@ export default function Products() {
                                                             arr[index].pricePerKM = e.target.value;
                                                             setShippingPricePerKM(arr);
                                                         }}
-                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                        className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
                                                     /></div>
                                                 <div className="flex justify-end flex-col">
                                                     <button className="btn px-2 py-1 block rounded-md text-white  bg-red-700" onClick={() => {
@@ -575,31 +586,48 @@ export default function Products() {
                                                             arr[index].type = e.target.value;
                                                             setPackagingOptions(arr);
                                                         }}
-                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                        className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col">
-                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="maxWeight">Max Weight</label>
-                                                    <input placeholder="Max Weight (kg)"
-                                                        value={pack.maxWeight}
+                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="maxWeight">Max Weight / Package (kg)</label>
+                                                    <input placeholder="Max Weight  / Package (kg)"
+                                                        value={pack.maxWeightPerPackage}
                                                         onChange={e => {
                                                             const arr = [...packagingOptions];
-                                                            arr[index].maxWeight = e.target.value;
+                                                            arr[index].maxWeightPerPackage = e.target.value;
                                                             setPackagingOptions(arr);
                                                         }}
-                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                        className="border border-gray-300 p-2 placeholder:text-sm  rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col">
-                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="fee">fee</label>
-                                                    <input placeholder="Packaging Fee"
-                                                        value={pack.fee}
+                                                    <label className="text-xs font-semibold text-gray-700 mb-1">
+                                                        Max Items / Package
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        placeholder="Optional"
+                                                        value={pack.maxItemsPerPackage}
                                                         onChange={e => {
                                                             const arr = [...packagingOptions];
-                                                            arr[index].fee = e.target.value;
+                                                            arr[index].maxItemsPerPackage = e.target.value;
                                                             setPackagingOptions(arr);
                                                         }}
-                                                        className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                        className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <label className="text-xs font-semibold text-gray-700 mb-1 block" htmlFor="fee">Fee / Package (₹)</label>
+                                                    <input placeholder="Fee Per Package"
+                                                        value={pack.feePerPackage}
+                                                        onChange={e => {
+                                                            const arr = [...packagingOptions];
+                                                            arr[index].feePerPackage = e.target.value;
+                                                            setPackagingOptions(arr);
+                                                        }}
+
+                                                        className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400"
                                                     />
                                                 </div>
                                                 <div className="flex justify-end flex-col">
