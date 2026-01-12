@@ -74,8 +74,8 @@ const Login = () => {
                     </form>
 
                     <div className="text-center mt-5">
-                        <NavLink to="/forgot-password" className="text-blue-600 hover:underline text-base">
-                            Forgot your password ?
+                        <NavLink to="/forgot-password" className="l text-blue-600 hover:underline text-base">
+                            Forgot your password?
                         </NavLink>
                     </div>
                 </div>
