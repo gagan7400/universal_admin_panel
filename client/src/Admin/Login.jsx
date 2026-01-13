@@ -69,7 +69,7 @@ const Login = () => {
                             className="w-full flex justify-center items-center gap-3 bg-gradient-to-r bg-[var(--blue)] text-white   hover:bg-blue-900 hover:text-blue-50 text-lg font-semibold py-2 rounded-lg shadow-md hover:shadow-lg transition duration-300"
                         >
                             {loading && <div className="loaderlogin "></div>}
-                            Login
+                            Login s
                         </button>
                     </form>
 
