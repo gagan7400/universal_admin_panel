@@ -69,13 +69,13 @@ const Login = () => {
                             className="w-full flex justify-center items-center gap-3 bg-gradient-to-r bg-[var(--blue)] text-white   hover:bg-blue-900 hover:text-blue-50 text-lg font-semibold py-2 rounded-lg shadow-md hover:shadow-lg transition duration-300"
                         >
                             {loading && <div className="loaderlogin "></div>}
-                            Login s
+                            Login
                         </button>
                     </form>
 
                     <div className="text-center mt-5">
-                        <NavLink to="/forgot-password" className="l text-blue-600 hover:underline text-base">
-                            Forgot your password ?
+                        <NavLink to="/forgot-password" className="text-blue-600 hover:underline text-base">
+                            Forgot your password?
                         </NavLink>
                     </div>
                 </div>
