@@ -95,7 +95,9 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
         HSN,
         pricePerLot: normalizedLotPricing,
         shippingPricePerKM: normalizedShipping,
-        packagingOptions: normalizedPackaging
+        packagingOptions: normalizedPackaging,
+        packagingTypes: [
+            "Palletised", "BulkBag", "Loose Packing", "Special Packing"]
     };
 
     const product = new Product(newProduct);

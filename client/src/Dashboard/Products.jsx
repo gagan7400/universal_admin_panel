@@ -28,7 +28,7 @@ export default function Products() {
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState("");
     const [ratings, setRatings] = useState("");
-    const [category, setCategory] = useState("");
+    const [category, setCategory] = useState({value:"", label:""});
     const [stock, setStock] = useState("");
     const [dimensions, setDimensions] = useState({ width: "", height: "", length: "" });
     const [weight, setWeight] = useState("");
@@ -115,7 +115,6 @@ export default function Products() {
         formData.append("category", category?.value || category);
         formData.append("stock", stock);
         formData.append("weight", weight);
-
         formData.append("discountPercentage", discountPercentage);
         formData.append("gstRate", gstRate);
         formData.append("HSN", HSN);
@@ -407,15 +406,11 @@ export default function Products() {
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Dimensions (L x W × H ) in cm</label>
                                             <div className="flex gap-2">
-
                                                 <input type="text" value={dimensions.width} onChange={(e) => setDimensions({ ...dimensions, width: e.target.value })} placeholder="Width" className="w-1/2 border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                                 <input type="text" value={dimensions.height} onChange={(e) => setDimensions({ ...dimensions, height: e.target.value })} placeholder="Height" className="w-1/2 border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                                 <input type="text" value={dimensions.length} onChange={(e) => setDimensions({ ...dimensions, length: e.target.value })} placeholder="Length" className="w-1/2 border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />
                                             </div>
                                         </div>
-
-
-
                                         <div className="flex flex-col">
                                             <label className="text-sm font-semibold text-gray-700 mb-1">Weight (kg)</label>
                                             <input type="text" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Enter Weight" className="border border-gray-300 p-2 placeholder:text-sm rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 hover:border-blue-400" />

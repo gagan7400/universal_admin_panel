@@ -70,7 +70,7 @@ const productSchema = new mongoose.Schema({
     dimensions: {
         width: Number, height: Number, length: Number
     },
-    weight: { type: Number ,required:true},
+    weight: { type: Number, required: true },
     HSN: String,
     gstRate: { type: Number },
     discountPercentage: { type: Number },
@@ -80,7 +80,7 @@ const productSchema = new mongoose.Schema({
             minQty: { type: Number, required: true },
             maxQty: { type: Number, required: true },
             pricePerUnit: { type: Number, required: true },
-            productType: { type: String, required: true }, 
+            productType: { type: String, required: true },
             _id: false
         }
     ],
@@ -90,6 +90,8 @@ const productSchema = new mongoose.Schema({
         {
             type: {
                 type: String,
+                lowercase: true,
+                trim: true,
                 required: true, // Box, Bag, Crate
             },
 
@@ -120,6 +122,7 @@ const productSchema = new mongoose.Schema({
             _id: false
         }
     ],
+    packagingTypes: { type: Array, default: ["Palletised", "BulkBag", "Loose Packing", "Special Packing"] },
     createdAt: {
         type: Date,
         default: Date.now,
