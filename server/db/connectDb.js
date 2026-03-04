@@ -8,4 +8,4 @@ const connectDb = async (uri) => {
         console.log(error)
     }
 }
-module.exports =connectDb ;
+module.exports = connectDb;

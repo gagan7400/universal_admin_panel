@@ -110,4 +110,12 @@ let paymentHistory = async (req, res) => {
     }
 };
 
-module.exports = { paymentVerification, paymentHistory, createOrder }
+let getRazorpayKey = (req, res) => {
+    res.status(200).json({
+        success: true, data: {
+            key_id: process.env.RAZORPAY_KEY_ID,
+            key_secret: process.env.RAZORPAY_KEY_SECRET
+        }
+    });
+}
+module.exports = { paymentVerification, paymentHistory, createOrder, getRazorpayKey }

@@ -12,3 +12,7 @@
     background:  linear-gradient(180deg,rgba(18, 9, 51, 1) 0%, rgba(47, 51, 138, 1) 50%, rgba(9, 3, 36, 1) 100%);
 
 }
+.bg_btn{
+background: #2e1a75;
+background: linear-gradient(0deg, rgba(46, 26, 117, 0.83) 0%, rgba(46, 26, 117, 1) 53%, rgba(9, 3, 36, 0.69) 100%);
+}
