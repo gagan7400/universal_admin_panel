@@ -110,9 +110,6 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
     });
 });
 
-
-
-
 let getAllProducts = catchAsyncErrors(async (req, res, next) => {
     let products = await Product.find();
     res.status(200).json({

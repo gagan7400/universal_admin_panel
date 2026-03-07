@@ -549,7 +549,7 @@ const deleteUserAccount = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
     try {
-        let users = await User.find();
+        let users = await User.find().select("-password");
         res.status(200).send({ status: true, message: "Users Get Successfully", data: users })
     } catch (error) {
         return res.status(400).json({

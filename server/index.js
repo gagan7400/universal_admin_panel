@@ -35,7 +35,7 @@ let productRoute = require("./routes/productRoute");
 let cartRoute = require("./routes/cartRoute");
 let paymentRoute = require("./routes/paymentRoute");
 let errorMiddleware = require("./middlewares/error");
-const wishlistRoutes = require("./routes/wishlistRoutes");
+let wishlistRoutes = require("./routes/wishlistRoutes");
 
 let uploadpath = path.join(__dirname, "/uploads");
 app.use("/uploads/", express.static(uploadpath))

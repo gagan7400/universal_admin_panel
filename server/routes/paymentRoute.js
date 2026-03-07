@@ -3,7 +3,7 @@ const { isAuthenticatedUser } = require('../middlewares/auth');
 
 const router = require('express').Router();
 
-router.get('/get-razorpay-key', getRazorpayKey);
+router.get('/get-razorpay-key/:type', isAuthenticatedUser, getRazorpayKey);
 router.post("/create-order", isAuthenticatedUser, createOrder)
 router.post("/verify-payment", isAuthenticatedUser, paymentVerification)
 router.get("/history", isAuthenticatedUser, paymentHistory)

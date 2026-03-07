@@ -67,7 +67,6 @@ const login = async (req, res) => {
             success: true,
             message: "Admin logged in successfully...",
             token,
-            data: admin
         });
     } catch (err) {
         return res.status(400).json({
@@ -77,6 +76,7 @@ const login = async (req, res) => {
         });
     }
 };
+
 let logoutAdmin = async (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
@@ -86,6 +86,7 @@ let logoutAdmin = async (req, res) => {
     });
     res.json({ success: true, message: "Logged out" });
 }
+
 const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -132,13 +133,11 @@ const resetPassword = async (req, res) => {
 };
 
 let getprofile = async (req, res) => {
-
     try {
         const admin = await Admin.findById(req.user._id).select("-password"); // exclude password
         if (!admin) {
             return res.status(404).json({ success: false, message: "Admin not found" });
         }
-
         res.status(200).json({
             success: true,
             data: admin
@@ -147,4 +146,5 @@ let getprofile = async (req, res) => {
         res.status(500).json({ success: false, message: err.message });
     }
 }
+
 module.exports = { getprofile, register, login, forgotPassword, resetPassword, logoutAdmin }
