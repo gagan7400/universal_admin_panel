@@ -46,7 +46,7 @@ process.on("uncaughtException", (err) => {
 });
 
 connectDb(process.env.MONGOURI); // ✅ Correct
- 
+  
 // Routes define
 app.use("/api/admin", authRoute);
 app.use("/api/user", userRoute);
