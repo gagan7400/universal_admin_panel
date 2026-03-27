@@ -19,12 +19,14 @@ jobs:
           script: |
             cd /var/www/universal_admin_panel
             git pull origin main
+            git reset --hard origin/main
             cd server
             npm install
             pm2 restart backend
 
             cd /var/www/universal_admin_panel/client
             git pull origin main
+            git reset --hard origin/main
             npm install
             npm run build
 
