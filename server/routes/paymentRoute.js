@@ -1,10 +1,10 @@
-const { paymentHistory, createOrder, paymentVerification, getRazorpayKey } = require('../controllers/paymentController');
-const { isAuthenticatedUser } = require('../middlewares/auth');
+    const { paymentHistory, createOrder, paymentVerification, getRazorpayKey } = require('../controllers/paymentController');
+    const { isAuthenticatedUser } = require('../middlewares/auth');
 
-const router = require('express').Router();
+    const router = require('express').Router();
 
-router.get('/get-razorpay-key/:type', isAuthenticatedUser, getRazorpayKey);
-router.post("/create-order", isAuthenticatedUser, createOrder)
-router.post("/verify-payment", isAuthenticatedUser, paymentVerification)
-router.get("/history", isAuthenticatedUser, paymentHistory)
-module.exports = router;
+    router.get('/get-razorpay-key/:type', isAuthenticatedUser, getRazorpayKey);
+    router.post("/create-order", isAuthenticatedUser, createOrder)
+    router.post("/verify-payment", isAuthenticatedUser, paymentVerification)
+    router.get("/history", isAuthenticatedUser, paymentHistory)
+    module.exports = router;

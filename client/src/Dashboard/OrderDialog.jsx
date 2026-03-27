@@ -62,19 +62,19 @@ export default function OrderDialog({ order }) {
                                     <div className="space-y-2 text-sm">
                                         <div className="flex justify-between">
                                             <span>Subtotal:</span>
-                                            <span>₹{order?.itemsPrice}</span>
+                                            <span>₹{Math.round(order?.itemsPrice)}</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span>Shipping:</span>
-                                            <span>₹{order?.shippingPrice}</span>
+                                            <span>₹{Math.round(order?.shippingPrice)}</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span>Tax (GST):</span>
-                                            <span>₹{order?.taxPrice}</span>
+                                            <span>₹{Math.round(order?.taxPrice)}</span>
                                         </div>
                                         <div className="flex justify-between font-semibold text-orange-600 border-t pt-2 mt-2">
                                             <span>Total Price:</span>
-                                            <span>₹{order?.totalPrice}</span>
+                                            <span>₹{Math.round(order?.totalPrice)}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -88,7 +88,7 @@ export default function OrderDialog({ order }) {
                                     <h3 className="font-semibold text-gray-800 mb-3">Summary</h3>
                                     <p><span className="text-gray-500">Order ID:</span> <strong>#{order?._id?.slice(-6).toUpperCase()}</strong></p>
                                     <p><span className="text-gray-500">Date:</span> {new Date(order?.createdAt).toLocaleDateString()}</p>
-                                    <p><span className="text-gray-500">Total:</span> <span className="text-red-500 font-bold">₹{order?.totalPrice}</span></p>
+                                    <p><span className="text-gray-500">Total:</span> <span className="text-red-500 font-bold">₹{Math.round(order?.totalPrice)}</span></p>
                                 </div>
 
                                 {/* Shipping address */}

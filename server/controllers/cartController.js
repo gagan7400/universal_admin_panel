@@ -70,6 +70,7 @@ const removeFromCart = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 // Update item quantity
 let updateCart = async (req, res) => {
     const { productId } = req.params;
