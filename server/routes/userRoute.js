@@ -23,11 +23,11 @@ router.get("/getallusers", isAuthenticatedAdmin, getAllUsers);
 router.put("/update/:id", isAuthenticatedUser, authorizeRoles("user"), upload.single("image"), updateUser);
 router.get("/count-users", isAuthenticatedAdmin, countUsers);
 
-router.get("/:id/addresses", isAuthenticatedUser, authorizeRoles("user"), getAddresses);
-router.post("/:id/add-new-address", isAuthenticatedUser, authorizeRoles("user"), addAddress);
-router.put("/:id/update-address/:addressId", isAuthenticatedUser, authorizeRoles("user"), updateAddress);
-router.delete("/:id/delete-address/:addressId", isAuthenticatedUser, authorizeRoles("user"), deleteAddress);
-router.put("/:id/set-default-address/:addressId", isAuthenticatedUser, authorizeRoles("user"), setDefaultAddress);
+router.get("/:id/addresses",getAddresses);
+router.post("/:id/add-new-address",addAddress);
+router.put("/:id/update-address/:addressId", updateAddress);
+router.delete("/:id/delete-address/:addressId",  deleteAddress);
+router.put("/:id/set-default-address/:addressId", setDefaultAddress);
 
 module.exports = router;
 
