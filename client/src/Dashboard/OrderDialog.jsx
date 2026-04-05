@@ -1,5 +1,8 @@
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { useState } from 'react'
+import axios from 'axios'
+
+const API = import.meta.env.VITE_API
 
 export default function OrderDialog({ order }) {
     let [open, setOpen] = useState(false);
@@ -104,6 +107,58 @@ export default function OrderDialog({ order }) {
                                 <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
                                     <h3 className="font-semibold text-gray-800 mb-2">Payment Method</h3>
                                     <p className="text-sm text-gray-600">{order?.paymentInfo?.status === 'COD' ? 'Cash on Delivery (COD)' : `Online - ${order?.paymentInfo?.status}`}</p>
+                                </div>
+
+                                {/* Invoice: PDF is rendered from HTML template (Puppeteer) */}
+                                <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
+                                    <h3 className="font-semibold text-gray-800 mb-2">Invoice</h3>
+                                    {order?.invoiceNumber ? (
+                                        <p className="text-sm text-gray-600 mb-3">{order.invoiceNumber}</p>
+                                    ) : (
+                                        <p className="text-sm text-gray-500 mb-3">Legacy order — PDF is built from the HTML template on open/download.</p>
+                                    )}
+                                    <div className="flex flex-wrap gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={async () => {
+                                                try {
+                                                    const res = await axios.get(
+                                                        `${API}/api/order/admin/order/${order._id}/invoice`,
+                                                        { responseType: 'blob', withCredentials: true }
+                                                    )
+                                                    const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }))
+                                                    window.open(url, '_blank', 'noopener,noreferrer')
+                                                } catch {
+                                                    alert('Could not open invoice')
+                                                }
+                                            }}
+                                            className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700"
+                                        >
+                                            View invoice (PDF)
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={async () => {
+                                                try {
+                                                    const res = await axios.get(
+                                                        `${API}/api/order/admin/order/${order._id}/invoice?download=1`,
+                                                        { responseType: 'blob', withCredentials: true }
+                                                    )
+                                                    const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }))
+                                                    const a = document.createElement('a')
+                                                    a.href = url
+                                                    a.download = `${order.invoiceNumber || `invoice-${order._id?.slice(-6)}`}.pdf`
+                                                    a.click()
+                                                    window.URL.revokeObjectURL(url)
+                                                } catch {
+                                                    alert('Could not download invoice')
+                                                }
+                                            }}
+                                            className="rounded-md bg-gray-900 px-3 py-1.5 text-sm font-semibold text-white hover:bg-gray-800"
+                                        >
+                                            Download PDF
+                                        </button>
+                                    </div>
                                 </div>
 
                                 {/* Delivery date */}

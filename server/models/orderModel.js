@@ -107,6 +107,9 @@ const orderSchema = new mongoose.Schema({
         default: "Processing",
     },
     deliveredAt: Date,
+    /** Set when PDF invoice is generated after payment */
+    invoiceNumber: { type: String },
+    invoiceGeneratedAt: { type: Date },
     createdAt: {
         type: Date,
         default: Date.now,

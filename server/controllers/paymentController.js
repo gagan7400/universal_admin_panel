@@ -71,6 +71,13 @@ const paymentVerification = catchAsyncErrors(async (req, res) => {
 
         await newOrder.save();
 
+        try {
+            const { createAndSaveInvoiceForOrder } = require("../invoice/invoiceService");
+            await createAndSaveInvoiceForOrder(newOrder);
+        } catch (invErr) {
+            console.error("Invoice generation failed (order still created):", invErr.message);
+        }
+
         await Payment.create({
             userId: req.user._id,
             orderId: razorpay_order_id,
@@ -81,10 +88,12 @@ const paymentVerification = catchAsyncErrors(async (req, res) => {
             paidAt: Date.now(),
         });
 
+        const orderFresh = await Order.findById(newOrder._id);
+
         res.json({
             success: true,
             message: "Payment verified & order created successfully",
-            order: newOrder,
+            order: orderFresh || newOrder,
         });
     } else {
         res.status(400).json({ success: false, message: "Invalid signature" });

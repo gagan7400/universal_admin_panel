@@ -3,6 +3,12 @@ const { Product } = require("../models/productModel");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const mongoose = require("mongoose");
+const fs = require("fs");
+const {
+    getInvoicePdfBufferForOrder,
+    invoiceFilePath,
+    invoiceHtmlFilePath,
+} = require("../invoice/invoiceService");
 
  
 const haversineDistance = (lat1, lon1, lat2, lon2) => {
@@ -151,7 +157,20 @@ exports.calculatePrice = async (req, res) => {
     }
 };
 
-// get Single Order
+function attachInvoiceMeta(order) {
+    const o = order.toObject ? order.toObject() : { ...order };
+    const id = o._id?.toString();
+    o.invoice = o.invoiceNumber
+        ? {
+              invoiceNumber: o.invoiceNumber,
+              generatedAt: o.invoiceGeneratedAt,
+              downloadInvoiceUrl: `/api/order/${id}/invoice`,
+          }
+        : null;
+    return o;
+}
+
+// get Single Order (owner only)
 exports.getSingleOrder = catchAsyncErrors(async (req, res, next) => {
     const order = await Order.findById(req.params.id).populate(
         "user",
@@ -162,10 +181,45 @@ exports.getSingleOrder = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Order not found with this Id", 404));
     }
 
+    if (String(order.user.id) !== String(req.user._id)) {
+        return next(new ErrorHandler("Not allowed to view this order", 403));
+    }
+
     res.status(200).json({
         success: true,
-        data: order,
+        data: attachInvoiceMeta(order),
     });
+});
+
+/** Customer: Bearer token — must own the order */
+exports.downloadUserOrderInvoice = catchAsyncErrors(async (req, res, next) => {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+        return next(new ErrorHandler("Order not found with this Id", 404));
+    }
+    if (String(order.user.id) !== String(req.user._id)) {
+        return next(new ErrorHandler("Not allowed to access this invoice", 403));
+    }
+
+    const { buffer, filename } = await getInvoicePdfBufferForOrder(order);
+    const disposition = req.query.download === "1" ? "attachment" : "inline";
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `${disposition}; filename="${filename}"`);
+    res.send(buffer);
+});
+
+/** Admin panel: cookie auth + orders permission */
+exports.downloadAdminOrderInvoice = catchAsyncErrors(async (req, res, next) => {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+        return next(new ErrorHandler("Order not found with this Id", 404));
+    }
+
+    const { buffer, filename } = await getInvoicePdfBufferForOrder(order);
+    const disposition = req.query.download === "1" ? "attachment" : "inline";
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `${disposition}; filename="${filename}"`);
+    res.send(buffer);
 });
 
 // get logged in user  Orders
@@ -174,7 +228,7 @@ exports.myOrders = catchAsyncErrors(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        data: orders,
+        data: orders.map((o) => attachInvoiceMeta(o)),
     });
 });
 
@@ -250,7 +304,20 @@ exports.deleteOrder = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Order not found with this Id", 404));
     }
 
-    await Order.findByIdAndDelete(order._id)
+    const id = order._id.toString();
+    const pdfPath = invoiceFilePath(id);
+    const htmlPath = invoiceHtmlFilePath(id);
+    for (const p of [pdfPath, htmlPath]) {
+        if (fs.existsSync(p)) {
+            try {
+                fs.unlinkSync(p);
+            } catch (e) {
+                console.error("Invoice file delete failed:", e.message);
+            }
+        }
+    }
+
+    await Order.findByIdAndDelete(order._id);
 
     res.status(200).json({
         success: true,
