@@ -128,7 +128,8 @@ export default function OrderDialog({ order }) {
                                                     )
                                                     const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }))
                                                     window.open(url, '_blank', 'noopener,noreferrer')
-                                                } catch {
+                                                } catch (error) {
+                                                    console.log(error)
                                                     alert('Could not open invoice')
                                                 }
                                             }}
@@ -150,7 +151,8 @@ export default function OrderDialog({ order }) {
                                                     a.download = `${order.invoiceNumber || `invoice-${order._id?.slice(-6)}`}.pdf`
                                                     a.click()
                                                     window.URL.revokeObjectURL(url)
-                                                } catch {
+                                                } catch (error) {
+                                                    console.log(error)
                                                     alert('Could not download invoice')
                                                 }
                                             }}
