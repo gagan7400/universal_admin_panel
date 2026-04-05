@@ -1,9 +1,16 @@
 const { bannermodel, Product } = require("../models/productModel");
 let catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../utils/errorHandler");
-const path = require("path")
+const path = require("path");
 const fs = require("fs");
 const base_url = process.env.NODE_ENV == "production" ? process.env.BASE_URL_LIVE : process.env.BASE_URL;
+const {
+    uploadImageBuffer,
+    toStoredImage,
+    removeStoredImage,
+    publicIdFromCloudinaryUrl,
+} = require("../utils/cloudinaryUpload");
+const uploadsDir = path.join(__dirname, "../uploads");
 
 const createProductController = catchAsyncErrors(async (req, res, next) => {
     const files = req.files;
@@ -14,15 +21,19 @@ const createProductController = catchAsyncErrors(async (req, res, next) => {
         return res.status(400).json({ success: false, message: "Banner image is required." });
     }
 
-    const bannerImage = {
-        fileName: bannerFile.filename,
-        url: `${base_url}/uploads/${bannerFile.filename}`,
-    };
+    const bannerUploaded = await uploadImageBuffer(
+        bannerFile.buffer,
+        bannerFile.mimetype,
+        "products/banner"
+    );
+    const bannerImage = toStoredImage(bannerUploaded);
 
-    const images = galleryFiles.map((file) => ({
-        fileName: file.filename,
-        url: `${base_url}/uploads/${file.filename}`,
-    }));
+    const images = await Promise.all(
+        galleryFiles.map(async (file) => {
+            const up = await uploadImageBuffer(file.buffer, file.mimetype, "products/gallery");
+            return toStoredImage(up);
+        })
+    );
 
     let {
         name,
@@ -146,22 +157,13 @@ const deleteProduct = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Product not found", 404));
     }
 
-    // 🧹 Delete banner image from disk
     if (product.bannerImage) {
-        const bannerPath = path.join(__dirname, "../uploads/", product.bannerImage.url.split("/uploads/")[1]);
-        if (fs.existsSync(bannerPath)) {
-            fs.unlinkSync(bannerPath);
-        }
+        await removeStoredImage(product.bannerImage, uploadsDir);
     }
-
-    // 🧹 Delete gallery images
-    if (product.images && product.images.length > 0) {
-        product.images.forEach((img) => {
-            const filePath = path.join(__dirname, "../uploads/", img.url.split("/uploads/")[1]);
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
-            }
-        });
+    if (product.images?.length) {
+        for (const img of product.images) {
+            await removeStoredImage(img, uploadsDir);
+        }
     }
 
     // 🗑️ Delete product from DB
@@ -202,21 +204,25 @@ const updateProduct = catchAsyncErrors(async (req, res, next) => {
         }
     }
 
-    // ✅ Handle bannerImage
-    if (bannerFile && bannerFile.filename) {
-        // Delete old banner
-        if (product.bannerImage?.fileName) {
-            const oldBannerPath = path.join(__dirname, "../uploads/", product.bannerImage.fileName);
-            if (fs.existsSync(oldBannerPath)) fs.unlinkSync(oldBannerPath);
-        }
-
-        bannerImageNew = {
-            fileName: bannerFile.filename,
-            url: `${base_url}/uploads/${bannerFile.filename}`,
-        };
+    if (bannerFile && bannerFile.buffer) {
+        await removeStoredImage(product.bannerImage, uploadsDir);
+        const up = await uploadImageBuffer(
+            bannerFile.buffer,
+            bannerFile.mimetype,
+            "products/banner"
+        );
+        bannerImageNew = toStoredImage(up);
     } else if (req.body.bannerImageData) {
         let dataImage = JSON.parse(req.body.bannerImageData);
-        bannerImageNew = { fileName: dataImage && dataImage.url.split("/uploads/")[1], url: dataImage.url };
+        bannerImageNew = {
+            fileName:
+                dataImage?.fileName ||
+                (dataImage?.url && dataImage.url.includes("/uploads/")
+                    ? dataImage.url.split("/uploads/")[1]
+                    : publicIdFromCloudinaryUrl(dataImage?.url)) ||
+                "",
+            url: dataImage.url,
+        };
     } else {
         bannerImageNew = product.bannerImage;
     }
@@ -229,28 +235,33 @@ const updateProduct = catchAsyncErrors(async (req, res, next) => {
         try {
             let dataImage = JSON.parse(req.body.imagesData);
 
-            retainedImages = dataImage.map((img) => {
-                return { fileName: img && img.url.split("/uploads/")[1], url: img.url }
-            })
+            retainedImages = dataImage.map((img) => ({
+                fileName:
+                    img?.fileName ||
+                    (img?.url && img.url.includes("/uploads/")
+                        ? img.url.split("/uploads/")[1]
+                        : publicIdFromCloudinaryUrl(img?.url)) ||
+                    "",
+                url: img.url,
+            }));
         } catch (err) {
             return next(new ErrorHandler("Invalid imagesData format", 400));
         }
     }
 
-    // Delete old images that are NOT in retainedImages
-    const retainedFileNames = retainedImages.map(img => img.fileName);
-    product.images.forEach((img) => {
+    const retainedFileNames = retainedImages.map((img) => img.fileName);
+    for (const img of product.images) {
         if (!retainedFileNames.includes(img.fileName)) {
-            const imgPath = path.join(__dirname, "../uploads/", img.fileName);
-            if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
+            await removeStoredImage(img, uploadsDir);
         }
-    });
+    }
 
-    // Map new uploaded images
-    const newUploadedImages = galleryFiles.map((file) => ({
-        fileName: file.filename,
-        url: `${base_url}/uploads/${file.filename}`,
-    }));
+    const newUploadedImages = await Promise.all(
+        galleryFiles.map(async (file) => {
+            const up = await uploadImageBuffer(file.buffer, file.mimetype, "products/gallery");
+            return toStoredImage(up);
+        })
+    );
 
     // Combine old + new
     imagesNew = [...retainedImages, ...newUploadedImages];
@@ -267,17 +278,18 @@ const updateProduct = catchAsyncErrors(async (req, res, next) => {
 });
 
 let addBanners = catchAsyncErrors(async (req, res, next) => {
-    let files = req.files || []
-
-    let bannerimages = []
-    files?.bannerImages?.map((v, i) => {
-        bannerimages.push({ fileName: v.filename, url: `${base_url}/uploads/${v.filename}` })
-    })
+    const files = req.files || {};
+    const list = files.bannerImages || [];
+    const bannerimages = [];
+    for (const v of list) {
+        const up = await uploadImageBuffer(v.buffer, v.mimetype, "banners");
+        bannerimages.push(toStoredImage(up));
+    }
 
     let data = await bannermodel.insertMany(bannerimages);
 
-    res.send({ success: true, message: "files uploaded successfully", bannerimages })
-})
+    res.send({ success: true, message: "files uploaded successfully", bannerimages });
+});
 
 let getBanners = catchAsyncErrors(async (req, res, next) => {
     let data = await bannermodel.find({});
@@ -294,17 +306,9 @@ let deleteBannerImage = catchAsyncErrors(async (req, res, next) => {
         return res.status(404).json({ success: false, message: "Banner not found" });
     }
 
-    // ✅ Build the local file path
-    const filePath = path.join(__dirname, "..", "uploads", bannerimage.fileName);
+    await removeStoredImage(bannerimage, uploadsDir);
 
-    // ✅ Delete the file from uploads folder (if exists)
-    fs.unlink(filePath, (err) => {
-        if (err && err.code !== "ENOENT") {
-            console.error("Error deleting file:", err);
-        }
-    });
-
-    await bannermodel.findByIdAndDelete(bannerid)
+    await bannermodel.findByIdAndDelete(bannerid);
 
     res.status(200).json({ success: true, message: "Banner image deleted successfully" });
 

@@ -7,6 +7,12 @@ const common_functions = require("../utils/common_functions.js"); // adjust path
 const UserSession = require("../models/userSessionmodel.js"); // Session model
 const { generateToken } = require("../utils/token.js"); // Your custom token function
 const base_url = process.env.NODE_ENV == "production" ? process.env.BASE_URL_LIVE : process.env.BASE_URL;
+const {
+    uploadImageBuffer,
+    toStoredImage,
+    removeStoredImage,
+} = require("../utils/cloudinaryUpload");
+const uploadsDir = path.join(__dirname, "../uploads");
 // const base_url = "http://srv918880.hstgr.cloud:4000"
 
 
@@ -35,9 +41,12 @@ const registration = async (req, res) => {
         });
 
         const file = req.file;
-        const image = file
-            ? { filename: file.filename, url: `${base_url}/uploads/${file.filename}` }
-            : { filename: "", url: "" };
+        let image = { filename: "", url: "" };
+        if (file && file.buffer) {
+            const uploaded = await uploadImageBuffer(file.buffer, file.mimetype, "users");
+            const stored = toStoredImage(uploaded);
+            image = { filename: stored.fileName, url: stored.url };
+        }
 
         // Validate incoming data
         if (typeof req.body.address === 'string') {
@@ -612,19 +621,19 @@ const updateUser = async (req, res) => {
             deviceType: req.body.deviceType || user.deviceType
         };
 
-        // Handle image
-        if (req.file) {
-            if (user.image?.filename) {
-                const oldImagePath = path.join(__dirname, "../uploads", user.image.filename);
-                if (fs.existsSync(oldImagePath)) {
-                    fs.unlinkSync(oldImagePath);
-                }
-            }
-
-            updatedData.image = {
-                filename: req.file.filename,
-                url: `${base_url}/uploads/${file.filename}`
-            };
+        // Handle image → Cloudinary; remove old (Cloudinary or legacy local)
+        if (req.file && req.file.buffer) {
+            await removeStoredImage(
+                { url: user.image?.url, fileName: user.image?.filename },
+                uploadsDir
+            );
+            const uploaded = await uploadImageBuffer(
+                req.file.buffer,
+                req.file.mimetype,
+                "users"
+            );
+            const stored = toStoredImage(uploaded);
+            updatedData.image = { filename: stored.fileName, url: stored.url };
         }
 
         // Handle address update

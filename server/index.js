@@ -2,6 +2,7 @@ let express = require("express");
 let app = express();
 let path = require("path");
 let dotenv = require("dotenv").config();
+require("./config/cloudinary"); // loads Cloudinary env after dotenv
 let cors = require("cors");
 const cookieParser = require('cookie-parser');
 app.use(express.urlencoded({ extended: true }));
