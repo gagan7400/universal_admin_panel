@@ -10,7 +10,7 @@ const {
     invoiceHtmlFilePath,
 } = require("../invoice/invoiceService");
 
- 
+
 const haversineDistance = (lat1, lon1, lat2, lon2) => {
     const toRad = (value) => (value * Math.PI) / 180;
 
@@ -51,7 +51,7 @@ exports.calculatePrice = async (req, res) => {
 
         const productCost = unitPrice * quantity;
 
-         
+
         const warehouseLat = Number(process.env.WAREHOUSE_LATITUDE ?? 28.6139);
         const warehouseLng = Number(process.env.WAREHOUSE_LONGITUDE ?? 75.8);
 
@@ -92,7 +92,7 @@ exports.calculatePrice = async (req, res) => {
         // =====================
         // 3️⃣ PACKAGING COST
         // =====================
-     
+
         let packagingCost = 0;
         let packagesUsed = 0;
 
@@ -162,10 +162,10 @@ function attachInvoiceMeta(order) {
     const id = o._id?.toString();
     o.invoice = o.invoiceNumber
         ? {
-              invoiceNumber: o.invoiceNumber,
-              generatedAt: o.invoiceGeneratedAt,
-              downloadInvoiceUrl: `/api/order/${id}/invoice`,
-          }
+            invoiceNumber: o.invoiceNumber,
+            generatedAt: o.invoiceGeneratedAt,
+            downloadInvoiceUrl: `/api/order/${id}/invoice`,
+        }
         : null;
     return o;
 }
@@ -335,5 +335,3 @@ exports.totalOrders = catchAsyncErrors(async (req, res, next) => {
         data: count
     });
 });
-
-

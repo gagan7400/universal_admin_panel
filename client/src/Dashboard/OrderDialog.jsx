@@ -1,11 +1,32 @@
 import { Dialog, DialogPanel } from '@headlessui/react'
-import { useState } from 'react'
-import axios from 'axios'
+import { useState, useMemo } from 'react'
 
-const API = import.meta.env.VITE_API
+/** Base API URL without trailing slash. Empty string = same origin (e.g. nginx serves /api on same host). */
+function apiOrigin() {
+    const raw = import.meta.env.VITE_API
+    if (raw == null || raw === '') return ''
+    return String(raw).replace(/\/$/, '')
+}
 
 export default function OrderDialog({ order }) {
-    let [open, setOpen] = useState(false);
+    let [open, setOpen] = useState(false)
+
+    const invoiceViewUrl = useMemo(() => {
+        const base = apiOrigin()
+        return `${base}/api/order/admin/order/${order?._id}/invoice`
+    }, [order?._id])
+
+    const invoiceDownloadUrl = useMemo(() => `${invoiceViewUrl}?download=1`, [invoiceViewUrl])
+
+    const openInvoiceView = () => {
+        const w = window.open(invoiceViewUrl, '_blank', 'noopener,noreferrer')
+        if (!w) alert('Allow pop-ups for this site to view the invoice, or use Download PDF.')
+    }
+
+    const openInvoiceDownload = () => {
+        const w = window.open(invoiceDownloadUrl, '_blank', 'noopener,noreferrer')
+        if (!w) alert('Allow pop-ups for this site to download the invoice.')
+    }
     return (
         <td className="px-4 py-3">
             <button
@@ -120,47 +141,29 @@ export default function OrderDialog({ order }) {
                                     <div className="flex flex-wrap gap-2">
                                         <button
                                             type="button"
-                                            onClick={async () => {
-                                                try {
-                                                    const res = await axios.get(
-                                                        `${API}/api/order/admin/order/${order._id}/invoice`,
-                                                        { responseType: 'blob', withCredentials: true }
-                                                    )
-                                                    const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }))
-                                                    window.open(url, '_blank', 'noopener,noreferrer')
-                                                } catch (error) {
-                                                    console.log(error)
-                                                    alert('Could not open invoice')
-                                                }
-                                            }}
+                                            onClick={openInvoiceView}
                                             className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700"
                                         >
                                             View invoice (PDF)
                                         </button>
                                         <button
                                             type="button"
-                                            onClick={async () => {
-                                                try {
-                                                    const res = await axios.get(
-                                                        `${API}/api/order/admin/order/${order._id}/invoice?download=1`,
-                                                        { responseType: 'blob', withCredentials: true }
-                                                    )
-                                                    const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }))
-                                                    const a = document.createElement('a')
-                                                    a.href = url
-                                                    a.download = `${order.invoiceNumber || `invoice-${order._id?.slice(-6)}`}.pdf`
-                                                    a.click()
-                                                    window.URL.revokeObjectURL(url)
-                                                } catch (error) {
-                                                    console.log(error)
-                                                    alert('Could not download invoice')
-                                                }
-                                            }}
+                                            onClick={openInvoiceDownload}
                                             className="rounded-md bg-gray-900 px-3 py-1.5 text-sm font-semibold text-white hover:bg-gray-800"
                                         >
                                             Download PDF
                                         </button>
                                     </div>
+                                    <p className="text-xs text-gray-500 mt-2">
+                                        If a new tab is blocked, use:&nbsp;
+                                        <a href={invoiceViewUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                                            view
+                                        </a>
+                                        {' · '}
+                                        <a href={invoiceDownloadUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                                            download
+                                        </a>
+                                    </p>
                                 </div>
 
                                 {/* Delivery date */}
