@@ -43,7 +43,13 @@ async function createAndSaveInvoiceForOrder(orderDoc) {
     forRender.invoiceNumber = invoiceNumber;
 
     const htmlString = generateInvoiceHtml(forRender);
-    const pdfBuffer = await htmlStringToPdfBuffer(htmlString);
+    let pdfBuffer;
+    try {
+        pdfBuffer = await htmlStringToPdfBuffer(htmlString);
+    } catch (e) {
+        console.error("[Invoice] PDF generation failed (order still saved without invoice file):", e.message);
+        throw e;
+    }
 
     ensureInvoicesDir();
     fs.writeFileSync(invoiceHtmlFilePath(id), htmlString, "utf8");
@@ -70,7 +76,13 @@ async function getInvoicePdfBufferForOrder(order) {
     }
 
     const html = getInvoiceHtmlStringForOrder(order);
-    const buf = await htmlStringToPdfBuffer(html);
+    let buf;
+    try {
+        buf = await htmlStringToPdfBuffer(html);
+    } catch (e) {
+        console.error("[Invoice] PDF on-demand generation failed:", e.message);
+        throw e;
+    }
     try {
         ensureInvoicesDir();
         fs.writeFileSync(invoiceHtmlFilePath(id), html, "utf8");
