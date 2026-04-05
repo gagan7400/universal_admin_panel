@@ -20,12 +20,10 @@ export default function OrderDialog({ order }) {
 
     const openInvoiceView = () => {
         const w = window.open(invoiceViewUrl, '_blank', 'noopener,noreferrer')
-        if (!w) alert('Allow pop-ups for this site to view the invoice, or use Download PDF.')
     }
 
     const openInvoiceDownload = () => {
         const w = window.open(invoiceDownloadUrl, '_blank', 'noopener,noreferrer')
-        if (!w) alert('Allow pop-ups for this site to download the invoice.')
     }
     return (
         <td className="px-4 py-3">
