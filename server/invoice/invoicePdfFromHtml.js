@@ -7,13 +7,14 @@ let browserInstance = null;
 let browserLaunchPromise = null;
 
 /**
- * Puppeteer 24+ does not ship Chrome in node_modules by default.
- * Resolution order: PUPPETEER_EXECUTABLE_PATH / CHROME_PATH → OS-specific paths → Puppeteer cache.
+ * Puppeteer 24+ can use a Chrome binary under ~/.cache/puppeteer — on Linux that binary
+ * still needs dozens of system .so libraries. Distro "chromium" pulls those in via apt.
  *
- * Linux VPS: install Chromium and point env at it, e.g.
- *   sudo apt-get update && sudo apt-get install -y chromium-browser fonts-liberation
- *   export PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
- * (path may be /usr/bin/chromium-browser — run: which chromium || which chromium-browser)
+ * On Linux we only use the Puppeteer cache if USE_PUPPETEER_CACHED_CHROME=1 (then install
+ * deps from https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux ).
+ *
+ * Otherwise: set PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium after:
+ *   sudo apt-get update && sudo apt-get install -y chromium fonts-liberation
  */
 function resolveChromeExecutable() {
     const fromEnv =
@@ -51,8 +52,8 @@ function resolveChromeExecutable() {
         const candidates = [
             "/usr/bin/google-chrome-stable",
             "/usr/bin/google-chrome",
-            "/usr/bin/chromium-browser",
             "/usr/bin/chromium",
+            "/usr/bin/chromium-browser",
             "/snap/bin/chromium",
             "/usr/lib/chromium-browser/chromium-browser",
             "/usr/lib/chromium/chromium",
@@ -62,6 +63,20 @@ function resolveChromeExecutable() {
         for (const p of candidates) {
             if (fs.existsSync(p)) return p;
         }
+
+        const allowCached =
+            process.env.USE_PUPPETEER_CACHED_CHROME === "1" ||
+            process.env.USE_PUPPETEER_CACHED_CHROME === "true";
+        if (allowCached) {
+            try {
+                const cached = puppeteer.executablePath();
+                if (cached && fs.existsSync(cached)) return cached;
+            } catch {
+                /* ignore */
+            }
+        }
+
+        return null;
     }
 
     try {
@@ -114,9 +129,10 @@ function buildLaunchOptions() {
 function linuxChromiumHint() {
     if (process.platform !== "linux") return "";
     return (
-        " On the server: sudo apt-get update && sudo apt-get install -y chromium-browser fonts-liberation " +
-        "(or chromium), then set PUPPETEER_EXECUTABLE_PATH to the output of `which chromium` or `which chromium-browser`. " +
-        "If you use Nginx, increase proxy_read_timeout for /api/order (PDF generation can take 30s+ on small VPS)."
+        " Run on the server (Ubuntu/Debian): sudo apt-get update && sudo apt-get install -y chromium fonts-liberation " +
+        "then set in .env: PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium (verify with: which chromium). " +
+        "We skip Puppeteer's ~/.cache/puppeteer Chrome on Linux unless USE_PUPPETEER_CACHED_CHROME=1. " +
+        "Nginx: increase proxy_read_timeout for /api/order (60–120s)."
     );
 }
 
@@ -149,12 +165,22 @@ async function getBrowser() {
         } catch (err) {
             browserInstance = null;
             const msg = err?.message || String(err);
-            const extra =
-                process.platform === "linux" && msg.includes("shared libraries")
-                    ? " Missing system libraries — on Ubuntu try: apt-get install -y libnss3 libatk1.0-0 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2"
-                    : "";
+            const pathStr = opts.executablePath || "";
+            const looksLikePuppeteerCache =
+                pathStr.includes("puppeteer") || pathStr.includes(".cache/puppeteer");
+            let extra = "";
+            if (process.platform === "linux") {
+                if (msg.includes("shared libraries") || msg.includes("Code: 127")) {
+                    extra =
+                        " Install distro Chromium (pulls in libs): sudo apt-get install -y chromium fonts-liberation && export PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium ";
+                }
+                if (looksLikePuppeteerCache && !process.env.USE_PUPPETEER_CACHED_CHROME) {
+                    extra +=
+                        " Avoid ~/.cache/puppeteer Chrome on Linux without full deps; use system chromium as above. ";
+                }
+            }
             throw new Error(
-                `Puppeteer failed to start Chromium (${opts.executablePath}): ${msg}.${extra}${linuxChromiumHint()}`
+                `Puppeteer failed to start Chromium (${pathStr}): ${msg}.${extra}${linuxChromiumHint()}`
             );
         } finally {
             browserLaunchPromise = null;
