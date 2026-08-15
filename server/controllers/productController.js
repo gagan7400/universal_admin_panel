@@ -131,7 +131,7 @@ let getAllProducts = catchAsyncErrors(async (req, res, next) => {
 })
 
 let countProduct = catchAsyncErrors(async (req, res, next) => {
-    let products = await Product.countDocuments();
+    let products = await Product.estimatedDocumentCount();
     res.status(200).json({
         success: true,
         data: products,
