@@ -1,33 +1,33 @@
-name: Auto Deploy MERN App
+name: Deploy MERN to VPS
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Deploy to VPS
+      - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
           script: |
+            set -e
             cd /var/www/universal_admin_panel
             git pull origin main
-            git reset --hard origin/main
-            cd server
-            npm install
-            pm2 restart backend
 
-            cd /var/www/universal_admin_panel/client
-            git pull origin main
-            git reset --hard origin/main
+            echo "Installing & building backend..."
+            cd server
+            npm install --production
+            pm2 restart yourapp-backend
+
+            echo "Installing & building frontend..."
+            cd ../client
             npm install
             npm run build
 
-            systemctl restart nginx
+            echo "Deployment complete."
