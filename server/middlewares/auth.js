@@ -92,3 +92,21 @@ exports.authorizeRoles = (...roles) => {
         next();
     };
 };
+
+exports.validateUserOwnership = (req, res, next) => {
+    // Admin bypasses ownership validation
+    if (req.user && (req.user.role === "admin" || req.user.role === "subadmin")) {
+        return next();
+    }
+    
+    // Check if ID matches authenticated user ID
+    if (req.user && String(req.user._id) === String(req.params.id)) {
+        return next();
+    }
+    
+    return res.status(403).json({
+        status: false,
+        message: "Access denied. You do not own this resource.",
+    });
+};
+

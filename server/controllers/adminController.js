@@ -11,6 +11,15 @@ const generateToken = ({ adminId, role }) => {
 
 const register = async (req, res) => {
     try {
+        // Prevent registration if any admin already exists in the database
+        const adminCount = await Admin.countDocuments();
+        if (adminCount > 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Admin registration is disabled. An administrator account already exists."
+            });
+        }
+
         const { email, password, name } = req.body;
         const existing = await Admin.findOne({ email });
         if (existing) return res.status(400).json({ success: false, message: "Admin already exists" });

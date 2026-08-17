@@ -6,7 +6,7 @@ let uploadMemory = require("../middlewares/uploadMemory.js");
 
 //banner image for products
 router.get("/bannerimages", getBanners);
-router.post("/bannerimages", uploadMemory.fields([{ name: "bannerImages", maxCount: 10 }]), addBanners);
+router.post("/bannerimages", isAuthenticatedAdmin, authorizeRoles("admin"), uploadMemory.fields([{ name: "bannerImages", maxCount: 10 }]), addBanners);
 router.delete("/banner/:bannerid", isAuthenticatedAdmin, authorizeRoles("admin"), deleteBannerImage);
 
 router.get("/categories", getAllCategories);
