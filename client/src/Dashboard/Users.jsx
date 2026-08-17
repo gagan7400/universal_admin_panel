@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from 'react-redux'
 import { getAllUsers } from "../redux/actions/userAction";
 import Loader from "../layout/Loader";
-import { useLocation } from "react-router-dom";
+
 export default function Users() {
-    let [pageloading, setpageLoading] = useState(true);
-    let location = useLocation()
-    const [filteredusers, setFilteredusers] = useState([]);
+    let [pageloading, setpageLoading] = useState(false);
     const [search, setSearch] = useState("");
     const [sortField, setSortField] = useState("");
     const [sortOrder, setSortOrder] = useState("asc");
@@ -16,19 +14,17 @@ export default function Users() {
     const itemsPerPage = 5;
     let dispatch = useDispatch();
     let { loading, error, users } = useSelector(state => state.user);
-    useEffect(() => {
-        setTimeout(() => {
-            setpageLoading(false);
-        }, [500])
-    }, [location])
+
     useEffect(() => {
         dispatch(getAllUsers())
     }, []);
-    useEffect(() => {
-        setFilteredusers(users);
-    }, [users])
 
     useEffect(() => {
+        setCurrentPage(1);
+    }, [search, selectedCategory]);
+
+    const filteredusers = useMemo(() => {
+        if (!users) return [];
         let temp = [...users].reverse();
 
         // 🌟 Search filter: checks firstName, lastName, email, phone
@@ -43,13 +39,13 @@ export default function Users() {
 
         // 🏷️ Optional category filter
         if (selectedCategory && selectedCategory !== "All") {
-            if (selectedCategory == "Active Users") {
+            if (selectedCategory === "Active Users") {
                 temp = temp.filter((item) => item.isActive.toString() === "true");
-            } else if (selectedCategory == "DeActivate Users") {
+            } else if (selectedCategory === "DeActivate Users") {
                 temp = temp.filter((item) => item.isActive.toString() === "false");
-            } else if (selectedCategory == "Verified Users") {
+            } else if (selectedCategory === "Verified Users") {
                 temp = temp.filter((item) => item.isVerified.toString() === "true");
-            } else if (selectedCategory == "UnVerified Users") {
+            } else if (selectedCategory === "UnVerified Users") {
                 temp = temp.filter((item) => item.isVerified.toString() === "false");
             }
         }
@@ -65,8 +61,7 @@ export default function Users() {
             });
         }
 
-        setFilteredusers(temp);
-        setCurrentPage(1);
+        return temp;
     }, [search, sortField, sortOrder, selectedCategory, users]);
 
     const columns = [

@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import ProductImageUploader from "./ProductImageUploader";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import Loader from "../layout/Loader";
-import { useLocation } from "react-router-dom";
 import CreatableSelect from "react-select/creatable";
 
 export default function Products() {
@@ -12,7 +11,6 @@ export default function Products() {
 
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [filteredProducts, setFilteredProducts] = useState([]);
     const [search, setSearch] = useState("");
     const [sortField, setSortField] = useState("");
     const [sortOrder, setSortOrder] = useState("asc");
@@ -58,14 +56,8 @@ export default function Products() {
     const [isUpdateId, setIsUpdateId] = useState(null)
     const [deletedImages, setDeletedImages] = useState([]);
     let { admin } = useSelector(state => state.auth);
-    let [pageloading, setpageLoading] = useState(true);
-    let location = useLocation()
+    let [pageloading, setpageLoading] = useState(false);
     const [options, setOptions] = useState([])
-    useEffect(() => {
-        setTimeout(() => {
-            setpageLoading(false);
-        }, [500])
-    }, [location])
     const getAllCategories = async () => {
         try {
             let { data } = await axios.get(`${API}/api/product/categories`);
@@ -216,7 +208,6 @@ export default function Products() {
             let { data } = await axios.get(`${API}/api/product/all`);
             if (data.success) {
                 setProducts(data.data);
-                setFilteredProducts(data.data);
             } else {
                 setProducts([]);
                 toast.error(data.message || "Error occured");
@@ -231,10 +222,15 @@ export default function Products() {
     useEffect(() => {
         getAllCategories()
         getProducts();
-    }, [show]);
+    }, []);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search, selectedCategory]);
 
     // 🌟 Filtering Logic
-    useEffect(() => {
+    const filteredProducts = useMemo(() => {
+        if (!products) return [];
         let temp = [...products];
         if (search) {
             const keyword = search.toLowerCase();
@@ -256,8 +252,7 @@ export default function Products() {
                     : valB.localeCompare?.(valA) ?? valB - valA;
             });
         }
-        setFilteredProducts(temp);
-        setCurrentPage(1);
+        return temp;
     }, [search, sortField, sortOrder, selectedCategory, products]);
 
     const deleteHandler = async (id) => {

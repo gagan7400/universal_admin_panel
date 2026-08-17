@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loader from "../layout/Loader";
-import { useLocation } from "react-router-dom";
 
 const SubadminManager = () => {
     const API = import.meta.env.VITE_API;
     const [subadmins, setSubadmins] = useState([]);
     const [show, setShow] = useState(false);
     let [loading, setLoading] = useState(false)
-    let [pageloading, setpageLoading] = useState(true)
+    let [pageloading, setpageLoading] = useState(false)
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -18,7 +17,7 @@ const SubadminManager = () => {
     });
     const [isEditMode, setIsEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
-    let location = useLocation()
+
     const fetchSubadmins = async () => {
         setLoading(true)
         try {
@@ -35,12 +34,6 @@ const SubadminManager = () => {
     useEffect(() => {
         fetchSubadmins();
     }, []);
-    useEffect(() => {
-        setpageLoading(true)
-        setTimeout(() => {
-            setpageLoading(false)
-        }, 500);
-    }, [location])
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });

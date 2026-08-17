@@ -2,7 +2,7 @@ import { Table, TableBody, TableCell, TableHeader, TableRow, } from "../ui/table
 import Badge from "../ui/badge/Badge";
 import { NavLink } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { getAllOrders } from "../redux/actions/orderAction";
 import Loader from "../layout/Loader";
 
@@ -13,6 +13,13 @@ export default function RecentOrders() {
     useEffect(() => {
         dispatch(getAllOrders());
     }, [])
+
+    const recentOrders = useMemo(() => {
+        if (!allorders) return [];
+        return [...allorders]
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .slice(0, 5);
+    }, [allorders]);
 
     return (
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4   sm:px-6">
@@ -44,7 +51,7 @@ export default function RecentOrders() {
                         </TableHeader>
 
                         <TableBody className="divide-y divide-gray-100  ">
-                            {allorders && allorders.slice(0, 5).map((order) => (
+                            {recentOrders.map((order) => (
                                 <TableRow key={order._id} className="">
                                     <TableCell className="py-3 px-1 whitespace-nowrap">
                                         <div className="flex items-center">
@@ -67,7 +74,7 @@ export default function RecentOrders() {
                                         <Badge size="sm" color={order.orderStatus === "Delivered" ? "success" : order.orderStatus === "Processing" ? "warning" : "error"} >{order.orderStatus} </Badge>
                                     </TableCell>
                                 </TableRow>
-                            )).reverse()}
+                            ))}
                         </TableBody>
                     </Table>}
             </div>

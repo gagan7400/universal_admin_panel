@@ -3,7 +3,7 @@ import MonthlySalesChart from './MonthlySalesChart'
 import Badge from "../ui/badge/Badge";
 import { ArrowDownIcon, ArrowUpIcon, BoxIconLine, GroupIcon, } from "../icons/index.js";
 import RecentOrders from './RecentOrders.jsx';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { countOrders } from '../redux/actions/orderAction.js';
 import { countUsers } from '../redux/actions/userAction.js';
@@ -14,13 +14,7 @@ export default function DashboardComp() {
     let { usercount } = useSelector(state => state.user);
     let { productcount } = useSelector(state => state.product);
     let dispatch = useDispatch();
-    let [pageloading, setpageLoading] = useState(true);
-    let location = useLocation()
-    useEffect(() => {
-        setTimeout(() => {
-            setpageLoading(false);
-        }, [500])
-    }, [location])
+    let [pageloading, setpageLoading] = useState(false);
     useEffect(() => {
         dispatch(countOrders())
         dispatch(countUsers())

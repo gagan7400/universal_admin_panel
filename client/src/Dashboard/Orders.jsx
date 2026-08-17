@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Bounce, toast } from 'react-toastify';
 import OrderDialog from './OrderDialog';
 import Loader from '../layout/Loader';
-import { useLocation } from 'react-router-dom';
+
 
 const Orders = () => {
     const API = import.meta.env.VITE_API;
@@ -19,13 +19,7 @@ const Orders = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [visibleColumns, setVisibleColumns] = useState(['orderId', 'user', 'email', 'status', 'totalPrice', 'quantity', 'paymentStatus']);
     const [statusFilter, setStatusFilter] = useState('');
-    let [pageloading, setpageLoading] = useState(true);
-    let location = useLocation()
-    useEffect(() => {
-        setTimeout(() => {
-            setpageLoading(false);
-        }, [500])
-    }, [location])
+    let [pageloading, setpageLoading] = useState(false);
     useEffect(() => {
         dispatch(getAllOrders());
     }, [dispatch]);
