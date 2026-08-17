@@ -77,7 +77,7 @@ const registration = async (req, res) => {
         }
 
         // Hash password & generate OTP
-        const hashPassword = bcrypt.hashSync(value.password, 10);
+        const hashPassword = await bcrypt.hashSync(value.password, 10);
         const emailOTP = Math.floor(1000 + Math.random() * 9000);
 
         // Ensure one default address
@@ -99,6 +99,7 @@ const registration = async (req, res) => {
             applicationId: value.applicationId,
             deviceType: value.deviceType,
             otp: emailOTP,
+            otpDateTime: new Date(), // <-- SAVES Date object to DB
             image,
             address: addresses,
         });
@@ -281,10 +282,9 @@ const verifyOTP = async (req, res) => {
         const otpCreatedTime = new Date(user[otpDateTimeField]);
         const expiryTime = new Date(otpCreatedTime.getTime() + 5 * 60000); // 5 minutes
 
-        if (currentTime > expiryTime) {
-            return res.status(400).json({ code: 400, status: false, message: "OTP has been expired." });
+         if (isNaN(otpCreatedTime.getTime()) || currentTime > expiryTime) {
+            return res.status(400).json({ code: 400, status: false, message: "OTP has expired." });
         }
-
         // Update user based on type
         if (verificationType.toUpperCase() === "EMAIL") {
             user.otp = "";
@@ -351,7 +351,6 @@ const resendOTP = async (req, res) => {
         const { email, verificationType } = value;
         const emailLower = email.toLowerCase();
         const emailOTP = Math.floor(1000 + Math.random() * 9000);
-
         const emailOTPDateTime = new Date();
 
         // Set the OTP field based on verificationType
@@ -362,6 +361,7 @@ const resendOTP = async (req, res) => {
         } else if (verificationType.toUpperCase() === "FORGOTPASSWORD") {
             updateFields.forgotPasswordOtp = emailOTP;
             updateFields.forgotPasswordOtpDateTime = emailOTPDateTime;
+            updateFields.forgotPasswordOtpVerified = false; // Reset verification status
         }
 
         // Find user
@@ -422,10 +422,10 @@ const forgotPassword = async (req, res) => {
 
         const OTP = Math.floor(1000 + Math.random() * 9000);
         const date = new Date();
-        const currentDate = date.toISOString().replace('T', ' ').slice(0, 19); // "YYYY-MM-DD HH:mm:ss"
-
+         
         user.forgotPasswordOtp = OTP;
-        user.forgotPasswordOtpDateTime = currentDate;
+        user.forgotPasswordOtpDateTime = new Date().toISOString();;
+        user.forgotPasswordOtpVerified = false; // Reset verification flag
         await user.save();
 
         const subject = "Verify OTP";
@@ -476,6 +476,15 @@ const setNewPassword = async (req, res) => {
             });
         }
 
+        
+        // Verification Bypass Check (Handles Password Reset Bypass)
+        if (!user.forgotPasswordOtpVerified) {
+            return res.status(403).json({
+                code: 403,
+                status: false,
+                message: "Unauthorized request. Please verify your OTP code first."
+            });
+        }
         // Check if the new password is same as the current one
         const isPasswordMatching = await bcrypt.compare(req.body.password, user.password);
         if (isPasswordMatching) {
@@ -491,6 +500,7 @@ const setNewPassword = async (req, res) => {
 
         // Update password
         user.password = hashedPassword;
+        user.forgotPasswordOtpVerified = false; // Reset verification flag after usage
         await user.save();
 
         return res.status(200).json({

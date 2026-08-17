@@ -58,18 +58,16 @@ app.use('/api/payment', paymentRoute);
 app.use("/api/wishlist", wishlistRoutes);
 app.use(errorMiddleware);
 
-app.listen(port, () => {
+// index.js (Lines 61-63)
+const server = app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
 
-
-// Unhandled Promise Rejection
+// Unhandled Promise Rejection (Lines 67-72)
 process.on("unhandledRejection", (err) => {
     console.log(`Shutting down the server due to Unhandled Promise Rejection`);
     server.close(() => {
         process.exit(1);
     });
 });
-
-
 

@@ -115,5 +115,10 @@ const orderSchema = new mongoose.Schema({
         default: Date.now,
     },
 }, { timestamps: true });
+// models/orderModel.js
+// Place this at the end of orderModel.js before module.exports:
+orderSchema.index({ "user.id": 1 });
+orderSchema.index({ razorpay_order_id: 1 });
+orderSchema.index({ "paymentInfo.id": 1 }); // Replay check index
 
 module.exports = mongoose.model("orders", orderSchema);

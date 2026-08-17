@@ -9,10 +9,12 @@ const userSchema = new mongoose.Schema({
     applicationId: String,
     deviceType: String,
     otp: Number,
+    otpDateTime: Date, 
     isVerified: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
     forgotPasswordOtp: Number,
     forgotPasswordOtpDateTime: String,
+       forgotPasswordOtpVerified: { type: Boolean, default: false },
     role: { type: String, default: 'user' },
     image: { filename: String, url: String },
     wishlist: [

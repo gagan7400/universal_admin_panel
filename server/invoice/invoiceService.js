@@ -1,16 +1,19 @@
-const fs = require("fs");
+// invoice/invoiceService.js
+const fs = require("fs").promises; // Use promises version
+const fsSync = require("fs");      // Fallback only for existsSync if needed, or use access
 const path = require("path");
 const Order = require("../models/orderModel");
 const { buildInvoiceNumber } = require("./invoiceGenerator");
 const { generateInvoiceHtml } = require("./invoiceHtmlGenerator");
 const { htmlStringToPdfBuffer } = require("./invoicePdfFromHtml");
 
-/** Outside `uploads/` so invoices are not exposed by express.static("/uploads") */
 const INVOICES_DIR = path.join(__dirname, "..", "storage", "invoices");
 
-function ensureInvoicesDir() {
-    if (!fs.existsSync(INVOICES_DIR)) {
-        fs.mkdirSync(INVOICES_DIR, { recursive: true });
+async function ensureInvoicesDir() {
+    try {
+        await fs.mkdir(INVOICES_DIR, { recursive: true });
+    } catch (err) {
+        if (err.code !== 'EEXIST') throw err;
     }
 }
 
@@ -22,18 +25,16 @@ function invoiceHtmlFilePath(orderId) {
     return path.join(INVOICES_DIR, `${orderId}.html`);
 }
 
-function getInvoiceHtmlStringForOrder(order) {
+async function getInvoiceHtmlStringForOrder(order) {
     const id = order._id.toString();
     const htmlPath = invoiceHtmlFilePath(id);
-    if (fs.existsSync(htmlPath)) {
-        return fs.readFileSync(htmlPath, "utf8");
+    try {
+        return await fs.readFile(htmlPath, "utf8");
+    } catch {
+        return generateInvoiceHtml(order);
     }
-    return generateInvoiceHtml(order);
 }
 
-/**
- * HTML template → Puppeteer PDF; save .html + .pdf; persist invoiceNumber.
- */
 async function createAndSaveInvoiceForOrder(orderDoc) {
     const id = orderDoc._id?.toString();
     if (!id) throw new Error("Order must be saved before creating invoice");
@@ -47,13 +48,15 @@ async function createAndSaveInvoiceForOrder(orderDoc) {
     try {
         pdfBuffer = await htmlStringToPdfBuffer(htmlString);
     } catch (e) {
-        console.error("[Invoice] PDF generation failed (order still saved without invoice file):", e.message);
+        console.error("[Invoice] PDF generation failed:", e.message);
         throw e;
     }
 
-    ensureInvoicesDir();
-    fs.writeFileSync(invoiceHtmlFilePath(id), htmlString, "utf8");
-    fs.writeFileSync(invoiceFilePath(id), pdfBuffer);
+    await ensureInvoicesDir();
+    await Promise.all([
+        fs.writeFile(invoiceHtmlFilePath(id), htmlString, "utf8"),
+        fs.writeFile(invoiceFilePath(id), pdfBuffer)
+    ]);
 
     await Order.findByIdAndUpdate(id, {
         $set: { invoiceNumber, invoiceGeneratedAt: new Date() },
@@ -62,38 +65,41 @@ async function createAndSaveInvoiceForOrder(orderDoc) {
     return { invoiceNumber, pdfBuffer, htmlString };
 }
 
-/**
- * Cached PDF on disk, or rebuild from stored/generated HTML via Puppeteer.
- */
 async function getInvoicePdfBufferForOrder(order) {
     const id = order._id.toString();
     const pdfPath = invoiceFilePath(id);
-    if (fs.existsSync(pdfPath)) {
+    
+    try {
+        const buffer = await fs.readFile(pdfPath);
         return {
-            buffer: fs.readFileSync(pdfPath),
+            buffer,
             filename: `${order.invoiceNumber || id}.pdf`,
         };
+    } catch {
+        // Build on demand if file does not exist
+        const html = await getInvoiceHtmlStringForOrder(order);
+        let buf;
+        try {
+            buf = await htmlStringToPdfBuffer(html);
+        } catch (e) {
+            console.error("[Invoice] PDF on-demand generation failed:", e.message);
+            throw e;
+        }
+        
+        try {
+            await ensureInvoicesDir();
+            await Promise.all([
+                fs.writeFile(invoiceHtmlFilePath(id), html, "utf8"),
+                fs.writeFile(pdfPath, buf)
+            ]);
+        } catch (e) {
+            console.error("Invoice cache write failed:", e.message);
+        }
+        return {
+            buffer: buf,
+            filename: `${order.invoiceNumber || buildInvoiceNumber(order)}.pdf`,
+        };
     }
-
-    const html = getInvoiceHtmlStringForOrder(order);
-    let buf;
-    try {
-        buf = await htmlStringToPdfBuffer(html);
-    } catch (e) {
-        console.error("[Invoice] PDF on-demand generation failed:", e.message);
-        throw e;
-    }
-    try {
-        ensureInvoicesDir();
-        fs.writeFileSync(invoiceHtmlFilePath(id), html, "utf8");
-        fs.writeFileSync(pdfPath, buf);
-    } catch (e) {
-        console.error("Invoice cache write failed:", e.message);
-    }
-    return {
-        buffer: buf,
-        filename: `${order.invoiceNumber || buildInvoiceNumber(order)}.pdf`,
-    };
 }
 
 module.exports = {

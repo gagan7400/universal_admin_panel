@@ -16,7 +16,9 @@ const adminSchema = new mongoose.Schema({
   status: {
     type: Boolean,
     default: true,
-  }
+  },
+    otp: { type: String },       // <-- ADDED
+    otpExpiry: { type: Date } 
 });
 
 module.exports = mongoose.model("Admin", adminSchema);
