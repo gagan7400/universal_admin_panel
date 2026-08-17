@@ -10,15 +10,22 @@ const addToCart = async (req, res) => {
         const product = await Product.findById(productId);
         if (!product) return res.status(404).json({ message: 'Product not found' });
 
-
-        // 🔥 Add this stock check:
-        if (product.stock < quantity) {
-            return res.status(400).json({
-                message: `Only ${product.stock} item(s) in stock`,
-            });
+        let cart = await Cart.findOne({ userId });
+        let existingQuantity = 0;
+        if (cart) {
+            const item = cart.items.find(
+                (item) => item.productId.toString() === productId
+            );
+            if (item) {
+                existingQuantity = item.quantity;
+            }
         }
 
-        let cart = await Cart.findOne({ userId });
+        if (product.stock < (existingQuantity + quantity)) {
+            return res.status(400).json({
+                message: `Only ${product.stock} item(s) in stock. You already have ${existingQuantity} in your cart.`,
+            });
+        }
 
         if (!cart) {
             cart = new Cart({

@@ -1,20 +1,20 @@
 const mongoose = require('mongoose');
-const {Product} = require("./productModel")
+const { Product } = require("./productModel")
 const userSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
-    email: { type: String, unique: true },
+    email: { type: String, unique: true, lowercase: true, trim: true },
     phone: String,
     password: String,
     applicationId: String,
     deviceType: String,
     otp: Number,
-    otpDateTime: Date, 
+    otpDateTime: Date,
     isVerified: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
     forgotPasswordOtp: Number,
     forgotPasswordOtpDateTime: String,
-       forgotPasswordOtpVerified: { type: Boolean, default: false },
+    forgotPasswordOtpVerified: { type: Boolean, default: false },
     role: { type: String, default: 'user' },
     image: { filename: String, url: String },
     wishlist: [

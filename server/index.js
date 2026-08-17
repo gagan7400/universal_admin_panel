@@ -5,14 +5,21 @@ let dotenv = require("dotenv").config();
 require("./config/cloudinary"); // loads Cloudinary env after dotenv
 let cors = require("cors");
 const cookieParser = require('cookie-parser');
+const helmet = require("helmet");
+const { apiLimiter } = require("./middlewares/rateLimiter");
+
+app.use(helmet());
+app.use(apiLimiter);
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-const allowedOrigins = [
-    "https://technicalceramics.in",
-    "http://technicalceramics.in",
-    "http://localhost:5173"
-];
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(",")
+    : [
+        "https://technicalceramics.in",
+        "http://technicalceramics.in",
+        "http://localhost:5173"
+    ];
 
 app.use(cors({
     origin: function (origin, callback) {
@@ -42,7 +49,7 @@ let uploadpath = path.join(__dirname, "/uploads");
 app.use("/uploads/", express.static(uploadpath))
 // Handling Uncaught Exception
 process.on("uncaughtException", (err) => {
-    console.log(`Shutting down the server due to Uncaught Exception`);
+    console.error("Shutting down the server due to Uncaught Exception:", err);
     process.exit(1);
 });
 
@@ -65,7 +72,7 @@ const server = app.listen(port, () => {
 
 // Unhandled Promise Rejection (Lines 67-72)
 process.on("unhandledRejection", (err) => {
-    console.log(`Shutting down the server due to Unhandled Promise Rejection`);
+    console.error("Shutting down the server due to Unhandled Promise Rejection:", err);
     server.close(() => {
         process.exit(1);
     });

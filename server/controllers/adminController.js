@@ -21,11 +21,11 @@ const register = async (req, res) => {
         }
 
         const { email, password, name } = req.body;
-        const existing = await Admin.findOne({ email });
+        const existing = await Admin.findOne({ email: email.toLowerCase() });
         if (existing) return res.status(400).json({ success: false, message: "Admin already exists" });
 
         const hashed = await bcrypt.hash(password, 12);
-        const admin = await Admin.create({ email, password: hashed, name, role: "admin" });
+        const admin = await Admin.create({ email: email.toLowerCase(), password: hashed, name, role: "admin" });
 
         res.status(200).json({ success: true, message: "Admin Registered Successfully" });
     } catch (error) {
@@ -50,7 +50,7 @@ const login = async (req, res) => {
             });
         }
 
-        const admin = await Admin.findOne({ email });
+        const admin = await Admin.findOne({ email: email.toLowerCase() });
         if (!admin) return res.status(400).json({
             code: 400,
             success: false,
@@ -99,7 +99,7 @@ let logoutAdmin = async (req, res) => {
 const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
-        const admin = await Admin.findOne({ email });
+        const admin = await Admin.findOne({ email: email.toLowerCase() });
         if (!admin) return res.status(404).json({ message: "Admin not found" });
 
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -124,7 +124,7 @@ const resetPassword = async (req, res) => {
     try {
         const { email, otp, newPassword } = req.body;
 
-        const admin = await Admin.findOne({ email, otp });
+        const admin = await Admin.findOne({ email: email.toLowerCase(), otp });
 
         if (!admin || admin.otpExpiry < Date.now()) {
             return res.status(400).json({ message: "Invalid or expired OTP" });

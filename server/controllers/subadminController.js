@@ -6,7 +6,7 @@ const createSubadmin = async (req, res) => {
     try {
         const { name, email, password, permissions } = req.body;
 
-        const existing = await Subadmin.findOne({ email });
+        const existing = await Subadmin.findOne({ email: email.toLowerCase() });
         if (existing) {
             return res.status(400).json({ success: false, message: "Subadmin already exists" });
         }
@@ -15,7 +15,7 @@ const createSubadmin = async (req, res) => {
 
         const newSubadmin = await Subadmin.create({
             name,
-            email,
+            email: email.toLowerCase(),
             password: hashedPassword,
             permissions,
             createdBy: req.user._id,
@@ -38,7 +38,7 @@ const getAllSubadmins = async (req, res) => {
 const loginSubadmin = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const subadmin = await Subadmin.findOne({ email, role: "subadmin" });
+        const subadmin = await Subadmin.findOne({ email: email.toLowerCase(), role: "subadmin" });
 
         if (!subadmin) {
             return res.status(404).json({ message: "Subadmin not found" });
@@ -94,13 +94,18 @@ const updateSubadmin = async (req, res) => {
         if (!subadmin) {
             return res.status(404).json({ success: false, message: "Subadmin not found" });
         }
-        if (req.body.password) {
+
+        const allowedUpdates = {};
+        if (req.body.name !== undefined) allowedUpdates.name = req.body.name;
+        if (req.body.email !== undefined) allowedUpdates.email = req.body.email.toLowerCase().trim();
+        if (req.body.password !== undefined && req.body.password !== "") {
             const hashedPassword = await bcrypt.hash(req.body.password, 10);
-            req.body.password = hashedPassword;
-        } else {
-            req.body.password = subadmin.password
+            allowedUpdates.password = hashedPassword;
         }
-        await Subadmin.findByIdAndUpdate(subadmin._id, req.body)
+        if (req.body.permissions !== undefined) allowedUpdates.permissions = req.body.permissions;
+        if (req.body.status !== undefined) allowedUpdates.status = req.body.status;
+
+        await Subadmin.findByIdAndUpdate(subadmin._id, { $set: allowedUpdates });
         res.status(200).json({ success: true, message: "Subadmin Updated Successfully" });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });

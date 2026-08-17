@@ -9,15 +9,16 @@ const { registration, verifyOTP, resendOTP, forgotPassword, login, verifyAccount
 } = require("../controllers/userController");
 const { isAuthenticatedAdmin, authorizeRoles, isAuthenticatedUser, validateUserOwnership } = require("../middlewares/auth");
 const uploadMemory = require("../middlewares/uploadMemory");
+const { authLimiter } = require("../middlewares/rateLimiter");
 const router = express.Router();
 
-router.post("/registration", uploadMemory.single("image"), registration);
-router.post("/login", login);
-router.post("/verify-account", verifyAccount)
-router.post("/verify-otp", verifyOTP);
-router.post("/resend-otp", resendOTP);
-router.post("/forgot-password", forgotPassword);
-router.post("/set-new-password", setNewPassword);
+router.post("/registration", authLimiter, uploadMemory.single("image"), registration);
+router.post("/login", authLimiter, login);
+router.post("/verify-account", authLimiter, verifyAccount)
+router.post("/verify-otp", authLimiter, verifyOTP);
+router.post("/resend-otp", authLimiter, resendOTP);
+router.post("/forgot-password", authLimiter, forgotPassword);
+router.post("/set-new-password", authLimiter, setNewPassword);
 router.post("/delete-user-account/:id", isAuthenticatedUser, validateUserOwnership, deleteUserAccount);
 router.get("/getallusers", isAuthenticatedAdmin, getAllUsers);
 router.put("/update/:id", isAuthenticatedUser, validateUserOwnership, uploadMemory.single("image"), updateUser);

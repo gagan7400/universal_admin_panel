@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const path = require("path");
 const fs = require("fs");
 const User = require("../models/usermodel.js");
@@ -65,7 +65,7 @@ const registration = async (req, res) => {
             });
 
         // Check if user already exists
-        const existingUser = await User.findOne({ email: value.email });
+        const existingUser = await User.findOne({ email: value.email.toLowerCase() });
         if (existingUser) {
             return res.status(400).json({
                 code: 400,
@@ -93,7 +93,7 @@ const registration = async (req, res) => {
         const newUser = new User({
             firstName: value.firstName,
             lastName: value.lastName,
-            email: value.email,
+            email: value.email.toLowerCase(),
             phone: value.phone,
             password: hashPassword,
             applicationId: value.applicationId,
@@ -220,7 +220,7 @@ const login = async (req, res) => {
 const verifyAccount = async (req, res) => {
     try {
         let { email } = req.body;
-        let user = await User.findOne({ email });
+        let user = await User.findOne({ email: email.toLowerCase() });
         if (!user) {
             return res.status(400).json({ code: 400, status: true, message: "User Not Found." });
         }
@@ -417,7 +417,7 @@ const forgotPassword = async (req, res) => {
             return res.status(400).json({ code: 400, status: false, message: error.details[0].message });
         }
 
-        const user = await User.findOne({ email: req.body.email, isActive: true });
+        const user = await User.findOne({ email: req.body.email.toLowerCase(), isActive: true });
         if (!user) return res.status(400).json({ code: 400, status: false, message: "Email is incorrect" });
 
         const OTP = Math.floor(1000 + Math.random() * 9000);
