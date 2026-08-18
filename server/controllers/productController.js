@@ -181,14 +181,42 @@ const updateProduct = catchAsyncErrors(async (req, res, next) => {
     if (!product) return next(new ErrorHandler("Product not found", 404));
 
     if (req.body.pricePerLot) {
-        req.body.pricePerLot = JSON.parse(req.body.pricePerLot);
+        if (typeof req.body.pricePerLot === "string") {
+            req.body.pricePerLot = JSON.parse(req.body.pricePerLot);
+        }
+        req.body.pricePerLot = req.body.pricePerLot
+            .filter(lot => lot.minQty !== "" && lot.maxQty !== "" && lot.pricePerUnit !== "")
+            .map(lot => ({
+                minQty: Number(lot.minQty),
+                maxQty: Number(lot.maxQty),
+                pricePerUnit: Number(lot.pricePerUnit),
+                productType: lot.productType || "",
+            }));
     }
-    console.log(req.body.pricePerLot)
     if (req.body.shippingPricePerKM) {
-        req.body.shippingPricePerKM = JSON.parse(req.body.shippingPricePerKM);
+        if (typeof req.body.shippingPricePerKM === "string") {
+            req.body.shippingPricePerKM = JSON.parse(req.body.shippingPricePerKM);
+        }
+        req.body.shippingPricePerKM = req.body.shippingPricePerKM
+            .filter(s => s.minKM !== "" && s.maxKM !== "" && s.pricePerKM !== "")
+            .map(s => ({
+                minKM: Number(s.minKM),
+                maxKM: Number(s.maxKM),
+                pricePerKM: Number(s.pricePerKM),
+            }));
     }
     if (req.body.packagingOptions) {
-        req.body.packagingOptions = JSON.parse(req.body.packagingOptions);
+        if (typeof req.body.packagingOptions === "string") {
+            req.body.packagingOptions = JSON.parse(req.body.packagingOptions);
+        }
+        req.body.packagingOptions = req.body.packagingOptions
+            .filter(p => p.type !== "" && p.maxWeightPerPackage !== "" && p.feePerPackage !== "")
+            .map(p => ({
+                type: p.type,
+                maxWeightPerPackage: Number(p.maxWeightPerPackage),
+                maxItemsPerPackage: p.maxItemsPerPackage ? Number(p.maxItemsPerPackage) : undefined,
+                feePerPackage: Number(p.feePerPackage)
+            }));
     }
     const files = req.files || {};
     const bannerFile = files.bannerImage?.[0];

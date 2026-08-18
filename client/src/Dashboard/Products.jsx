@@ -26,7 +26,7 @@ export default function Products() {
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState("");
     const [ratings, setRatings] = useState("");
-    const [category, setCategory] = useState({value:"", label:""});
+    const [category, setCategory] = useState({ value: "", label: "" });
     const [stock, setStock] = useState("");
     const [dimensions, setDimensions] = useState({ width: "", height: "", length: "" });
     const [weight, setWeight] = useState("");
@@ -85,7 +85,7 @@ export default function Products() {
         e.preventDefault();
 
         const formData = new FormData();
-  console.log(packagingOptions ,shippingPricePerKM,pricePerLot)
+        console.log(packagingOptions, shippingPricePerKM, pricePerLot)
         // ✅ Fix: Always send retained + newly uploaded images
         const retainedImages = images.filter((img) => !img.file);
         formData.append("imagesData", JSON.stringify(retainedImages));
@@ -126,17 +126,17 @@ export default function Products() {
                 });
 
                 if (data.success) {
-                    alert("✅ Product Updated Successfully");
+                    toast.success("✅ Product Updated Successfully");
                     refresh();
                     setShow(false);
                     setIsUpdate(false);
                     setIsUpdateId(null);
                     getProducts();
                 } else {
-
+                    toast.error(data.message || "Failed to update product");
                 }
             } catch (err) {
-
+                toast.error(err.response?.data?.message || "Error updating product");
             }
         } else {
             // 👇 Add New Product Logic (already working)
@@ -293,7 +293,7 @@ export default function Products() {
                 minQty: lot.minQty,
                 maxQty: lot.maxQty,
                 pricePerUnit: lot.pricePerUnit,
-                productType: lot.productType  
+                productType: lot.productType
             }))
         );
 
@@ -319,13 +319,15 @@ export default function Products() {
             file: null, // new uploads will have actual files
             previewUrl: img.url,
             isExisting: true, // flag to skip sending again
-            url: img.url
+            url: img.url,
+            fileName: img.fileName
         }));
         const existingBanner = data.bannerImage ? [{
             file: null,
             previewUrl: data.bannerImage.url,
             isExisting: true,
-            url: data.bannerImage.url
+            url: data.bannerImage.url,
+            fileName: data.bannerImage.fileName
         }] : [];
 
         setImages(existingImages);
@@ -632,7 +634,12 @@ export default function Products() {
                                         <button
                                             type="button"
                                             onClick={() =>
-                                                setPackagingOptions([...packagingOptions, { type: "", maxWeight: "", fee: "" }])
+                                                setPackagingOptions([...packagingOptions, {
+                                                    type: "",
+                                                    maxWeightPerPackage: "",
+                                                    maxItemsPerPackage: "",
+                                                    feePerPackage: ""
+                                                }])
                                             }
                                             className="text-sm text-blue-600"
                                         >
